@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!-- 
+	A sample installation file.
+	Use it as a base for your own installers :-)
+	
+	To compile it :
+	- go in the bin directory where you installed IzPack
+	- call "compile ../sample/install.xml -b ../sample"
+-->
+
+<installation version="1.0">
+
+	<!-- 
+		The info section.
+		The meaning of the tags should be natural ...
+	-->
+	<info>
+		<appname>dscsim</appname>
+		<appversion>1-SNAPSHOT</appversion>
+		<appsubpath>dscsim</appsubpath>
+		<authors>
+			<author name="W.Pennoyer" email="wpennoyer@users.sourceforge.net" />
+			<author name="O.Hecker" email="ohecker@users.sourceforge.net" />
+		</authors>
+		<url>http://dscsim.sourcefore.net/</url>
+		<javaversion>1.4</javaversion>
+	</info>
+	<!-- 
+		The gui preferences indication.
+		Sets the installer window to 640x480. It will not be able to change the size.
+	-->
+	<guiprefs width="720" height="560" resizable="no">
+		<modifier key="paragraphYGap" value="20"/>
+	</guiprefs>
+
+	<!-- 
+		The locale section.
+		Asks here to include the English langpacks.
+	-->
+	<locale>
+		<langpack iso3="deu" />
+		<langpack iso3="eng" />
+	</locale>
+
+	<!-- 
+		The resources section.
+		The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+	-->
+	<resources>
+		<res id="LicencePanel.licence" src="License.txt" />
+		<res id="InfoPanel.info" src="Readme.txt" parse="yes"/>
+		<res id="userInputSpec.xml" src="userInputSpec.xml" />
+		<res  id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+		<!--  <res src="unix_shortcut_specification.xml" id="Unix_shortcutSpec.xml"/> -->	
+	</resources>
+
+	<!-- 
+		The panels section.
+		We indicate here which panels we want to use. The order will be respected.
+	-->
+	<panels>
+		<panel classname="HelloPanel" />
+		<panel classname="InfoPanel" />
+		<panel classname="LicencePanel" />
+		<panel classname="TargetPanel" />
+		<panel classname="PacksPanel" />
+<!-- 	<panel classname="UserInputPanel"/>  -->
+		<panel classname="SummaryPanel"/>
+		<panel classname="InstallPanel" />
+		<panel classname="ShortcutPanel" />
+		<panel classname="SimpleFinishPanel" />
+	</panels>
+
+	<!-- 
+		The packs section.
+		We specify here our packs.
+	-->
+	<packs>
+		<pack name="Base" required="yes">
+			<description>Base Files</description>
+			<file src="Readme.txt" targetdir="$INSTALL_PATH" />
+        	<parsable targetfile="$INSTALL_PATH/Readme.txt"/>
+			<file src="License.txt" targetdir="$INSTALL_PATH" />
+			<fileset dir="../site/resources" targetdir="$INSTALL_PATH">
+				<include name="legal/*"/>
+			</fileset>
+			<fileset dir="../.." targetdir="$INSTALL_PATH" >
+				<include name="etc/*"/>
+			</fileset>
+			<fileset dir="../.." targetdir="$INSTALL_PATH" >
+				<include name="data/*"/>
+			</fileset>
+			<fileset dir="../../target/lib" targetdir="$INSTALL_PATH/lib">
+				<include name="*.jar" />
+				<exclude name="dscsim.jar" />
+			</fileset>
+			<fileset dir="../../target/lib" targetdir="$INSTALL_PATH">
+				<include name="dscsim.jar" />
+			</fileset>
+		</pack>
+		<pack name="Windows Scripts" required="yes" os="windows">
+			<description>Scripts and shortcuts for starting the application</description>
+			<file src="dscsim.ico" targetdir="$INSTALL_PATH" />
+		</pack>
+		<pack name="MacOS Scripts" required="yes" os="mac">
+			<description>MacOS Starter Scripts</description>
+			<!-- <file src="runapp.sh" targetdir="$INSTALL_PATH" />  -->
+        	<!-- <parsable targetfile="$INSTALL_PATH/runapp.sh"/>  -->
+		</pack>
+		<pack name="Advanced and Adminstrative Options" required="no" preselected="no">
+			<description>Scripts and shortcuts for advanced options. Normal users will not require this.</description>
+			<file src="runapp_debug.bat" targetdir="$INSTALL_PATH" />
+			<file src="log4j.nucleus.properties" targetdir="$INSTALL_PATH" />
+			<file src="runNucleus.bat" targetdir="$INSTALL_PATH" />
+			<file src="runNucleus.sh" targetdir="$INSTALL_PATH" />
+        	<parsable targetfile="$INSTALL_PATH/runapp_debug.bat"/>
+		</pack>
+		<pack name="Documentation (English)" required="no" preselected="no">
+			<description>User Documentation (English)</description>
+			<fileset dir="../../target/docbkx" targetdir="$INSTALL_PATH/docs">
+				<include name="**/*en.*"/>
+				<exclude name="**/*.fo"/>
+			</fileset>
+			<fileset dir="../docbkx/include" targetdir="$INSTALL_PATH/docs/html/include" >
+				<include name="**/*"/>
+			</fileset>
+			<fileset dir="../docbkx/images" targetdir="$INSTALL_PATH/docs/html/images" >
+				<include name="**/*"/>
+			</fileset>
+		</pack>
+		<pack name="Dokumentation (Deutsch)" required="no" preselected="yes">
+			<description>Benutzerdokumentation (Deutsch)</description>
+			<fileset dir="../../target/docbkx" targetdir="$INSTALL_PATH/docs">
+				<include name="**/*de.*"/>
+				<exclude name="**/*.fo"/>
+			</fileset>
+			<fileset dir="../docbkx/include" targetdir="$INSTALL_PATH/docs/html/include" >
+				<include name="**/*"/>
+			</fileset>
+			<fileset dir="../docbkx/images" targetdir="$INSTALL_PATH/docs/html/images" >
+				<include name="**/*"/>
+			</fileset>
+		</pack>
+		<pack name="dscsim Sources" required="no" preselected="no">
+			<description>Sources of the dscsim application. You will only need to install this package if you intend to recompile the application by yourself.
+(However if you intend to recompile the application it is recommended to check out the sources from the projects repository at Sourceforge.)</description>
+			<fileset dir="../../target" targetdir="$INSTALL_PATH/sources">
+				<include name ="dscsim-*-sources.jar"/>
+			</fileset>
+		</pack>
+		<pack name="Third Party Library Sources" required="no" preselected="no">
+			<description>Sources for third party libraries which are used by dscsim and where the licence (LGPL) requires the sources to be included in any distribution which contains the library jar. This package is included to comply to license requirements.
+IT IS NOT RECOMMENDED TO INSTALL THIS PACKAGE. (You will only need to install this package if you intend to recompile these libraries for any cause.)</description>
+			<file src="tritonus_sources/tritonus_JDK_1_4_COMPATIBLE_source.jar" targetdir="$INSTALL_PATH/sources" />
+		</pack>
+	</packs>
+	<native type="izpack" name="ShellLink.dll"/>
+</installation>

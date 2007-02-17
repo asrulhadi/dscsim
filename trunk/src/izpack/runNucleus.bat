@@ -1,0 +1,1 @@
+java -Dlog4j.configFile=./log4j.nucleus.properties -Dlevel=INFO -jar dscsim.jar nucleus

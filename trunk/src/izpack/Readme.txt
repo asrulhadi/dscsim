@@ -1,0 +1,94 @@
+Readme for dscsim, Version X.X.X
+======================================
+
+This is dscsim, Version X.X.X
+
+Please visit http://dscsim.sourceforge.net for latest
+information about dscsim.
+
+For licensing information see file License.txt and the
+licenses of the bundled libraries in directory "legal".
+
+==================================================
+New in dscsim X.X.X:
+- Additional windows shortcut to this file
+- when the main class DscsimStarter is started it is now possible to
+  set an alternative log4j.properties file via system property
+  "log4j.configFile". This feature is used for the "nucleus version".
+  The nucleus by default uses a specific logging config file named
+  "log4j.nucleus.properties"
+- added a third window which contains status information
+  - MMSI
+  - name of station (might be set via startup parameter "dscsim.station_name"
+  - call sign (might be set via startup parameter "dscsim.call_sign"
+  - status bar indicating the status of the network connection
+    (colors red, yellow, blue, green)
+- cleaning up internal resources if a remote airwave can not be reached
+  for some time (necessary for long running server processes to avoid
+  memory leak)
+- change in internal processing which reduces system load when radio
+  is not transmitting
+- new (optional) configuration parameters for the UDP-Airwave:
+   dscsim.udp_airwave.startport: the preferred UDP port to use 
+    (default: 37534)
+   dscsim.udp_airwave.portcount: the given number of subsequent ports which might
+     be used (default: 10)
+   dscsim.udp_airwave.magicnumber: the magic number of the packet header
+     (default: 369876138)
+- Fixed bug "[1655507] audio stream in radio sometimes not terminating"
+- Implemented an 'Airwave Nucleus' mode which only starts up an "Airwave" 
+  without any radio or controler GUI. This process might be used - when
+  started on a network server - to serve as a 'condensation point' for 
+  establishing the P2P network.
+  The start script and a starter icon (on windows) will be installed if
+  the (new) installation package 'Advanced and Adminstrative Options' is
+  selected. (this implements '[1655496] dscsim daemon mode')
+- Removed obsolete use of ActiveMQ as transport layer
+- Radio now might be switched on and off (note yet the controller)
+  (part of [1655495] Implement/simulate behavior of on/off switch)
+- Size of Transmit button in Radio GUI increases
+- Radio GUI frame no longer resizable. 
+  ([1655485] Buttons disapear when making the radio window too small)
+- Squelch level now initially set to 3; prevents noise when starting
+  up. ([1655482] Squelch should be preset to higher level)
+New in dscsim 1.2.2:
+- Fixed a bug in the P2P protocol which under some conditions
+  prevented reconnect after restarting a station
+New in dscsim 1.2.1:
+- started with writing a user guide (not really useful yet)
+- auto adjust of microphone amplifier
+- initial level of sound volume decreased (avoid loud noise when starting)
+- keyboard mnemonics for radio part
+- ability to simply press ENTER to transmit when radio window is focussed
+- tooltip texts for radio part 
+
+Whats new in dscsim 1.2.0:
+- platform independent installer (based on IzPack)
+- several bugfixes
+
+==================================================
+
+dscsim makes use of the following third party
+software:
+
+libraries (included in this installer bundle):
+
+JDOM (XML-handling)
+http://www.jdom.org
+
+Log4J (Logging)
+http://logging.apache.org/log4
+
+Tritonus (Sound processing)
+http://www.tritonus.org
+
+JSpeex (Audio data compression)
+http://jspeex.sourceforge.net
+
+
+The build process of dscsim is performed by Maven
+http://maven.apache.org
+
+The installer is build with IzPack
+http://www.izforge.com/izpack/
+

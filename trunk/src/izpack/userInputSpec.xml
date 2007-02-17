@@ -1,0 +1,15 @@
+<userInput>
+	<panel order="0">
+		<field type="staticText" align="left"
+			txt="Bitte geben Sie den Setup-String ein:" id="input.comment" />
+		<field type="rule" variable="setup">
+			<spec txt="Setup-String:" layout="O:40:U"
+				resultFormat="plainString" />
+			<validator class="com.izforge.izpack.util.NotEmptyValidator"
+				txt="The setup string is mandatory" />
+			<!--processor class=""/-->
+		</field>
+
+
+	</panel>
+</userInput>

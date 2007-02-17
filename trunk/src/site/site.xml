@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="DSCSim">
+  
+  <bannerLeft>
+<!-- <name>dscsim</name>
+    <href>http://dscsim.sourceforge.net/</href>-->
+    <name>SourceForge.net Logo"</name> 
+    <href>http://sourceforge.net</href>
+    <src>http://sflogo.sourceforge.net/sflogo.php?group_id=167787&amp;type=7</src>    
+  </bannerLeft>
+  
+  <bannerRight>
+    <name>dscsim Logo</name>
+    <href>http://dscsim.sourceforge.net</href>
+    <src>./images/dscsim_banner.png</src>    
+  </bannerRight>
+  
+<!--  -->  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-default-skin</artifactId>
+  </skin>
+-->
+  <publishDate format="dd MMM yyyy" />
+  
+  <body>
+    <links>
+      <item name="dscsim@SF.net" href="http://sourceforge.net/projects/dscsim"/>
+      <item name="SVRM" href="http://www.svrm.de/"/>
+      <item name="DGzRS" href="http://www.dgzrs.de"/>
+    </links>
+
+    <head>
+      <meta name="faq" content="dscsim"/>
+    </head>
+
+    <menu name="About dscsim" inherit="top">
+      <item name="What is dscsim?" href="/what-is-dscsim.html"/>
+      <item name="Frequently Asked Questions" href="/dscsim_faq.html"/>
+    </menu>
+
+<!-- <menu ref="modules" /> -->
+
+    <menu ref="reports" /> 
+  
+  </body>
+</project>

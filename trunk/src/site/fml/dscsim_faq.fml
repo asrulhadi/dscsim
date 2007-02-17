@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<faqs title="About dscsim">
+
+  <part id="faq">
+    <faq id="what-for">
+      <question>What is dscsim good for?</question>
+      <answer>
+        <p>
+          dscsim is intended as a training simulation for learning the procedures and the handling
+          of radio devices within the GMDSS system. GMDSS (global maritime distress and safety system)
+          is the international standard for maritime radio communication in distress and safety
+          situations.
+        </p>
+        <p>
+          dscsim simulates the required devices (radio transceivers, DSC controllers) and uses 
+          the internet to connect all of them together, thereby simulating the radio communication
+          between the different stations.
+        </p>
+      </answer>
+    </faq>
+
+    <faq id="current_status">
+      <question>What is the current status of the project?</question>
+      <answer>
+        <p>
+          We are looking forward to have a first beta release of dscsim available by the
+          second half of February 2007. Until then all releases shall be seen as alpha
+          releases.
+        </p>
+      </answer>
+    </faq>
+    <faq id="get-involved">
+      <question>Can I get involved?</question>
+      <answer>
+        <p>
+          Yes. If you are interested to contribute to the project, just contact one of the
+          team members (committers) via email.
+        </p>
+        <p>
+          Frequent contributors recognised by existing committers to the project may be
+          asked if they would like to join the project.
+        </p>
+      </answer>
+    </faq>
+    <faq id="platform">
+      <question>What platform does dscsim run on?</question>
+      <answer>
+        <p>
+          dscsim is a pure Java application. It was tested to run on JRE 1.4.2 or higher.
+          Windows and Mac installer versions are available for the releases.
+        </p>
+      </answer>
+    </faq>
+    <faq id="firewall">
+      <question>I am behind a firewall. Can I use dscsim?</question>
+      <answer>
+        <p>
+          dscsim currently makes use of a UDP based peer-to-peer networking protocol.
+          To be able to communicate with other machines throughout the net it is necessary that
+          bidirectional UDP communication is possible on port 37534. 
+        </p>
+        <p>
+          Whereas in the home area it mostly is possible to easily configure routers to forward
+          UDP packetit might be very hard to impossible to get this done within a company
+          network. So you might ask your network admin to set this up, but chances are
+          high that your companies security policies disallow the required packet routing.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>
+

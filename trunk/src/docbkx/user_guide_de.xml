@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<article lang="de">
+	<articleinfo>
+		<title>dscsim - GMDSS Trainingssimulator</title>
+		<subtitle>Benutzerhandbuch</subtitle>
+		<titleabbrev>DSCSIM UG</titleabbrev>
+		<releaseinfo>&version;</releaseinfo>
+		<authorgroup>
+			<author><firstname>O.</firstname><surname>Hecker</surname></author>
+			<author><firstname>W.</firstname><surname>Pennoyer</surname></author>
+		</authorgroup>
+	</articleinfo>
+   	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/intro.xml"/>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/student.xml"/>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/trainer.xml"/>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/admin.xml"/>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/troubleshooting.xml"/>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/reference.xml"/>
+ 
+ </article>
