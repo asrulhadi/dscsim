@@ -1,0 +1,1 @@
+java -classpath .;dscsim.jar;./lib/jdom-1.0.jar;./lib/jspeex-0.9.2-dscsim.jar;./lib/tritonus_share-0-dscsim.jar;./lib/tritonus_remaining-0-dscsim.jar;./lib/log4j-1.2.14.jar net.sourceforge.dscsim.station.SimpleStationInvoker startup.cfg=data/startup.conf

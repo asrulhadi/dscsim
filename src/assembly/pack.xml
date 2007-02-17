@@ -1,0 +1,27 @@
+<assembly>
+  <!-- TODO: a jarjar format would be better -->
+  <id>pack</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <excludes>
+      	<exclude>net.sourceforge.dscsim:dscsim</exclude>
+      </excludes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <includes>
+        <include>net.sourceforge.dscsim:dscsim</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+</assembly>

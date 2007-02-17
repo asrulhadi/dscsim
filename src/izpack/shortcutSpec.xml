@@ -1,0 +1,136 @@
+<shortcuts>
+  <skipIfNotSupported/>
+  <programGroup defaultName="dscsim $APP_VER"
+                location="startMenu"/>
+  <shortcut
+    name="dscsim"
+    target="$INSTALL_PATH\dscsim.jar"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="starts dscsim"
+    iconFile="$INSTALL_PATH\dscsim.ico"
+    iconIndex="0"
+    initialState="noShow"
+    programGroup="yes"
+    desktop="yes"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Windows Scripts"/>
+  </shortcut>
+
+  <shortcut
+    name="dscsim (debug)"
+    target="$INSTALL_PATH\runapp_debug.bat"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="starts dscsim in debug mode"
+    iconFile="$INSTALL_PATH\dscsim.ico"
+    iconIndex="0"
+    initialState="normal"
+    programGroup="yes"
+    desktop="yes"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Advanced and Adminstrative Options"/>
+  </shortcut>
+
+  <shortcut
+    name="dscsim Airwave Nucleus"
+    target="$INSTALL_PATH\runNucleus.bat"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="starts an 'Airwave Nucleus' (server mode)"
+    iconFile="$INSTALL_PATH\dscsim.ico"
+    iconIndex="0"
+    initialState="normal"
+    programGroup="yes"
+    desktop="yes"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Advanced and Adminstrative Options"/>
+  </shortcut>
+
+  <shortcut
+    name="uninstall dscsim"
+    target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+    commandLine=""
+    workingDirectory=""
+    description="uninstalls dscsim"
+    iconFile="%SystemRoot%\system32\SHELL32.dll"
+    iconIndex="32"
+    initialState="normal"
+    programGroup="yes"
+    desktop="yes"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Windows Scripts"/>
+  </shortcut>
+
+  <shortcut
+    name="Readme-File"
+    target="$INSTALL_PATH\Readme.txt"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Readme-File with latest information"
+    initialState="noShow"
+    programGroup="yes"
+    desktop="yes"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Windows Scripts"/>
+  </shortcut>
+
+  <shortcut
+    name="User Guide (English,HTML)"
+    target="$INSTALL_PATH\docs\html\user_guide_en.html"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="english user guide in html format"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Documentation (English)"/>
+  </shortcut>
+  <shortcut
+    name="User Guide (English,PDF)"
+    target="$INSTALL_PATH\docs\pdf\user_guide_en.pdf"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="english user guide in pdf format"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Documentation (English)"/>
+  </shortcut>
+
+  <shortcut
+    name="Benutzerhandbuch (Deutsch,HTML)"
+    target="$INSTALL_PATH\docs\html\user_guide_de.html"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Deutsches Benutzerhandbuch im HTML Format"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Dokumentation (Deutsch)"/>
+  </shortcut>
+  <shortcut
+    name="Benutzerhandbuch (Deutsch,PDF)"
+    target="$INSTALL_PATH\docs\pdf\user_guide_de.pdf"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Deutsches Benutzerhandbuch im HTML Format"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Dokumentation (Deutsch)"/>
+  </shortcut>
+</shortcuts>

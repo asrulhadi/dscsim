@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<section id="troubleshooting">
+	<title>Problembehebung</title>
+	<section id="javaprobs">
+		<title>Java-Umgebung nicht eingerichtet</title>
+		<para>Wenn beim Doppelklick auf die Installationsdatei
+		(Dateiendung: <filename>.jar</filename>) die Installation nicht startet, sondern
+		stattdessen eine Windows-Dialogbox aufgeht, in der Sie ein Programm zum &Ouml;ffnen
+		der Datei ausw&auml;hlen sollen, so ist die
+		Java-Umgebung Ihres Rechners nicht richtig eingerichtet.</para>
+		<para>Pr&uuml;fen Sie zun&auml;chst, ob Java auf Ihrem Rechner &uuml;berhaupt
+		in der ben&ouml;tigten Version vorhanden ist. &Ouml;ffnen Sie dazu ein
+		Kommandozeilenfenster (z.B. durch Dr&uuml;cken der Taste <keycap>Start</keycap>,
+		danach <keycap>u</keycap> und dann Eingabe von <command>cmd</command> gefolgt von
+		der Taste <keycap>Enter</keycap>).</para>
+		<para>Geben sie im Kommandozeilenfenster den Befehl <command>java -version</command>
+		ein. Sie sollten daraufhin eine Ausgabe mit der Versionsnummer des installierten
+		Java Runtime Environments erhalten. Ist die Versionsnummer kleiner als 1.4.2, oder
+		konnte das Java-Programm &uuml;berhaupt nicht gefunden werden, so m&uuml;ssen sie
+		zun&auml;chst eine aktuelle Java-Version installieren, siehe
+		<xref linkend="java_install"/>.</para>
+		<para>Ist auf Ihrem Rechner eine geeignete Java-Version installiert, aber der Doppelklick
+		auf die JAR-Datei funktioniert nicht, so fehlt vermutlich die Verkn&uuml;pfung der
+		Dateiendung ".jar" innerhalb der Windows-Umgebung. Sie k&ouml;nnen dann entweder die
+		Verkn&uuml;pfung von Hand anlegen (siehe <xref linkend="jarlink"/>), oder Java einfach
+		neu installieren, wie im folgenden Abschnitt beschrieben.</para>
+		<section id="java_install">
+			<title>Installation von Java</title>
+			<para>Zur Installation eines aktuellen Java Runtime Environments gehen Sie bitte
+			im Internet auf die Java-Download-Seite unter
+			<ulink url="http://java.sun.com/javase/downloads/index.jsp"/> und w&auml;hlen
+			Sie dort "Java Runtime Environment (JRE) 6". Folgen Sie dann den dort
+			angegebenen Installationsanweisungen.</para>
+			<para>Nachdem Sie Java installiert haben, k&ouml;nnen Sie die Installation von
+			dscsim wie in <xref linkend="install"/> beschrieben durchf&uuml;hren.</para>
+		</section>
+		<section id="jarlink">
+			<title>Manuelles Einrichten der Programmverkn&uuml;pfung f&uuml;r JAR-Dateien</title>
+			<note><para>Wenn Sie unsicher in der Durchf&uuml;hrung der im folgenden beschriebenen
+			Schritte sind, dann sollten Sie ggf. Java komplett neu installieren, siehe
+			<xref linkend="java_install"/>.</para></note>
+			<para>Gehen Sie wie folgt vor:</para>
+				<orderedlist>
+					<listitem><para>&Ouml;ffnen Sie ein Windows-Explorer-Fenster</para></listitem>
+					<listitem><para>W&auml;hlen Sie dort Extras - Ordneroptionen - Dateitypen</para></listitem>
+					<listitem><para>Klicken Sie <guibutton>Neu</guibutton></para></listitem>
+					<listitem><para>Geben Sie als Dateierweiterung <filename>JAR</filename> ein und klicken 
+						<guibutton>OK</guibutton></para></listitem>
+					<listitem><para>Klicken Sie <guibutton>Erweitert</guibutton></para></listitem>
+					<listitem><para>Klicken Sie <guibutton>Neu</guibutton></para></listitem>
+					<listitem><para>Geben Sie im folgenden Dialog als "Vorgang" das Wort
+						<command>open</command> ein. Im unteren Feld muss folgendes eingegeben werden:
+						<command>"C:\Programme\Java\jre1.5.0_05\bin\javaw.exe" -jar "%1" %*</command>.
+						Dabei m&uuml;ssen Sie den ersten Teil allerdings durch den Pfad ersetzen, unter
+						dem bei Ihnen die Java-Runtime-Umgebung installiert ist. Achten Sie aber
+						ansonsten darauf, den Befehl exakt so einzugeben (inklusive
+						Anf&uuml;hrungszeichen).</para></listitem>
+					<listitem><para>Beenden Sie die Dialogfolge durch <guibutton>OK</guibutton>,
+						<guibutton>OK</guibutton> und <guibutton>Schliessen</guibutton></para></listitem>
+				</orderedlist>
+			<para>Sie k&ouml;nnen nun die Installation wie in <xref linkend="install"/> beschrieben
+			durchf&uuml;hren.</para>
+		</section>
+	</section>
+	<section id="networkprobs">
+		<title>Keine Verbindung &uuml;ber das Netzwerk</title>
+		<para>Um mit anderen dscsim-Simulatoren &uuml;ber das Netzwerk Verbindung aufzunehmen,
+			muss eine Verbindung zum Internet bestehen. Dar&uuml;berhinaus ist auch
+			sicherzustellen, dass die von dscsim verschickten Datenpakete auch die 
+			zwischengeschalteten Router und Firewalls passieren k&ouml;nnen.</para>
+		<note><para>dscsim stellt die Netzwerkverbindung &uuml;ber eine UDP-basiertes
+		Protokoll auf Port 37534<footnote><para>Gegebenenfalls wird in Ihrem Kurs ein
+		anderer Port verwendet. Dies wird Ihnen Ihr Kursleiter mitteilen. In diesem Fall
+		ist der hier angegebene Port durchg&auml;ngig durch den von Ihrem Kursleiter genannten
+		Port zu ersetzen.</para></footnote> her. Die Kommunikation &uuml;ber UDP, Port 37534 muss
+		bidirektional freigeschaltet werden.</para></note>
+		<para>Im folgenden wird exemplarisch gezeigt, wie ein DSL-Zugangsrouter der Fritz-Box-Familie
+		entsprechend konfiguriert werden kann.</para>
+		<section><title>Einrichten des Portforwarding bei einer Fritz-Box</title>
+			<para>&Ouml;ffnen sie mit einem Internet-Browser die Administrationsseite der
+				Fritz-Box, indem Sie als Adresse <command>fritz.box</command> eingeben.</para>
+			<para>W&auml;hlen Sie "Internet" - "Portfreigabe".</para>
+			<para>Klicken Sie "Neue Portfreigabe" und w&auml;hlen dann "Andere Anwendungen" aus.</para>
+			<para>F&uuml;llen Sie die Dialogbox wie folgt:</para>
+			<itemizedlist>
+				<listitem><para>Bezeichnung: DSCSIM</para></listitem>
+				<listitem><para>Protokoll: UDP</para></listitem>
+				<listitem><para>von Port: 37534</para></listitem>
+				<listitem><para>an IP-Adresse: (Voreinstellung &uuml;bernehmen)</para></listitem>
+				<listitem><para>an Port: 37534</para></listitem>
+			</itemizedlist>
+			<para>Durch zweimaliges Bet&auml;tigen des Buttons <guibutton>&Uuml;bernehmen</guibutton>
+			speichern Sie die gemachten Einstellungen.</para>
+		</section>
+	</section>
+</section>

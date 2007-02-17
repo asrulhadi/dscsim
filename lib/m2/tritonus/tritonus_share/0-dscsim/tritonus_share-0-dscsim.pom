@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>tritonus</groupId>
+  <artifactId>tritonus_share</artifactId>
+  <version>0-dscsim</version>
+  <description>POM was created from install:install-file. The jar file is
+  identical to "tritonus_share.jar" from the set of tritonus plugins.
+  which can be downloaded from http://tritonus.org/plugins.html
+  Note that this file is only put here for building the dscsim application.
+  This is not an official maven repository! You should not take this file for
+  any other purposes than building dscsim</description>
+  <distributionManagement>
+    <status>deployed</status>
+  </distributionManagement>
+</project>

@@ -1,0 +1,53 @@
+dscsim Developer Cookbook (Miscellaneous HowTos)
+################################################
+
+#001# Making a build (O.Hecker, 06.02.07):
+------------------------------------------
+1. change to the project directory
+2. (optional) "mvn clean"
+3. "mvn verify" (actually "verify" is somehow unusual, but thats s how it is within dscsim at the moment)
+4. installation jar will be (hopefully) found under "target" as "dscsim-XXXX-installer.jar"
+
+==========================================================================================================
+
+#002# 10 steps for doing a release (O.Hecker, 06.02.07):
+--------------------------------------------------------
+Taking as an Example: "1.2.0"
+All CVS activites are performed with Eclipse !
+
+1. on the level of the project set label: "dscsim_1_2_0_prepare"
+2. create a new project in Eclipse (wizard; "Projects from CVS) based on the above given label
+3. create a new branch (on the level of the project) "releasebranch_1_2_0"
+4. within this branch edit the version information in the following files
+ 4.1. pom.xml
+ 4.2. Readme.txt
+ 4.3. install.xml
+5. make a test build on the branch (via command line "mvn verify")
+6. check in changes in the branch
+7. on the level of the project set label: "dscsim_1_2_0"
+8. create a new project in Eclipse (wizard; "Projects from CVS) based on the new label
+9. make the build (via command line "mvn verify")
+10. installation jar will be found under "target" as "dscsim-1_2_0-installer.jar"
+ 
+==========================================================================================================
+
+
+#003# Installing JIMI (O.Hecker, 06.02.07)
+------------------------------------------
+Background:
+Without the JIMI library the rendering of PNGs to PDF within the docbook processing will fail.
+(Missing images and/or error messages like: 
+"Error creating background image: Error creating FopImage object (http://docbook.
+sourceforge.net/release/images/draft.png) : Jimi image library not available")
+
+If this is the case you are missing the JIMI library from Sun. Due to licensing constraints
+the library seems no to be delivered with any maven plugin or dependency (I have not checked this further)
+
+Do the following:
+1. Get the JIMI-SDK (jimi1_0.zip) from Sun(http://java.sun.com/products/jimi/)
+2. Unzip the downloaded file
+3. From the unzipped directory tree: Take "JimiProClasses.zip" and put it (renamed) as "jimi.jar"
+   into the "lib" directory of your Maven installation
+
+==========================================================================================================
+   

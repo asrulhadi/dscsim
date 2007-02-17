@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>tritonus</groupId>
+  <artifactId>tritonus_remaining</artifactId>
+  <version>JDK_1_4_COMPATIBLE-dscsim</version>
+  <description>POM was created from install:install-file. The jar file was
+  created by compiling the sources as fetched from the CVS repository
+  tritonus.cvs.sourceforge.net (Tag: JDK_1_4_COMPATIBLE).
+  Note that this file is only put here for building the dscsim application.
+  This is not an official maven repository! You should not take this file for
+  any other purposes than building dscsim</description>
+  <distributionManagement>
+    <status>deployed</status>
+  </distributionManagement>
+</project>

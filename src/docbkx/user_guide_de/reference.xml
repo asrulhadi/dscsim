@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<section id="reference">
+	<title>Referenz</title>
+	<section id="params"><title>Kommandozeilenparameter</title>
+	<para>dscsim wird normalerweise durch einfachen Doppelklick auf das
+	JAR-File <filename>dscsim.jar</filename> gestartet. ("Executable Jar")
+	Es ist allerdings auch m&ouml;glich dscsim &uuml;ber Kommandozeile
+	zu starten und dabei zus&auml;tzliche Parameter zu &uuml;bergeben.
+	Im folgenden sind die verschiedenen Kommandozeilenvarianten aufgef&uuml;hrt.</para>
+
+	<variablelist>
+		<varlistentry><term><command>dscsim.jar PARAMETERLISTE</command></term>
+			<listitem><para>Startet dscsim, wobei als PARAMETERLISTE beliebig viele
+				Parameter aus der unten angegebenen Tabelle in beliebiger Reihenfolge
+				zul&auml;ssig sind.</para></listitem>
+		</varlistentry>
+		<varlistentry><term><command>dscsim.jar startup.cfg=FILENAME</command></term>
+			<listitem><para>Startet dscsim, wobei die Parameterliste aus der Datei
+			<filename>FILENAME</filename> gelesen wird.</para></listitem>
+		</varlistentry>
+		<varlistentry><term><command>dscsim.jar</command></term>
+			<listitem><para>Startet dscsim, wobei die Parameterliste aus der Datei
+				<filename>data/startup.conf</filename>
+				gelesen wird.</para></listitem>
+		</varlistentry>
+		<varlistentry><term><command>dscsim.jar nucleus PARAMETERLISTE</command></term>
+			<listitem><para>Startet dscsim als "Nucleus" (nur als Deamon, ohne GUI),
+				wobei als PARAMETERLISTE beliebig viele Parameter aus der unten angegebenen
+				Tabelle in beliebiger Reihenfolge zul&auml;ssig sind.</para></listitem>
+		</varlistentry>
+		<varlistentry><term><command>dscsim.jar nucleus startup.cfg=FILENAME</command></term>
+			<listitem><para>Startet dscsim als "Nucleus", wobei die Parameterliste aus der Datei
+			<filename>FILENAME</filename> gelesen wird.</para></listitem>
+		</varlistentry>
+	</variablelist>
+
+	
+	
+	
+	<para>Die folgende Tabelle gibt die f&uuml;r dscsim m&ouml;glichen Parameter an.</para>
+
+	<table frame='all'><title>Konfigurationsparameter</title>
+		<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+			<colspec colwidth="2*" colname='c1'/>
+			<colspec colwidth="1*" colname='c2'/>
+			<colspec colwidth="3*" colname='c3'/>
+			<thead>
+				<row>
+				  <entry>Name</entry>
+				  <entry>Default</entry>
+				  <entry>Bedeutung</entry>
+				</row>
+				</thead>
+				<tbody>
+				<row>
+				  <entry>dscsim.udp_airwave.peerhost</entry>
+				  <entry>-</entry>
+				  <entry>Hostname oder IP-Adresse des Rechners, der initial kontaktiert
+				  wird, um Kontakt zum Netzwerk der dscsim-Simulatoren zur erhalten. Es
+				  k&ouml;nnen hier auch mehrere Eintr&auml;ge angegeben werden.</entry>
+				</row>
+				<row>
+				  <entry>dscsim.udp_airwave.startport</entry>
+				  <entry>37534</entry>
+				  <entry>UDP-Port, der f&uuml;r die Kommunikation benutzt wird. Sollte der
+				  	Port bereits belegt sein, so wird ggf. auf h&ouml;here Portnummern
+				  	ausgewichen.</entry>
+				</row>
+				<row>
+				  <entry>dscsim.udp_airwave.portcount</entry>
+				  <entry>10</entry>
+				  <entry>Ist der UDP-Port, der f&uuml;r die Kommunikation benutzt werden soll,
+				    bereits belegt, so werden die die gegebene Anzahl von Ports oberhalb des
+				    Startports probiert.</entry>
+				</row>
+				<row>
+				  <entry>dscsim.udp_airwave.magicnumber</entry>
+				  <entry>369876138</entry>
+				  <entry>Schl&uuml;sselwert innerhalb der von dscsim versendetem Pakete.
+				  	Pakete, deren Schl&uuml;sselwert von dem konfigurierten Wert abweicht,
+				  	werden ignoriert. Durch Vergabe eines vom Default abweichenden Wertes
+				  	kann (in beschr&auml;nktem Ma&szlig;e) verhindert werden,
+				  	dass nicht autorisierte Stationen am Netzverkehr teilnehmen.</entry>
+				</row>
+				<row>
+				  <entry>individual.mmsi</entry>
+				  <entry>211000000</entry>
+				  <entry>MMSI der Funkstelle</entry>
+				</row>
+				<row>
+				  <entry>group.mmsi</entry>
+				  <entry>021100000</entry>
+				  <entry>Gruppen-MMSI der Funkstelle</entry>
+				</row>
+				<row>
+				  <entry>dscsim.call_sign</entry>
+				  <entry>-</entry>
+				  <entry>Rufzeichen der Funkstelle</entry>
+				</row>
+				<row>
+				  <entry>dscsim.station_name</entry>
+				  <entry>-</entry>
+				  <entry>Name der Funkstelle</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+		<section><title>Konfiguration des Logging</title>
+			<para>dscsim benutzt die Java-Bibliothek Log4J zum Logging. Eine
+			Standard-Konfiguration (Datei <filename>log4j.properties</filename>)
+			ist im JAR-File enthalten.</para>
+			<para>Es ist m&ouml;glich, eine alternative Konfigurationsdatei
+			zu definieren. Der Dateiname ist dabei als System-Property
+			<command>log4j.configFile</command> beim Starten der Java-Virtual-Machine
+			mitzugeben, z.B.:</para>
+			<para><command>java -Dlog4j.configFile=./mylog4j.properties -jar dscsim.jar</command></para>
+		
+		</section>
+	</section>
+</section>

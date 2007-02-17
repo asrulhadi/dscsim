@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<section id="intro">
+	<title>Einleitung</title>
+	<para>
+		Willkommen bei dscsim, einer internetbasierten
+		GMDSS-Funksimulation. dscsim erm&ouml;glicht es Ihnen, Ihre
+		Fertigkeiten in der Abwicklung des Seefunkverkehrs innerhalb des
+		GMDSS gemeinsam mit anderen von Ihrem heimischen PC aus zu
+		&uuml;ben.
+	</para>
+	<para>
+		Das &Uuml;ben mit dscsim ist als Erg&auml;nzung zur klassischen
+		Schulung in Kleingruppen gedacht. Ohne zusätzliche Aufw&auml;nde
+		f&uuml;r die Anreise k&ouml;nnen Sie nun weitere
+		Trainingstermine wahrnehmen und so Ihre Ausbildung
+		intensivieren. Dar&uuml;ber hinaus hat das Training mit dscsim
+		die wesentliche Eigenschaft, dass das "Funken" mit dscsim der
+		realen Situation beim echten Funken viel &auml;hnlicher ist, als
+		bei klassischen Gruppen&uuml;bungen: Die Auswirkung von Fehlern
+		in der Verkehrsabwicklung, die Sie bei Gruppen&uuml;bungen ohne
+		Ihren Ausbilder vielleicht gar nicht bemerken w&uuml;rden,
+		werden sie umittelbar sp&uuml;ren.
+	</para>
+	<para>
+		Durch das Training mit dscsim werden Sie Ihre F&auml;higkeiten
+		vertiefen und im Ernstfall besser und sicherer agieren
+		k&ouml;nnen.
+	</para>
+</section>

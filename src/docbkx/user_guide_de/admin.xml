@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<section id="admin">
+	<title>Handbuch f&uuml;r Administratoren</title>
+	<para>Bei der Durchf&uuml;hrung eines Kurses ist es vorteilhaft, wenn
+		ein Rechner als zentraler Anlaufpunkt f&uuml;r alle anderen dscsim-Simulatoren
+		dient. Zu diesem Zweck kann dscsim als "Nucleus" gestartet werden. Das Programm
+		l&auml;uft startet dann ohne GUI und kann als Daemon auf einem Server laufen.</para>
+	<para>Wenn Sie bei der Installation das Paket "Advanced and Adminstrative Options"
+		w&auml;hlen, so werden entsprechende Start-Skripte (<filename>runNucleus.bat</filename>
+		bzw. <filename>runNucleus.sh</filename>, sowie eine Konfigurationsfile f&uuml;r
+		das Logging installiert.</para>
+	<para>Diese Startskripte sollten Sie an Ihre speziellen Bed&uuml;rfnisse anpassen.</para>
+	<important><para>Insbesondere wenn Sie dscsim dauerhaft auf einem unter einer
+		festen IP-Adresse erreichbaren Rechner laufen lassen, besteht die Gefahr
+		von Missbrauch und Angriffsversuchen. Es wird dringend empfohlen,
+		f&uuml;r den UDP-Port und die "Magicnumber" von den Defaultwerten abweichende
+		Werte zu w&auml;hlen. (siehe <xref linkend="params"/>)</para></important>
+</section>

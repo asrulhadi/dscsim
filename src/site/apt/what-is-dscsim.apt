@@ -1,0 +1,18 @@
+ ------
+ dscsim
+ ------
+ Oliver Hecker
+ ------
+ 17 January 2007
+ ------
+
+What is dscsim?
+
+ dscsim is a network based simulation of radio stations in the GMDSS (global maritime
+ distress and safety system)
+ 
+ dscsim is based on a peer-to-peer network and includes voice-over-ip technology
+ to simulate the radio communication.
+ 
+ dscsim is mainly intended as training simulation for SRC and LRC courses.
+ 

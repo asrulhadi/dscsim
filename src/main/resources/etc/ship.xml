@@ -1,0 +1,1227 @@
+<dsc>
+		
+	<storage>
+		<list name="incoming_distress_calls" scope="persistant" type="net.sourceforge.dscsim.controller.network.DscMessage" key="fromMMSI"/>
+		<list name="incoming_distress_acks" scope="transient"/>
+		<list name="incoming_other_calls" scope="persistant" type="net.sourceforge.dscsim.controller.network.DscMessage" key="fromMMSI"/>
+		<list name="mmsi_addressbook" scope="persistant" type="net.sourceforge.dscsim.controller.AddressIdEntry" key="id"/>
+		<list name="group_addressbook" scope="persistant" type="net.sourceforge.dscsim.controller.AddressIdEntry" key="id"/>
+	</storage>
+		
+	<contexts>
+		<context name="individual_call" class="net.sourceforge.dscsim.controller.network.DscMessage"/>
+		<context name="distress_call" class="net.sourceforge.dscsim.controller.network.DscMessage"/>
+		<context name="distress_settings" class="net.sourceforge.dscsim.controller.network.DscMessage"/>		
+	</contexts>
+	
+	<settings>
+		<setting property="Time" type="net.sourceforge.dscsim.controller.screen.types.Time"/>
+		<setting property="position" type="net.sourceforge.dscsim.controller.screen.types.Position"/>
+		<setting property="channel" type="net.sourceforge.dscsim.controller.screen.types.Channel"/>
+		<setting property="Latitude" type="net.sourceforge.dscsim.controller.screen.types.Latitude"/>
+		<setting property="Longitude" type="net.sourceforge.dscsim.controller.screen.types.Longitude"/>	
+		<setting property="Nature" type="net.sourceforge.dscsim.controller.screen.types.DistressNature"/>	
+		<setting property="AutoAnswer" type="net.sourceforge.dscsim.controller.screen.types.DscBoolean"/>	
+		<setting property="PositionType" type="net.sourceforge.dscsim.controller.screen.types.PositionType"/>					
+	</settings>
+			
+	<incoming_call_mappings>
+		<mapping call_type="TYPE_ALL_SHIPS">incoming_allships_message</mapping>
+		<mapping call_type="TYPE_DISTRESS">incoming_distress_message_alarm</mapping>
+		<mapping call_type="TYPE_DISTRESS_ACK">incoming_distress_message_ack</mapping>
+		<mapping call_type="TYPE_INDIVIDUAL">incoming_individual_message</mapping>
+		<mapping call_type="TYPE_INDIVIDUAL_ACK">incoming_individual_message_ack</mapping>	
+		<mapping call_type="TYPE_GROUP">incoming_group_message</mapping>
+		<mapping call_type="TYPE_GROUP_ACK">incoming_group_message_ack</mapping>	
+	</incoming_call_mappings>
+	
+
+	<screens>
+		<screen name="welcome"  class="net.sourceforge.dscsim.controller.screen.BeanSimpleScreen" event="FK_CALL"  link="main_menu"  refresh="true" scope="transient">
+			<line type="text" subtype="header" column="45">
+				<bean>-VHF DSC CONTROLLER-</bean>
+			</line>			
+			<line>
+				<bean> </bean>
+			</line>
+						
+			<line >
+				<bean>         </bean>
+				<bean blink="false">CH70 WATCHING</bean>
+			</line>
+					
+			<line column="40">
+				<bean property="PositionType" class="net.sourceforge.dscsim.controller.screen.types.PositionType" mode="readonly"></bean>			
+				<bean property="Time" class="net.sourceforge.dscsim.controller.screen.types.Time" mode="readonly"></bean>
+			</line>
+			
+			<line column="40">
+				<bean property="Latitude" class="net.sourceforge.dscsim.controller.screen.types.Latitude" mode="readonly"></bean>
+			</line>
+			
+			<line column="40">
+				<bean property="Longitude" class="net.sourceforge.dscsim.controller.screen.types.Longitude" mode="readonly"></bean>
+			</line>	
+	
+			<line subtype="footer" column="45">
+				<bean></bean>
+			</line>
+		</screen>
+
+	  	<screen name="main_menu" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendMenuScreen" scope="transient">
+	  		<line subtype="header" column="45">
+	  			<bean>Select a subject</bean>
+	  		</line>	
+	  			  		
+			<line type="choice" link="position_input" condition="GPS"><bean>Entry position/time</bean></line>
+			<line type="choice" link="select_call_id" code="TYPE_INDIVIDUAL"><bean>Individual call</bean></line>			
+			<line type="choice" link="select_ack_quick"><bean>Individual ACK</bean></line>
+			<line type="choice" link="select_group_id" code="TYPE_GROUP"><bean>Group call</bean></line>
+			<line type="choice" link="select_category" code="TYPE_ALL_SHIPS"><bean>All ship calls</bean></line>			
+			<line type="choice" link="posreq_select_call_id" code="POSITION_REQ"><bean>Position request</bean></line>
+			<line type="choice" link="select_message"><bean>Received calls</bean></line>
+			<line type="choice" link="select_distress_nature"><bean>Distress setting</bean></line>
+			<line type="choice" link="setup_menu"><bean>Set up</bean></line>
+					
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+			
+			<actions>
+				<action type="exit" subtype="choice"  set="setCallType" context="individual_call"></action>
+			</actions>
+	
+		</screen>			
+
+		
+	  	<screen name="select_call_id" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendMenuScreen">
+	  		<line subtype="header" column="45">
+	  			<bean>Select address ID</bean>
+	  		</line>	
+	  		 		
+	  		<line type="choice" link="enter_address" column="5">
+	  			<bean>Manual entry</bean>
+	  		</line>		  		
+	  		
+	  		<list storage="mmsi_addressbook">
+				<line type="choice" link="select_category" storage="mmsi_addressbook" column="5">
+					<bean attribute="Name"></bean>
+					
+					<actions>
+						<action type="exit" subtype="extract" get="getId" set="setToMMSI" context="individual_call"></action>
+					</actions>
+			    </line>
+		    </list>
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+			
+		</screen>			
+		
+		<screen name="posreq_select_call_id" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendMenuScreen" scope="transient">
+	  		<line subtype="header" column="45">
+	  			<bean>Select address ID</bean>
+	  		</line>		  		
+	  		
+	  		<line type="choice" link="posreq_enter_address">
+	  			<bean>Manual entry</bean>
+	  		</line>		  		
+	  		
+	  		<list storage="mmsi_addressbook">
+				<line type="choice" link="individual_send" storage="mmsi_addressbook">
+					<bean attribute="Name"></bean>
+					
+					<actions>
+						<action type="exit" subtype="extract" get="getId" set="setToMMSI" context="individual_call"></action>
+					</actions>
+			    </line>
+		    </list>
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+					
+		</screen>			
+		
+		<screen name="select_group_id" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendMenuScreen">
+	  		<line subtype="header" column="45">
+	  			<bean>Select group ID</bean>
+	  		</line>		  		
+	  		
+	  		<line type="choice" link="enter_address">
+	  			<bean>Manual entry</bean>
+	  		</line>		  		
+	  		
+	  		<list storage="group_addressbook">
+				<line type="choice" link="select_category" storage="group_addressbook">
+					<bean attribute="Name"></bean>
+					
+					<actions>
+						<action type="exit" subtype="extract" get="getId" set="setToMMSI"  context="individual_call"/>
+					</actions>
+			    </line>
+		    </list>
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+			
+		</screen>	
+		
+		<screen name="select_category" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendMenuScreen" scope="transient">
+			
+			<line type="text" subtype="header" column="45"><bean>Select a category</bean></line>			
+			<line type="choice" link="channel_input" code="CAT_ROUTINE"><bean>Routine</bean></line>
+			<line type="choice" link="channel_input" code="CAT_SAFETY"><bean>Saftey</bean></line>
+			<line type="choice" link="channel_input" code="CAT_URGENCY"><bean>Urgency</bean></line>
+			<line type="choice" link="channel_input" code="CAT_DISTRESS"><bean>Distress</bean></line>
+			<line type="text" link=""><bean></bean></line>		
+				
+			<line type="text" subtype="footer" column="45"><bean>CLR->Exit / ENT->OK</bean></line>
+		
+			<actions>
+				<action type="exit" subtype="choice"  set="setCatagory" context="individual_call"/>
+			    <action type="exit" subtype="property" property="Latitude" set="setDistressLatitude" context="individual_call"/>
+			    <action type="exit" subtype="property" property="Longitude" set="setDistressLongitude" context="individual_call"/>
+			    <action type="exit" subtype="property" property="Time" set="setTime" context="individual_call"/>			     			     
+				<!--<mapping type="constant" class="net.sourceforge.dscsim.controller.Constants" member="CALL_TYPE_GROUP" set="setCallType" context="individual_call"/>-->
+			</actions>
+									
+		</screen>
+		
+
+	  	<screen name="channel_input" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendEntryScreen" next="individual_send" scope="transient">
+	  		<line type="text" subtype="header" column="45"><bean>Input a traffic channel</bean></line>	
+			
+			<line>
+				<bean></bean>
+			</line>	
+			<line>	
+				<bean>CH: </bean>	
+				<bean attribute="Channel" class="net.sourceforge.dscsim.controller.screen.types.Channel">16</bean>
+			</line>	
+						
+			<line type="text" subtype="footer" column="45"><bean>CLR->Exit / ENT->OK</bean></line>
+
+			<context name="individual_call">
+				<mapping type="extract" get="getChannel" set="setChannel"></mapping>
+			</context>
+							
+		</screen>
+		
+		<screen name="enter_address" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendEntryScreen" next="select_category" scope="transient">
+	  		<line type="text" subtype="header" column="45"><bean>Input an address</bean></line>	
+			
+			<line>
+				<bean></bean>
+			</line>	
+			
+			<line>	
+				<bean>ID:(9 digit)</bean>	
+				<bean attribute="ToMMSI" class="net.sourceforge.dscsim.controller.screen.types.MMSI"></bean>
+			</line>	
+						
+			<line type="text" subtype="footer" column="45"><bean>CLR->Exit / ENT->OK</bean></line>
+
+			<context name="individual_call">
+				<mapping type="extract" get="getToMMSI" set="setToMMSI"></mapping>
+			</context>
+							
+		</screen>
+				
+		<screen name="posreq_enter_address" type="input" next="individual_send" scope="transient">
+			<line type="text" subtype="header" column="45">Input an address</line>	
+			<line type="text">ID:(9 digit)</line>					
+			<line type="input">			
+				<field type="text">MMSI:</field>
+				<field type="input" name="MMSI" format="#########"></field>
+			</line>		
+			<line type="text" subtype="footer" column="45">CLR->Exit / ENT->OK</line>	
+								
+		</screen>
+		
+		
+		<screen name="individual_send" class="net.sourceforge.dscsim.controller.screen.BeanSendScreen">
+			<line type="text" subtype="header" column="45"><bean>Push [CALL] and [ENT]</bean></line>
+			<line type="text" subtype="header" column="45"><bean>simultaneously</bean></line>						
+
+			<line type="text" subtype="footer" column="45"><bean>To stop the call,</bean></line>
+			<line type="text" subtype="footer" column="45"><bean>push [CLR]</bean></line>	
+			
+			<context name="individual_call">
+			</context>
+
+		</screen>	
+		
+		<screen name="distress_call_send" type="action" class="net.sourceforge.dscsim.controller.screen.SendDistressScreen">
+			<line type="text" subtype="header" column="0"><bean>Push and hold</bean></line>
+			<line type="text" subtype="header" column="0"><bean>[DISTRESS] for 5 sec</bean></line>						
+
+			<line column="40">
+				<bean>Nature of distress</bean>
+			</line>	
+
+			<line column="40">
+				<bean property="Nature" class="net.sourceforge.dscsim.controller.screen.types.DistressNature" mode="readonly"></bean>		
+			</line>
+			
+			<line column="40">
+				<bean property="PositionType" class="net.sourceforge.dscsim.controller.screen.types.PositionType" mode="readonly"></bean>
+				<bean property="Time" class="net.sourceforge.dscsim.controller.screen.types.Time" mode="readonly"></bean>					
+			</line>			
+				
+			<line column="40">
+				<bean property="Latitude" class="net.sourceforge.dscsim.controller.screen.types.Latitude" mode="readonly"></bean>			
+			</line>
+			
+			<line column="40">
+				<bean property="Longitude" class="net.sourceforge.dscsim.controller.screen.types.Longitude" mode="readonly"></bean>			
+			</line>	
+			<!--
+			<line type="text" subtype="footer" column="45">
+				<bean>[CLR]->ACK</bean>
+			</line>		
+			-->		
+								
+		</screen>
+
+		<screen name="distress_call_sent"  class="net.sourceforge.dscsim.controller.screen.BeanSimpleScreen" event="FK_CALL"  link="main_menu"  refresh="true" scope="transient">
+		
+			<line subtype="header" column="0">
+				<bean>Distress alert</bean>
+			</line>
+			<line subtype="header" column="45">
+				<bean>Completed</bean>
+			</line>			
+						
+			<line><bean></bean></line>
+			
+			<line>
+				<bean blink="true">Now waiting for</bean>
+			</line>	
+							
+			<line column="40">
+				<bean blink="true">acknowledgement</bean>
+			</line>	
+			
+
+			<line subtype="footer" column="45">
+				<bean>[CLR]->Exit</bean>
+			</line>	
+														
+		</screen>
+						
+		<screen name="send_confirmation" type="input">
+			<line type="output">			
+				<field type="text">Send Status:</field>
+				<field type="output" name="STATUS"></field>
+			</line>			
+		</screen>
+
+	
+	  <screen name="position_input" class="net.sourceforge.dscsim.controller.screen.BeanPropertyScreenItem" next="time_input" >
+	  
+			<line type="text" subtype="header" column="45">
+				<bean>Position input</bean>
+			</line>		
+					
+			<line>
+				<bean> </bean>
+			</line>
+			
+			<line column="5">			
+				<bean property="Latitude" class="net.sourceforge.dscsim.controller.screen.types.Latitude"></bean>
+			</line>		
+
+			<line column="5">			
+				<bean property="Longitude" class="net.sourceforge.dscsim.controller.screen.types.Longitude"></bean>
+			</line>		
+
+			<line type="text" subtype="footer" column="45">
+				<bean>BS->Null data</bean>
+			</line>						
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+		</screen>
+		
+	
+		  <screen name="time_input" class="net.sourceforge.dscsim.controller.screen.BeanPropertyScreenItem" next="welcome" >
+	  
+			<line type="text" subtype="header" column="45">
+				<bean>Input a Time</bean>
+			</line>		
+
+			<line>			
+				<bean> </bean>
+			</line>		
+					
+			<line  column="5">			
+				<bean property="Time" class="net.sourceforge.dscsim.controller.screen.types.Time"></bean>
+			</line>		
+
+			<line type="text" subtype="footer" column="45">
+				<bean>BS->Null data</bean>
+			</line>						
+
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+		</screen>
+		
+		<screen name="system_error" type="input">
+			<line type="text">System Error</line>		
+			<line type="text">Press Clear</line>				
+		</screen>
+		
+		<screen name="system_not_implemented" type="input">
+			<line type="text" subtype="header" column="45">Implementation not complete</line>
+			<line type="text" subtype="footer" column="45">push [CLR]</line>			
+		</screen>
+								
+		<screen name="select_message" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen" scope="transient">
+		
+			<line subtype="header" column="45">
+				<bean>Select a message</bean>
+			</line>	
+			
+			<line type="choice" link="show_distress_calls" column="5">
+				<bean>Distress message</bean>
+			</line>
+			
+			<line type="choice" link="show_other_calls" column="5">
+				<bean>Other message</bean>
+			</line>
+			
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>
+		</screen>
+					
+		<screen name="show_distress_calls"  class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen">
+			<line type="text" subtype="header" column="45">
+				<bean>Distress Calls</bean>
+			</line>					
+				
+			<list storage="incoming_distress_calls" numbered="true">
+				<line type="choice" column="5" link="show_distress_call" storage="incoming_distress_calls">
+				    <bean>  </bean>					
+					<bean attribute="CallTypeText"></bean>
+					<bean>  </bean>
+					<bean attribute="Time"></bean>	
+			    </line>
+		    </list>
+		    
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>
+		</screen>
+		
+		<screen name="show_distress_call" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="view" storage="incoming_distress_calls" scroll="false">
+	  		<line subtype="header" column="45">
+	  			<bean>Distress call</bean>
+	  		</line>	
+		
+			<line column="5">		
+				<bean>Distress ID:</bean>
+				<bean attribute="FromMMSI" format="#########"></bean>
+			</line>
+										
+			<line column="5">		
+				<bean attribute="Time"></bean>
+				<bean> </bean>	
+			    <bean>CH:</bean>
+				<bean attribute="Channel" format="##"></bean>										
+			</line>
+			
+			<line column="5">		
+				<bean attribute="Latitude"></bean>
+			</line>
+			<line column="5">			
+				<bean attribute="Longitude"></bean>
+			</line>			
+						
+			<line column="5">	
+			    <bean>nature:</bean>		
+				<bean attribute="NatureText"></bean>			
+			</line>	
+								
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>
+
+		<screen name="show_other_calls"  class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen">
+			<line type="text" subtype="header" column="45">
+				<bean>Other Calls</bean>
+			</line>					
+				
+			<list storage="incoming_other_calls" numbered="true">
+				<line type="choice" column="5" link="show_other_call_detail" storage="incoming_other_calls">
+					<bean>  </bean>				
+					<bean attribute="CallTypeText"></bean>
+			    </line>
+		    </list>
+		    
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>
+		</screen>
+		
+		<screen name="show_other_call_detail" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="view" storage="incoming_other_calls" scroll="false">
+	  		<line subtype="header" column="45">
+	  			<bean>Other call</bean>
+	  		</line>	
+
+			<line column="5">		
+				<bean attribute="CatagoryForTypeText"></bean>	
+			</line>
+					
+			<line column="5">		
+				<bean>From: </bean>
+				<bean attribute="FromMMSI" format="#########"></bean>
+			</line>
+					
+			<line column="5">		
+				<bean>F3E/G3E simplex</bean>
+			</line>
+				
+			<line column="5">	
+			    <bean>CH:</bean>
+				<bean attribute="Channel" format="##"></bean>		
+			</line>
+				
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>
+							
+		<screen name="incoming_distress_message_alarm"  class="net.sourceforge.dscsim.controller.screen.BeanSimpleScreen" event="FK_CLR"  link="incoming_distress_message_quiet" scope="transient" >
+				
+			<line type="text" subtype="header" column="45">
+				<bean>-RCV Distress-</bean>
+			</line>
+			
+			<line column="5">	
+			 	<bean>Distress ID: </bean>			
+				<bean attribute="FromMMSI"></bean>			
+			</line>	
+			
+			<line column="5">	
+			    <bean>nature:</bean>		
+				<bean attribute="NatureText"></bean>			
+			</line>			
+														
+			<line subtype="footer" column="45">
+				<bean>[CLR] - Alarm stop</bean>
+			</line>	
+			
+			<data name="incoming_distress_calls" type="list" index="last"/>
+			
+		</screen>
+				
+		<screen name="incoming_distress_message_quiet"  class="net.sourceforge.dscsim.controller.screen.BeanSimpleScreen" event="FK_CLR"  link="welcome" scope="transient" >
+				
+			<line type="text" subtype="header" column="45">
+				<bean>-RCV Distress-</bean>
+			</line>
+			
+			<line column="5">	
+			 	<bean>Distress ID:</bean>			
+				<bean attribute="FromMMSI"></bean>			
+			</line>			
+
+			<line column="5">	
+			    <bean>Time: </bean>		
+				<bean attribute="DistressTime"></bean>			
+			</line>			
+
+			<line column="5">			
+				<bean attribute="DistressLatitude"></bean>			
+			</line>			
+
+			<line column="5">			
+				<bean attribute="DistressLongitude"></bean>			
+			</line>	
+			
+			<line column="5">	
+			    <bean>nature:</bean>		
+				<bean attribute="NatureText"></bean>			
+			</line>			
+					
+																	
+			<line subtype="footer" column="45">
+				<bean>[CLR] - Exit</bean>
+			</line>	
+			
+			<data name="incoming_distress_calls" type="list" index="last"/>
+			
+		</screen>
+
+		<screen name="incoming_individual_message"  class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu" event="FK_ENT"  link="ack_individual_compliance" scope="transient" >
+					
+			<line type="text" subtype="header" column="45">
+				<bean>-RCV Individual call-</bean>
+			</line>	
+
+			<line type="choice" link="select_ack_quick">		
+				<bean></bean>			
+			</line>	
+
+			<line column="5">	
+			     <bean>From: </bean>
+				<bean attribute="FromMMSI"></bean>			
+			</line>	
+										
+			<line type="choice" link="select_ack_quick">		
+				<bean></bean>			
+			</line>	
+																				
+			<line type="text" subtype="footer" column="45">
+				<bean>[CLR]->Exit / [ENT]->OK</bean>
+			</line>
+						
+			<context name="individual_call">
+				<mapping type="constant" class="net.sourceforge.dscsim.controller.Constants" member="CALL_TYPE_INDIVIDUAL_ACK" set="setCallType"/>		    		
+			</context>
+						
+		</screen>
+	
+		<screen name="ack_individual_select_address" class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu">
+			
+			<line subtype="header" column="45">
+				<bean>-RCV Individual Call-</bean>
+			</line>
+			
+			<line subtype="header" column="5">
+				<bean>Select address ID</bean>
+			</line>
+			
+			<line type="choice" link="ack_individual_compliance">			
+				<bean>TODO Show ID</bean>			
+			</line>		
+			
+			<line type="choice" link="ack_individual_compliance">
+				<bean>Other</bean>
+			</line>														
+			
+			<line subtype="footer" column="45">
+				<bean>[CLR]->Exit / [ENT]->OK</bean>
+			</line>			
+						
+		</screen>
+	
+		<screen name="ack_individual_compliance" class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu">    			
+			<line subtype="header" column="45">
+				<bean>Select a comply</bean>
+			</line>
+			
+			<line>
+				<bean></bean>
+			</line>	
+			
+			<line type="choice" code="COMPL_ABLE" column="5" link="ack_individual_channel">
+				<bean code="COMPL_UNABLE">Able to comply</bean>
+			</line>	
+			
+			<line type="choice" code="COMPL_UNABLE" column="5" link="select_unable_reason">
+				<bean code="COMPL_UNABLE">Unable to comply</bean>
+			</line>
+			
+			<line subtype="footer" column="45">
+				<bean>[CLR]->Exit / [ENT]->OK</bean>
+			</line>		
+			
+		    <context name="individual_call">
+		    		<mapping type="choice" set="setComplianceCode"/>
+			</context>
+
+		</screen>
+		
+		
+		<screen name="select_unable_reason" class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" scope="transient">
+			
+			<line type="text" subtype="header" column="45">
+				<bean>Select a reason</bean>
+			</line>	
+
+			<line type="choice" code="UNABLE_NO_REASON" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_NO_REASON"></bean></line>					
+			<line type="choice" code="UNABLE_CONGESTION" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_CONGESTION"></bean></line>
+			<line type="choice" code="UNABLE_BUSY" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_BUSY"></bean></line>
+			<line type="choice" code="UNABLE_QUEUE_INDIC" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_QUEUE_INDIC"></bean></line>
+			<line type="choice" code="UNABLE_STATION_BARRED" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_STATION_BARRED"></bean></line>
+			<line type="choice" code="UNABLE_NO_OPERATOR" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_NO_OPERATOR"></bean></line>
+			<line type="choice" code="UNABLE_OPERATOR_UNAVAIL" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_OPERATOR_UNAVAIL"></bean></line>
+			<line type="choice" code="UNABLE_EQUIP_DISABLE" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_EQUIP_DISABLE"></bean></line>
+			<line type="choice" code="UNABLE_CHANNEL_UNAVAIL" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_CHANNEL_UNAVAIL"></bean></line>
+			<line type="choice" code="UNABLE_NO_MODE" link="ack_individual_send"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="UNABLE_NO_MODE"></bean></line>
+			
+			<line type="text" link=""><bean></bean></line>		
+				
+			<line type="text" subtype="footer" column="45"><bean>CLR->Exit / ENT->OK</bean></line>
+		
+			<context name="individual_call">
+				<mapping type="choice" set="setComplianceReasonCode"/>
+			</context>
+									
+		</screen>
+
+	  	<screen name="ack_individual_channel" class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" next="ack_individual_send" mode="entry">
+		
+		  	<line type="text" subtype="header" column="45">
+		  		<bean>Input a traffic channel</bean>
+		  	</line>
+		  	
+		  	<line>	
+				<bean>  </bean>	
+			</line>		
+		  	
+			<line column="5">	
+				<bean>CH: </bean>	
+				<bean name="Channel" attribute="Channel" class="net.sourceforge.dscsim.controller.screen.types.Channel">17</bean>
+			</line>	
+						
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>
+						
+			<context name="individual_call">
+				<mapping type="attribute" source="Channel" dest="setChannel"></mapping>
+			</context>
+			
+		</screen>
+		
+		
+	   <screen name="ack_individual_send" class="net.sourceforge.dscsim.controller.screen.BeanSendScreen" event="FK_CLR"  link="welcome">
+			<line subtype="header" column="45">
+				<bean>Push [CALL] and [ENT]</bean>
+			</line>
+			<line subtype="header" column="45">
+				<bean>simultaneously</bean>
+			</line>						
+
+			<line subtype="footer" column="45">
+				<bean>To stop the call,</bean>
+			</line>
+			<line subtype="footer" column="45">
+				<bean>push [CLR]</bean>
+			</line>	
+			
+			<context>
+			</context>
+
+		</screen>	
+	
+		<screen name="incoming_individual_message_ack"  class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu" event="FK_ENT"  link="welcome" scope="transient" >
+					
+			<line type="text" subtype="header" column="45">
+				<bean>-RCV Individual ACK-</bean>
+			</line>	
+
+			<line type="choice" link="welcome">		
+				<bean></bean>			
+			</line>	
+
+			<line column="5">	
+				<bean>From: </bean>	
+				<bean attribute="FromMMSI"></bean>			
+			</line>	
+					
+			<line  column="5">
+				<bean attribute="ComplianceAsText"></bean>							
+			</line>	
+						
+			<line column="5">		
+				<bean attribute="ComplianceReasonText"></bean>							
+			</line>	
+						
+			<line type="choice" link="welcome">		
+				<bean></bean>			
+			</line>	
+																				
+			<line type="text" subtype="footer" column="45">
+				<bean>[CLR]->Exit/[ENT]->OK</bean>
+			</line>
+						
+			<context name="individual_call">
+		    		
+			</context>
+						
+		</screen>	
+			
+		<screen name="incoming_group_message"  class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu" event="FK_ENT"  link="welcome" scope="transient" >
+					
+			<line type="text" subtype="header" column="45">
+				<bean>-RCV Group call-</bean>
+			</line>	
+
+			<line type="choice" link="welcome">		
+				<bean></bean>			
+			</line>	
+
+			<line column="5">	
+			     <bean>From: </bean>
+				<bean attribute="FromMMSI"></bean>			
+			</line>	
+										
+			<line type="choice" link="welcome">		
+				<bean></bean>			
+			</line>	
+																				
+			<line type="text" subtype="footer" column="45">
+				<bean>[CLR]->Exit / [ENT]->OK</bean>
+			</line>
+						
+			<context name="individual_call">
+			</context>
+						
+		</screen>
+	
+		<screen name="incoming_distress_message_ack"  class="net.sourceforge.dscsim.controller.screen.BeanSimpleScreen" event="FK_CLR"  link="welcome" scope="transient" >
+				
+			<line type="text" subtype="header" column="45">
+				<bean>-RCV Distress ACK-</bean>
+			</line>
+			<line>
+				<bean> </bean>
+			</line>				
+			<line column="5">	
+			 	<bean>Distress ID: </bean>			
+				<bean attribute="FromMMSI"></bean>			
+			</line>			
+																				
+			<line subtype="footer" column="45">
+				<bean>[CLR] - Exit</bean>
+			</line>	
+			
+			<data name="incoming_distress_calls" type="list" index="last"/>
+			
+		</screen>
+		
+		<screen name="setup_menu" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen" scope="transient">
+			<line type="text" subtype="header" column="45">
+				<bean>Select a subject</bean>
+			</line>	
+					
+			<line type="choice" link="setup_address_info">
+				<bean>Add an address ID</bean>
+			</line>
+			<line type="choice" link="display_addresses">
+				<bean>Offset time</bean>
+			</line>			
+			<line type="choice" link="">
+				<bean>Brightness</bean>
+			</line>
+			<line type="choice" link="">
+				<bean>Contrast</bean>
+			</line>
+			
+			<line type="choice" link="setup_auto_answer">
+				<bean>Setup auto answer</bean>
+			</line>
+			
+			<line type="choice" link="display_about_dscsim">
+				<bean>About dscsim</bean>
+			</line>
+
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>								
+		</screen>
+		
+		<screen name="setup_address_info" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen" scope="transient">
+			<line type="text" subtype="header" column="45">
+				<bean>Select a subject</bean>
+			</line>	
+			<!--position_input-->		
+			<line type="choice" link="add_address">
+				<bean>Add an address ID</bean>
+			</line>
+			<line type="choice" link="display_addresses">
+				<bean>Delete an address ID</bean>
+			</line>			
+			<line type="choice" link="add_group">
+				<bean>Add a group</bean>
+			</line>
+			<line type="choice" link="display_groups">
+				<bean>Delete a group ID</bean>
+			</line>
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>								
+		</screen>
+
+	  	<screen name="display_addresses" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen">
+	  		<line subtype="header" column="45">
+	  			<bean>Delete address ID</bean>
+	  		</line>		  		
+	  		
+	  		<list storage="mmsi_addressbook">
+				<line type="choice" link="delete_address" storage="mmsi_addressbook">
+					<bean attribute="Name"></bean>
+			    </line>
+		    </list>
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>		
+		
+	  	<screen name="display_groups" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen">
+	  		<line subtype="header" column="45">
+	  			<bean>Delete address ID</bean>
+	  		</line>		  		
+	  		
+	  		<list storage="group_addressbook">
+				<line type="choice" link="delete_group" storage="group_addressbook">
+					<bean attribute="Name"></bean>
+			    </line>
+		    </list>
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>		
+			
+		
+	  	<screen name="add_address" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="add" storage="mmsi_addressbook" >
+	  		<line subtype="header" column="45">
+	  			<bean>Add an address ID</bean>
+	  		</line>	
+			<line>
+				<bean></bean>
+			</line>
+			<line>
+				<bean>ID:(9digit)</bean>
+			</line>	
+			<line>		
+				<bean attribute="Id" format="#########"></bean>
+			</line>	
+			<line>
+				<bean>Name:(15characters)</bean>
+			</line>		
+			<line>
+				<bean attribute="Name" format="???????????????"></bean>
+			</line>	
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>
+
+	  	<screen name="add_group" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="add" storage="group_addressbook" >
+	  		<line subtype="header" column="45">
+	  			<bean>Add an address ID</bean>
+	  		</line>	
+			<line>
+				<bean></bean>
+			</line>
+			<line>
+				<bean>ID:(8digit)</bean>
+			</line>	
+			<line>		
+				<bean attribute="Id" format="#########"></bean>
+			</line>	
+			<line>
+				<bean>Name:(15characters)</bean>
+			</line>		
+			<line>
+				<bean attribute="Name" format="???????????????"></bean>
+			</line>	
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>
+		
+	  	<screen name="delete_address" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="delete" storage="mmsi_addressbook" >
+	  		<line subtype="header" column="45">
+	  			<bean>Delete this ID</bean>
+	  		</line>	
+			<line>
+				<bean></bean>
+			</line>
+			<line>
+				<bean>ID:(9digit)</bean>
+			</line>	
+			<line>		
+				<bean attribute="Id" format="#########"></bean>
+			</line>	
+			<line>
+				<bean>Name:(15characters)</bean>
+			</line>		
+			<line>
+				<bean attribute="Name" format="???????????????"></bean>
+			</line>	
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>
+
+	  	<screen name="delete_group" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="delete" storage="group_addressbook" >
+	  		<line subtype="header" column="45">
+	  			<bean>Delete this ID</bean>
+	  		</line>	
+			<line>
+				<bean></bean>
+			</line>
+			<line>
+				<bean>ID:(8digit)</bean>
+			</line>	
+			<line>		
+				<bean attribute="Id" format="#########"></bean>
+			</line>	
+			<line>
+				<bean>Name:(15characters)</bean>
+			</line>		
+			<line>
+				<bean attribute="Name" format="???????????????"></bean>
+			</line>	
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>			
+		</screen>
+
+
+	<screen name="select_ack_quick" class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu">
+	  		<line subtype="header" column="45">
+	  			<bean>Select address ID</bean>
+	  		</line>		  		
+	  		
+	  		<line>
+	  			<bean></bean>
+	  		</line>		  		
+	  		
+	  		<list storage="incoming_other_calls" filter="TYPE_INDIVIDUAL" count="1">
+				<line column="5" type="choice" link="ack_individual_compliance" storage="incoming_other_calls">
+					<bean attribute="FromMMSI"></bean>	
+			    </line>
+		    </list>
+	  		
+		    <line column="5" type="choice" link="select_ack_other_calls">
+	  			<bean>Other</bean>
+	  		</line>	
+	  			 	  	
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+			
+			<context name="individual_call">
+				<mapping type="reset"/>
+				<mapping type="constant" class="net.sourceforge.dscsim.controller.Constants" member="CALL_TYPE_INDIVIDUAL" set="setCallType"/>
+				<mapping type="extract" get="getFromMMSI" set="setToMMSI"></mapping>
+			</context>
+		
+		</screen>			
+		
+		<screen name="select_ack_other_calls" class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu">
+	  		<line subtype="header" column="45">
+	  			<bean>Select ACK</bean>
+	  		</line>		  		
+	  		  		
+	  		  		
+			<list storage="incoming_other_calls" filter="TYPE_INDIVIDUAL" count="6">
+				<line type="choice" link="ack_individual_compliance" storage="incoming_other_calls">
+					<bean attribute="FromMMSI"></bean>	
+			    </line>
+		    </list>
+		    
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+			
+			<context name="individual_call">
+				<mapping type="reset"/>
+				<mapping type="constant" class="net.sourceforge.dscsim.controller.Constants" member="CALL_TYPE_INDIVIDUAL" set="setCallType"/>
+				<mapping type="extract" get="getFromMMSI" set="setToMMSI"></mapping>
+			</context>
+		
+		</screen>			
+		
+		
+		<screen name="select_distress_nature" class="net.sourceforge.dscsim.controller.screen.BeanSetupSendMenuScreen" scope="transient">
+			
+			<line type="text" subtype="header" column="45">
+				<bean>Select nature of distress</bean>
+			</line>	
+
+			<line type="choice" code="NATURE_DISTR_UNDESIG" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_UNDESIG"></bean></line>					
+			<line type="choice" code="NATURE_DISTR_FIRE" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_FIRE"></bean></line>
+			<line type="choice" code="NATURE_DISTR_FLOOD" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_FLOOD"></bean></line>
+			<line type="choice" code="NATURE_DISTR_COLLISION" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_COLLISION"></bean></line>
+			<line type="choice" code="NATURE_DISTR_GROUND" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_GROUND"></bean></line>
+			<line type="choice" code="NATURE_DISTR_CAPSIZE" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_CAPSIZE"></bean></line>
+			<line type="choice" code="NATURE_DISTR_SINKING" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_SINKING"></bean></line>
+			<line type="choice" code="NATURE_DISTR_ADRIFT" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_ADRIFT"></bean></line>
+			<line type="choice" code="NATURE_DISTR_ABANDON" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_ABANDON"></bean></line>
+			<line type="choice" code="NATURE_DISTR_PIRACY" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_PIRACY"></bean></line>
+			<line type="choice" code="NATURE_DISTR_MOB" link="distress_position_input"><bean class="net.sourceforge.dscsim.controller.screen.types.DistressNature" code="NATURE_DISTR_MOB"></bean></line>
+			
+			<line type="text" link=""><bean></bean></line>		
+				
+			<line type="text" subtype="footer" column="45"><bean>CLR->Exit / ENT->OK</bean></line>
+		
+			<actions>		
+				<action type="exit" subtype="setting" property="Nature" class="net.sourceforge.dscsim.controller.screen.types.DistressNature"/>
+			</actions>
+									
+		</screen>
+		
+	  <screen name="distress_position_input" class="net.sourceforge.dscsim.controller.screen.BeanPropertyScreenItem" next="distress_time_input" >
+	  
+			<line type="text" subtype="header" column="45">
+				<bean>Position input</bean>
+			</line>		
+					
+			<line>
+				<bean> </bean>
+			</line>
+			
+			<line>			
+				<bean property="Latitude" class="net.sourceforge.dscsim.controller.screen.types.Latitude"></bean>
+			</line>		
+
+			<line>			
+				<bean property="Longitude" class="net.sourceforge.dscsim.controller.screen.types.Longitude"></bean>
+			</line>		
+
+					
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+		</screen>
+		
+	
+		  <screen name="distress_time_input" class="net.sourceforge.dscsim.controller.screen.BeanPropertyScreenItem" next="distress_send_notify" >
+	  
+			<line type="text" subtype="header" column="45">
+				<bean>Time input</bean>
+			</line>		
+					
+			<line>			
+				<bean property="Time" class="net.sourceforge.dscsim.controller.screen.types.Time"></bean>
+			</line>		
+
+			<line type="text" subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>		
+		</screen>
+
+		<screen name="distress_send_notify"  class="net.sourceforge.dscsim.controller.screen.BeanSimpleScreen" event="FK_CLR"  link="welcome" scope="transient" >
+		
+			<line subtype="header" column="45">
+				<bean>To send push [DISTRESS]</bean>
+			</line>
+			<line subtype="header" column="45">
+				<bean>for 5 secs</bean>
+			</line>						
+
+			<line subtype="footer" column="45">
+				<bean>To stop the call,</bean>
+			</line>
+			<line subtype="footer" column="45">
+				<bean>push [CLR]</bean>
+			</line>	
+			
+			<context>
+			</context>
+
+		</screen>	
+		
+		
+		<screen name="display_about_dscsim"  class="net.sourceforge.dscsim.controller.screen.BeanSimpleScreen"  scope="transient" >
+		
+			<line subtype="header" column="45">
+				<bean>About dscsim</bean>
+			</line>
+
+			<line>
+				<bean></bean>
+			</line>	
+
+			<line column="5">
+				<bean>dscsim version 1.0</bean>
+			</line>	
+
+			<line column="5">
+				<bean>January 16th,2007</bean>
+			</line>	
+
+			<line subtype="footer" column="45">
+				<bean>push [CLR]-> Return</bean>
+			</line>	
+			
+			<context>
+			</context>
+
+		</screen>	
+	
+	
+		<screen name="setup_auto_answer"  class="net.sourceforge.dscsim.controller.screen.BeanPropertyScreenItem" next="setup_menu" >
+		
+			<line subtype="header" column="45">
+				<bean>Auto Answer</bean>
+			</line>
+
+			<line>
+			</line>	
+
+			<line column="1">
+				<bean>If true, then all individuals</bean>
+			</line>	
+			
+			<line column="1">
+				<bean>calls will be automatically</bean>
+			</line>
+
+			<line column="1">
+				<bean>answered with an unable to comply.</bean>
+			</line>
+
+			<line column="1">
+				<bean></bean>
+			</line>
+			
+			<line column="5">
+				<bean>Auto Answer: </bean>
+				<bean property="AutoAnswer" class="net.sourceforge.dscsim.controller.screen.types.DscBoolean"></bean>
+			</line>	
+
+
+			<line subtype="footer" column="40">
+				<bean>Press [0]->false / [1]->true</bean>
+			</line>
+
+			<line subtype="footer" column="45">
+				<bean>CLR->Exit / ENT->OK</bean>
+			</line>	
+	
+
+		</screen>	
+		
+		<screen name="incoming_allships_message"  class="net.sourceforge.dscsim.controller.screen.SetupOutgoingDscMessageScreen" mode="menu" event="FK_ENT"  link="welcome" scope="transient" >
+					
+			<line type="text" subtype="header" column="45">
+				<bean>-RCV All Ships call-</bean>
+			</line>	
+
+			<line type="choice" link="welcome">		
+				<bean></bean>			
+			</line>	
+
+			<line column="5">	
+			     <bean>From: </bean>
+				<bean attribute="FromMMSI"></bean>			
+			</line>	
+										
+			<line type="choice" link="welcome">		
+				<bean></bean>			
+			</line>	
+																				
+			<line type="text" subtype="footer" column="45">
+				<bean>[CLR]->Exit / [ENT]->OK</bean>
+			</line>
+						
+			<context name="individual_call">
+			</context>
+						
+		</screen>
+	
+	</screens>
+	
+
+</dsc>
