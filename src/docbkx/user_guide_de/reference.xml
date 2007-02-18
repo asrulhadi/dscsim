@@ -26,7 +26,7 @@
 				gelesen wird.</para></listitem>
 		</varlistentry>
 		<varlistentry><term><command>dscsim.jar nucleus PARAMETERLISTE</command></term>
-			<listitem><para>Startet dscsim als "Nucleus" (nur als Deamon, ohne GUI),
+			<listitem><para>Startet dscsim als "Nucleus" (nur als Daemon, ohne GUI),
 				wobei als PARAMETERLISTE beliebig viele Parameter aus der unten angegebenen
 				Tabelle in beliebiger Reihenfolge zul&auml;ssig sind.</para></listitem>
 		</varlistentry>
