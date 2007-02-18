@@ -272,6 +272,7 @@ public class SimulationInfoFrame extends AppFrame implements AirwaveStatusListen
 			networkStatus.setText("Status: -");
 			networkStatus.setHorizontalAlignment(JTextField.CENTER);
 //			networkStatus.setEditable(false);
+			networkStatus.setEditable(false);
 			networkStatus.setMinimumSize(new Dimension(200, 20));
 		}
 		return networkStatus;
