@@ -261,7 +261,7 @@
 	</build>
 	<reporting>
 		<plugins>
-			<plugin>
+<!-- 		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
@@ -276,7 +276,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-			</plugin>
+			</plugin>  -->	
 		</plugins>
 	</reporting>
 </project>

@@ -38,9 +38,18 @@
       <item name="Frequently Asked Questions" href="/dscsim_faq.html"/>
     </menu>
 
+    <menu name="Documentation" inherit="top">
+      <item name="Benutzerhandbuch (German, PDF)" href="/docs/pdf/user_guide_de.pdf"/>
+      <item name="Benutzerhandbuch (German, HTML)" href="/docs/html/user_guide_de.html"/>
+    </menu>
+
+    <menu name="Download" inherit="top">
+      <item name="Download from Sourceforge" href="http://sourceforge.net/project/showfiles.php?group_id=167787"/>
+    </menu>
+
 <!-- <menu ref="modules" /> -->
 
-    <menu ref="reports" /> 
+<!--    <menu ref="reports" /> --> 
   
   </body>
 </project>
