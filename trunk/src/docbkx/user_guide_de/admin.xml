@@ -9,7 +9,7 @@
 		l&auml;uft startet dann ohne GUI und kann als Daemon auf einem Server laufen.</para>
 	<para>Wenn Sie bei der Installation das Paket "Advanced and Adminstrative Options"
 		w&auml;hlen, so werden entsprechende Start-Skripte (<filename>runNucleus.bat</filename>
-		bzw. <filename>runNucleus.sh</filename>, sowie eine Konfigurationsfile f&uuml;r
+		bzw. <filename>runNucleus.sh</filename>), sowie eine Konfigurationsfile f&uuml;r
 		das Logging installiert.</para>
 	<para>Diese Startskripte sollten Sie an Ihre speziellen Bed&uuml;rfnisse anpassen.</para>
 	<important><para>Insbesondere wenn Sie dscsim dauerhaft auf einem unter einer

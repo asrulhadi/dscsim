@@ -22,6 +22,7 @@ import java.io.File;
 
 import org.apache.log4j.PropertyConfigurator;
 
+import net.sourceforge.dscsim.orga.FrequencyAssignApp;
 import net.sourceforge.dscsim.server.AirwaveNucleusServer;
 import net.sourceforge.dscsim.station.SimpleStationInvoker;
 
@@ -60,6 +61,8 @@ public class DscsimStarter {
 					newArgs[i] = args[i+1];
 				}
 				startAirwaveNucleus(newArgs);
+			} else if( "orga".equals(args[0]) ) {
+				startOrga(args);
 			} else {
 				startRadioAndController(args);
 			}
@@ -84,4 +87,13 @@ public class DscsimStarter {
 		SimpleStationInvoker.main(args);
 	}
 
+	/**
+	 * Starts the gui to generate HTML pages with setup
+	 * parameters
+	 * @param args the command line parameters
+	 */
+	private static void startOrga(String[] args) {
+		FrequencyAssignApp.main(args);
+	}
+	
 }

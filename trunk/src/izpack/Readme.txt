@@ -11,6 +11,7 @@ licenses of the bundled libraries in directory "legal".
 
 ==================================================
 New in dscsim X.X.X:
+- New "Orga" tool to generate create HTML pages with setup information 
 - Additional windows shortcut to this file
 - when the main class DscsimStarter is started it is now possible to
   set an alternative log4j.properties file via system property

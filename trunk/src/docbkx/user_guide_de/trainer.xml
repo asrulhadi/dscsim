@@ -3,5 +3,26 @@
 	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <section id="trainer">
 	<title>Handbuch f&uuml;r Trainer</title>
-	<para>TBD</para>
+	<para>Um allen Kursteilnehmern die ben&ouml;tigten Setup-Parameter f&uuml;r
+	dscsim mitzuteilen, k&ouml;nnen durch das Orga-Tool (Start &uuml;ber 
+	eingerichteten Windows-Shortcut oder auf Kommandozeile durch
+	<command>orga.bat</command> bzw. <command>orga.sh</command>)
+	'Frequenzzuteilungsurkunden' in Form von HTML-Seiten generiert werden.
+	Diese Seiten k&ouml;nnen dann den Kursteilnehmern z.B. &uuml;ber einen
+	Webserver zur Verf&uuml;gung gestellt werden.</para>
+	<para><figure id="orga">
+		<title>Orga-Tool</title>
+		<graphic fileref="../include/orga_screen.PNG" /></figure></para>
+	<para><xref linkend="orga"/> zeigt die GUI des Orga-Tools. Es k&ouml;nnen 
+	f&uuml;r den UDP-Port, die Magic-Number, die IP-Adresse des Nucleus 
+	('Kondensationskern' des P2P-Netzwerkes) und die Gruppen-MMSI Parameter
+	angegeben werden. Bei nicht eingegebenen Werten werden die Default-Werte
+	verwendet.</para>
+	<para>Mittels des Buttons '<guibutton>change Dir</guibutton>' kann das Verzeichnis
+	ausgew&auml;hlt werden, in dem die HTML-Dateien generiert werden. &Uuml;ber
+	den Button '<guibutton>create Files</guibutton>' werden die HTML-Dateien, sowie
+	eine zus&auml;tzliche Index-Datei erzeugt.</para>
+	<para>Bei der Erzeugung der Dateien werden die MMSIs aus einem vorgegebenen
+	Wertebereich zuf&auml;llig ausgew&auml;hlt. Die Schiffsnamen werden einer intern
+	vordefinierten Liste entnommen.</para> 	
 </section>

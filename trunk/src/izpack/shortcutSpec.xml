@@ -51,6 +51,22 @@
   </shortcut>
 
   <shortcut
+    name="dscsim Orga Tool"
+    target="$INSTALL_PATH\orga.bat"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="starts the dscsim Orga Tool to generate 'Frequenzzuteilungsurkunden'"
+    iconFile="$INSTALL_PATH\dscsim.ico"
+    iconIndex="0"
+    initialState="normal"
+    programGroup="yes"
+    desktop="yes"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Advanced and Adminstrative Options"/>
+  </shortcut>
+
+  <shortcut
     name="uninstall dscsim"
     target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
     commandLine=""
