@@ -1,0 +1,1 @@
+java -jar dscsim.jar orga

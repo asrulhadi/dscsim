@@ -34,6 +34,11 @@
 			<listitem><para>Startet dscsim als "Nucleus", wobei die Parameterliste aus der Datei
 			<filename>FILENAME</filename> gelesen wird.</para></listitem>
 		</varlistentry>
+		<varlistentry><term><command>dscsim.jar orga</command></term>
+			<listitem><para>Startet die GUI zur Erzeugung von HTML-Seiten, auf denen
+				die ben&ouml;tigten Setup-Parameter f&uuml;r die Kursteilnehmer
+				angegeben werden. ("Frequenzzuteilungsurkunden")</para></listitem>
+		</varlistentry>
 	</variablelist>
 
 	
