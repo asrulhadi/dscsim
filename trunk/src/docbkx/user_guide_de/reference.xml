@@ -83,7 +83,7 @@
 				<row>
 				  <entry>dscsim.udp_airwave.magicnumber</entry>
 				  <entry>369876138</entry>
-				  <entry>Schl&uuml;sselwert innerhalb der von dscsim versendetem Pakete.
+				  <entry>Schl&uuml;sselwert innerhalb der von dscsim versendeten Pakete.
 				  	Pakete, deren Schl&uuml;sselwert von dem konfigurierten Wert abweicht,
 				  	werden ignoriert. Durch Vergabe eines vom Default abweichenden Wertes
 				  	kann (in beschr&auml;nktem Ma&szlig;e) verhindert werden,
