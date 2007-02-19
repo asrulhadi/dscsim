@@ -11,6 +11,9 @@ licenses of the bundled libraries in directory "legal".
 
 ==================================================
 New in dscsim X.X.X:
+- AIRWAVE is now the default provider protocol
+- dscsim will now determine from the MMSI if the station is a ship station
+  or a shore station. ([1655493] Enable simulation of a coast station)
 - Package "Advanced and Adminstrative Options" now creates a separate
   shortcut to start dscsim with a second configuration (intended for
   shore station)
