@@ -310,7 +310,7 @@ public class MMSI extends BaseType {
 	 */
 	public boolean isCoastal(){
 		
-		if(isValid())
+		if(!isValid())
 			return false;
 		
 		return _strActualValue.startsWith("00");
