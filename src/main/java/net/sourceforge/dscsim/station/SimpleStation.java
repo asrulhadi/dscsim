@@ -211,7 +211,7 @@ public class SimpleStation implements Constants, ApplicationContext {
 		String strParam = getParameter(KEY_IAC);
 		
 		if(strParam == null)
-			strParam = IAC_UDP;
+			strParam = IAC_AIRWAVE;
 				
 		return strParam;
 		

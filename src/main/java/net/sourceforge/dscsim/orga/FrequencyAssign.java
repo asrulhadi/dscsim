@@ -78,7 +78,6 @@ public class FrequencyAssign {
 			long mmsi = startMmsi+((rNumber%10000)*10);
 			String callSign = "DB"+((5376+rNumber)%10000);
 			String setup="individual.mmsi=" + mmsi +
-					" dscsim.provider.protocol=AIRWAVE" +
 					" dscsim.call_sign=" + callSign +
 					" dscsim.station_name=" + stationName;
 			if( isGroupMmsiSet ) {
