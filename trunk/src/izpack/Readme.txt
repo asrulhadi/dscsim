@@ -11,6 +11,10 @@ licenses of the bundled libraries in directory "legal".
 
 ==================================================
 New in dscsim X.X.X:
+- Package "Advanced and Adminstrative Options" now creates a separate
+  shortcut to start dscsim with a second configuration (intended for
+  shore station)
+New in dscsim 1.3.0:
 - New "Orga" tool to generate create HTML pages with setup information 
 - Additional windows shortcut to this file
 - when the main class DscsimStarter is started it is now possible to
