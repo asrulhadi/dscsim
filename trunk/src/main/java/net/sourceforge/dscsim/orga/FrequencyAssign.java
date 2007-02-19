@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class FrequencyAssign {
 
-	private static String[] stationNames = { "Aurelia", "Halligalli","Hera", "Eva", "Klausi", "Sunny", "Andrea",
+	private static String[] stationNames = { "Bremen_Rescue", "Aurelia", "Halligalli","Hera", "Eva", "Klausi", "Sunny", "Andrea",
 			  "Baracuda", "Up_and_Away", "Eierkopf", "Mon_Amour", "Schatzi", "Knochenbrecher",
 			  "Eva2", "Carmen", "Sehnsucht", "Rubin", "Diamant", "Flash", "Speedy_Gonzales",
 			  "Prinzessin", "Mad_Max", "Knutschfleck", "Bounty", "Marianne", "Erika", "Zauberer",
@@ -71,27 +71,20 @@ public class FrequencyAssign {
 			String stationName = stationNames[i];
 			int rNumber;
 			Integer rNumberObject;
-			do {
-				rNumber = rand.nextInt();
-				rNumberObject = new Integer( rNumber % 10000 );
-			} while( (usedNumbers.contains(rNumberObject)) || ( rNumber < 0 ) );
-			long mmsi = startMmsi+((rNumber%10000)*10);
-			String callSign = "DB"+((5376+rNumber)%10000);
-			String setup="individual.mmsi=" + mmsi +
-					" dscsim.call_sign=" + callSign +
-					" dscsim.station_name=" + stationName;
-			if( isGroupMmsiSet ) {
-				setup += " group.mmsi=" + groupMmsi;
+			String mmsi;
+			String callSign;
+			if( i==0 ){
+				mmsi = "002111240";
+				callSign = null;
+			} else {
+				do {
+					rNumber = rand.nextInt();
+					rNumberObject = new Integer( rNumber % 10000 );
+				} while( (usedNumbers.contains(rNumberObject)) || ( rNumber < 0 ) );
+				mmsi = ""+(startMmsi+((rNumber%10000)*10));
+				callSign = "DB"+((5376+rNumber)%10000);
 			}
-			if( isMagicNumberSet ) {
-				setup += " dscsim.udp_airwave.magicnumber="+ this.magicNumber;
-			}
-			if( isNucleusIPSet ) {
-				setup += " dscsim.udp_airwave.peerhost=" + this.nucleusIP;
-			}
-			if( isPortSet ) {
-				setup += " dscsim.udp_airwave.startport=" + this.port;
-			}
+			String setup = buildSetupString(mmsi, stationName, callSign);
 			PrintWriter out = new PrintWriter(  new FileWriter( new File(workingDir,""+mmsi+".html")));
 			index.println( "<tr height=\"30\"><td><a href=\""+mmsi+".html\">"+mmsi+"</a></td><td>"+stationName+"</td><td>&nbsp</td></tr>");
 			out.println( "<html><head><title>dscsim-Frequenzzuteilung "+mmsi+"</title></head>");
@@ -117,6 +110,33 @@ public class FrequencyAssign {
 		}
 		index.println( "</table></body></html>");
 		index.close();
+	}
+
+	/**
+	 * @param mmsi
+	 * @param stationName
+	 * @param callSign
+	 * @return
+	 */
+	private String buildSetupString(String mmsi, String stationName, String callSign) {
+		String setup="individual.mmsi=" + mmsi +
+				" dscsim.station_name=" + stationName;
+		if( callSign != null ) {
+			setup += " dscsim.call_sign=" + callSign;
+		}
+		if( isGroupMmsiSet ) {
+			setup += " group.mmsi=" + groupMmsi;
+		}
+		if( isMagicNumberSet ) {
+			setup += " dscsim.udp_airwave.magicnumber="+ this.magicNumber;
+		}
+		if( isNucleusIPSet ) {
+			setup += " dscsim.udp_airwave.peerhost=" + this.nucleusIP;
+		}
+		if( isPortSet ) {
+			setup += " dscsim.udp_airwave.startport=" + this.port;
+		}
+		return setup;
 	}
 
 	/**
