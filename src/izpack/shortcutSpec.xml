@@ -67,6 +67,22 @@
   </shortcut>
 
   <shortcut
+    name="dscsim Shore"
+    target="$INSTALL_PATH\dscsim.jar"
+    commandLine="startup.cfg=data/shore.conf"
+    workingDirectory="$INSTALL_PATH"
+    description="dscsim started with alternative (shore) configuration"
+    iconFile="$INSTALL_PATH\dscsim.ico"
+    iconIndex="0"
+    initialState="normal"
+    programGroup="yes"
+    desktop="yes"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Advanced and Adminstrative Options"/>
+  </shortcut>
+
+  <shortcut
     name="uninstall dscsim"
     target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
     commandLine=""
