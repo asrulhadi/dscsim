@@ -47,7 +47,7 @@
 						
 			<line >
 				<bean>         </bean>
-				<bean blink="true">SHORE CH70 WATCHING</bean>
+				<bean blink="false">SHORE CH70 WATCHING</bean>
 			</line>
 					
 			<line column="40">
