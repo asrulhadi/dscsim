@@ -38,6 +38,10 @@ import org.jdom.Element;
 
 public class DscMessage implements java.io.Serializable, Cloneable, DscSendable, net.sourceforge.dscsim.controller.Constants {
 	
+	/**
+	 * for version compatibility.
+	 */
+	public final static long serialVersionUID = 4301620182757853881L;
 	
 	private String _uidts =  String.valueOf(System.currentTimeMillis());
 	

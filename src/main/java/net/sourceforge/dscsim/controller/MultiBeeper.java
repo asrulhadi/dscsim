@@ -128,8 +128,7 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 		
 		//this could be configured in xml mappings
 		String msgType = oMessage.getType();
-		if(_powerOn &&
-				msgType.equals(BusMessage.MSGTYPE_NETWORK) == true){
+		if(_powerOn && msgType.equals(BusMessage.MSGTYPE_NETWORK) == true){
 			
 			DscMessage oDscMessage = (DscMessage)oMessage.getDscMessage();
 			
@@ -153,23 +152,28 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 				beepSync(BEEP_SIMPLE);				
 			}
 			
+			/*turn off*/
 			if(DSC_POWERED_OFF.equals(keyId)){
 					_powerOn = false;
+					clearBeeper();
 			}
 
-		} if(!_powerOn && BusMessage.MSGTYPE_KEY.equals(msgType)){
-			
-			Button oBut = oMessage.getButtonEvent();
-			String keyId = oBut.getKeyId();
-			
-		     if(DSC_POWERED_ON.equals(keyId)){
-		     	_powerOn = true;
-		     }
-		}
+		} 
 		
+		if(!_powerOn && BusMessage.MSGTYPE_KEY.equals(msgType)){
+			Button oBut = oMessage.getButtonEvent();
+			String keyId = oBut.getKeyId();			
+		    if(DSC_POWERED_ON.equals(keyId)){
+		    	_powerOn = true;
+		    }
+		}		
 		
 	}
 	
+	/**
+	 * stop the current beeping
+	 *
+	 */
 	public void clearBeeper(){
 		try {
 			synchronized (_oBeeperSemaphor){

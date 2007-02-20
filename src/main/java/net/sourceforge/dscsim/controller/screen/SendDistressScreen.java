@@ -164,17 +164,10 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 	}
 
 	public void exit(BusMessage oMessage) throws Exception {
-				
-		/*
-		if(_bContinue == true){
-			synchronized(_semaphore){
-				_bContinue = false;
-				_semaphore.notify();	
-				sendUndesignatedDistressAck();
-			}			
-		}
-		*/
-		
+			
+		if(isContinue()){
+			stop();	
+		}		
 		//reset call nature to undesignated.
 		DscString nature = (DscString)getInstanceContext().getContentManager().getSetting("Nature");
 		
@@ -183,7 +176,6 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 		getInstanceContext().getContentManager().replaceProperty("Nature", nature);
 		
 		getInstanceContext().getContentManager().saveProperties();	
-		
 		
 	}
 	public void init()  {
@@ -323,8 +315,8 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 		
 		//now every five 5 minutes resend signal
 		long currTime = 0;
-		long interVal = 300000; //5 minutes		
-//		long interVal = 60000; //1 minutes
+		//long interVal = 300000; //5 minutes		
+		long interVal = 60000; //1 minutes
 		
 		ScreenContent oScreen  = getInstanceContext().getContentManager().getScreenContent("distress_call_sent", getInstanceContext());
 		
