@@ -34,7 +34,7 @@
 			Sie dort "Java Runtime Environment (JRE) 6". Folgen Sie dann den dort
 			angegebenen Installationsanweisungen.</para>
 			<para>Nachdem Sie Java installiert haben, k&ouml;nnen Sie die Installation von
-			dscsim wie in <xref linkend="install"/> beschrieben durchf&uuml;hren.</para>
+			dscsim wie in <xref linkend="prog_install"/> beschrieben durchf&uuml;hren.</para>
 		</section>
 		<section id="jarlink">
 			<title>Manuelles Einrichten der Programmverkn&uuml;pfung f&uuml;r JAR-Dateien</title>
@@ -60,7 +60,7 @@
 					<listitem><para>Beenden Sie die Dialogfolge durch <guibutton>OK</guibutton>,
 						<guibutton>OK</guibutton> und <guibutton>Schliessen</guibutton></para></listitem>
 				</orderedlist>
-			<para>Sie k&ouml;nnen nun die Installation wie in <xref linkend="install"/> beschrieben
+			<para>Sie k&ouml;nnen nun die Installation wie in <xref linkend="prog_install"/> beschrieben
 			durchf&uuml;hren.</para>
 		</section>
 	</section>

@@ -108,7 +108,7 @@
 			<!-- <file src="runapp.sh" targetdir="$INSTALL_PATH" />  -->
         	<!-- <parsable targetfile="$INSTALL_PATH/runapp.sh"/>  -->
 		</pack>
-		<pack name="Advanced and Adminstrative Options" required="no" preselected="no">
+		<pack name="Advanced and Administrative Options" required="no" preselected="no">
 			<description>Scripts and shortcuts for advanced options. Normal users will not require this.</description>
 			<file src="runapp_debug.bat" targetdir="$INSTALL_PATH" />
 			<file src="log4j.nucleus.properties" targetdir="$INSTALL_PATH" />
@@ -117,6 +117,9 @@
 			<file src="orga.bat" targetdir="$INSTALL_PATH" />
 			<file src="orga.sh" targetdir="$INSTALL_PATH" />
         	<parsable targetfile="$INSTALL_PATH/runapp_debug.bat"/>
+			<fileset dir="../../target/docbkx" targetdir="$INSTALL_PATH/docs">
+				<include name="**/installation_guide*.pdf"/>
+			</fileset>
 		</pack>
 		<pack name="Documentation (English)" required="no" preselected="no">
 			<description>User Documentation (English)</description>
@@ -135,6 +138,7 @@
 			<description>Benutzerdokumentation (Deutsch)</description>
 			<fileset dir="../../target/docbkx" targetdir="$INSTALL_PATH/docs">
 				<include name="**/*de.*"/>
+				<exclude name="**/installation_guide*.*"/>
 				<exclude name="**/*.fo"/>
 			</fileset>
 			<fileset dir="../docbkx/include" targetdir="$INSTALL_PATH/docs/html/include" >

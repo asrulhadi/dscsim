@@ -13,6 +13,7 @@
 		</authorgroup>
 	</articleinfo>
    	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/intro.xml"/>
+   	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/installation.xml"/>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/student.xml"/>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/trainer.xml"/>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/admin.xml"/>

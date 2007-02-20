@@ -31,7 +31,7 @@
     desktop="yes"
     startMenu="no"
     startup="no">
-    <createForPack name="Advanced and Adminstrative Options"/>
+    <createForPack name="Advanced and Administrative Options"/>
   </shortcut>
 
   <shortcut
@@ -47,7 +47,7 @@
     desktop="yes"
     startMenu="no"
     startup="no">
-    <createForPack name="Advanced and Adminstrative Options"/>
+    <createForPack name="Advanced and Administrative Options"/>
   </shortcut>
 
   <shortcut
@@ -63,7 +63,7 @@
     desktop="yes"
     startMenu="no"
     startup="no">
-    <createForPack name="Advanced and Adminstrative Options"/>
+    <createForPack name="Advanced and Administrative Options"/>
   </shortcut>
 
   <shortcut
@@ -79,7 +79,7 @@
     desktop="yes"
     startMenu="no"
     startup="no">
-    <createForPack name="Advanced and Adminstrative Options"/>
+    <createForPack name="Advanced and Administrative Options"/>
   </shortcut>
 
   <shortcut
@@ -164,5 +164,18 @@
     startMenu="no"
     startup="no">
     <createForPack name="Dokumentation (Deutsch)"/>
+  </shortcut>
+  <shortcut
+    name="Installationsanleitung (Deutsch,PDF)"
+    target="$INSTALL_PATH\docs\pdf\installation_guide_de.pdf"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Deutsches Benutzerhandbuch im HTML Format"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no"
+    startMenu="no"
+    startup="no">
+    <createForPack name="Advanced and Administrative Options"/>
   </shortcut>
 </shortcuts>
