@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<article lang="de">
+	<articleinfo>
+		<title>dscsim - GMDSS Trainingssimulator</title>
+		<subtitle>Installationsanleitung</subtitle>
+		<titleabbrev>DSCSIM IG</titleabbrev>
+		<releaseinfo>&version;</releaseinfo>
+		<authorgroup>
+			<author><firstname>O.</firstname><surname>Hecker</surname></author>
+			<author><firstname>W.</firstname><surname>Pennoyer</surname></author>
+		</authorgroup>
+	</articleinfo>
+	<note><para>Sie k&ouml;nnen dscsim &uuml;ber das Internet von der
+		Adresse <ulink url="http://dscsim.sourceforge.net"></ulink> 
+		erhalten.</para></note>
+   	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/installation.xml" xpointer="element(prerequisites)"/>
+   	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/installation.xml" xpointer="element(prog_install)"/>
+	<important><para>Wenn Sie die Installation bis hierhin erfolgreich durchgef&uuml;hrt haben,
+	so lesen Sie bitte das Benutzerhandbuch, weclhes Sie &uuml;ber einen Shortcut im
+	Startmen&uuml; &ouml;ffnen k&ouml;nnen. Sie finden dort insbesondere wichtige Hinweise
+	zu Konfiguration des Programms und zu Netzwerkeinstellungen.</para></important>
+	<section><title>Problembehebungen</title>
+		<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="./user_guide_de/troubleshooting.xml" xpointer="element(javaprobs)">
+			<note><para>Dieser Abschnitt enth&auml;lt Hinweise zur Einrichtung der Java-Umgebung
+			auf Ihrem Rechner. Sie ben&ouml;tigen diese Informationen nur, wenn sie die
+			zuvor beschriebene Installation wegen Problemen mit der Java-Installation
+			Ihres Rechners nicht durchf&uuml;hren konnten.</para></note>
+		</xi:include>
+	</section>	
+ </article>
