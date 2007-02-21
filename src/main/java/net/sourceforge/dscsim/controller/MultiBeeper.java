@@ -38,8 +38,10 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 	private String _strCurrentNextTone = null;
 	private String _strCurrentTone = null;
 	private boolean _powerOn = false;
+	private InstanceContext _ctx = null;
 
-	private MultiBeeper(){
+	private MultiBeeper(InstanceContext ctx){
+		_ctx = ctx;
 		init();
 	}
 
@@ -64,10 +66,8 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 	
 	
 	
-	public static MultiBeeper getInstance(){
-		
-		return new MultiBeeper();
-		
+	public static MultiBeeper getInstance(InstanceContext ctx){		
+		return new MultiBeeper(ctx);		
 	}
 
 	public void run() {
@@ -102,9 +102,7 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 			}
 			
 			for(int i = 0; _strCurrentTone != null && i< 1 ;i++){
-
 				beepSync(_strCurrentTone);
-
 				try{
 					Thread.sleep(500);
 				}catch(InterruptedException oEx){
@@ -112,10 +110,7 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 					bContinue = false;
 					continue;
 				}
-
-			}
-			
-			
+			}						
 		}
 		
 	}
@@ -189,7 +184,9 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 	}
 	
 	public void soundIncomingDistressAlarm(){
-		beepAysnc(BEEP_ALARM);
+		if(!_ctx.getClu().isDistressCallInprogress()){
+			beepAysnc(BEEP_ALARM);
+		}
 	}
 	
 	public void beepAysnc(String strBeepId){
