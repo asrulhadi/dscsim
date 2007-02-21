@@ -29,21 +29,18 @@ import net.sourceforge.dscsim.controller.screen.SendDistressScreen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
-
+/**
+ * Central unit for controlling state flow.
+ */
 public class MultiClu  implements  BusListener, Constants {
-
 	
 		private ArrayList _oScreenStack = new ArrayList();
 		private InstanceContext _oContext = null;
 		private volatile boolean _powerOn = false;
-				
-		//private DscMessage _oDscMessage = null;
-		
+						
 		private MultiClu(InstanceContext oSessionContext) {			
-			_oContext = oSessionContext;
-			
+			_oContext = oSessionContext;			
 			//DscIACManager.initSyncPublisher(_oContext.getApplicationContext());
-			
 		}
 		
 		public static MultiClu getInstance(InstanceContext oSessionContext)  {
@@ -59,21 +56,16 @@ public class MultiClu  implements  BusListener, Constants {
 		 * @return index of screen on stack.
 		 */
 		private int indexOf(ScreenContent oTarget){
-			
 			if(oTarget == null) 
 				return -1;
 			
 			int idxLast = _oScreenStack.size()-1;
 			ScreenContent oCurr = null;
 			for(int idxCurr = idxLast; idxCurr >= 0; idxCurr--){
-				
 				oCurr = (ScreenContent)_oScreenStack.get(idxCurr);
-				
 				if(oTarget.getAttributeValue("name").equals(oCurr.getAttributeValue("name")))
 					return idxCurr;
-				
 			}
-			
 			return -1;
 		}
 		
@@ -84,7 +76,7 @@ public class MultiClu  implements  BusListener, Constants {
 		 * @param oMessage
 		 * @throws Exception
 		 */
-		private void popStockDistress(BusMessage oMessage) throws Exception{			
+		private void popStackDistress(BusMessage oMessage) throws Exception{			
 			int idxLast = _oScreenStack.size() -1;			
 			if(idxLast>0){				
 				ScreenContent oScreen = (ScreenContent)_oScreenStack.remove(idxLast);				
@@ -96,6 +88,11 @@ public class MultiClu  implements  BusListener, Constants {
 			}
 		}
 			
+		/**
+		 * remove the top entry from the Stack.
+		 * @param oMessage
+		 * @throws Exception
+		 */
 		private void popStock(BusMessage oMessage) throws Exception{
 			
 			int idxLast = _oScreenStack.size() -1;
@@ -113,22 +110,36 @@ public class MultiClu  implements  BusListener, Constants {
 			}
 				
 		}
+		
+		/**
+		 * if a SendDistressScreen is on top, then a distress call is
+		 * in progress.
+		 * @return
+		 */
+		public synchronized boolean isDistressCallInprogress(){			
+			if(_oScreenStack.size()>-1){				
+				ScreenContent oScreen = (ScreenContent)_oScreenStack.get(_oScreenStack.size()-1);				
+				if(oScreen instanceof SendDistressScreen){
+					return true;
+				}				
+			}								
+			return false;
+		}
+		/**
+		 * reset the state stack and call exit for all states. Return
+		 * to the welcome screen.
+		 * @param oMessage
+		 * @throws Exception
+		 */
 		private void resetScreenStack(BusMessage oMessage)throws Exception {
-			
-			
+						
 			//leave bottom 0 elment on stack.
-			ScreenContent oScreen = null;
-			
-			for(int i= _oScreenStack.size()-1; i>=0; i--){
-				
-				oScreen = (ScreenContent)_oScreenStack.remove(i);
-				
-				 oScreen.exit(oMessage);
-				
-				_oContext.getContentManager().putCache(oScreen);
-								
+			ScreenContent oScreen = null;			
+			for(int i= _oScreenStack.size()-1; i>=0; i--){				
+				oScreen = (ScreenContent)_oScreenStack.remove(i);				
+				oScreen.exit(oMessage);				
+				_oContext.getContentManager().putCache(oScreen);								
 				_oContext.getController().setScreenContent(oScreen);	
-
 			}
 
 			oScreen = _oContext.getContentManager().getScreenContent("welcome", _oContext);
@@ -136,7 +147,9 @@ public class MultiClu  implements  BusListener, Constants {
 			_oContext.getController().setScreenContent(oScreen);	
 
 		}
-		
+		/**
+		 * handle incoming message and dispatch them to appropriate screen.
+		 */
 		public synchronized void signal(BusMessage oMessage){
 
 				//AppLogger.debug("Clu.signal - BusMessage type="+ oMessage.getId());
@@ -163,7 +176,12 @@ public class MultiClu  implements  BusListener, Constants {
 						/*first remove distress screen from stack if it's a distress ack and is for me.*/
 						if(CALL_TYPE_DISTRESS_ACK.equals(callType)
 							&& myMMSI.equals(toMMSI)){							
-							popStockDistress(oMessage);							
+							popStackDistress(oMessage);							
+						}else{							
+							/*if waiting for a ack, then don't interrupt distress call*/
+							if(isDistressCallInprogress()){
+								return;
+							}
 						}
 						/*now show incoming ack*/
 						String strScreenName = _oContext.getContentManager().getCallTypeMappingValue(oDscMessage.getCallType());						
