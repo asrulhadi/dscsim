@@ -52,7 +52,7 @@ public interface Constants {
 	/**
 	 * Full name of controller's background image.
 	 */
-	public static final String SKIN_ICM504 = RESOURCE_BASE + "icom_dsc100.jpg";
+	public static final String SKIN_ICM504 = RESOURCE_BASE + "dscsim_controller.jpg";
 	
 	/**
 	 * Name of properities file for storing application specific information.
