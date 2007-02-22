@@ -100,8 +100,8 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	private int [][] _screenSize = {{94, 84},{372, 243}};	
 	private final int DISPLAY_X = _screenSize[0][0]-5;
 	private final int DISPLAY_Y = _screenSize[0][1];
-	private final int DISPLAY_W = _screenSize[1][0] - _screenSize[0][0]+10;		
-	private final int DISPLAY_H = _screenSize[1][1] - _screenSize[0][1];
+	private final int DISPLAY_W = _screenSize[1][0] - _screenSize[0][0]+5;		
+	private final int DISPLAY_H = _screenSize[1][1] - _screenSize[0][1]+5;
 	
 	private Component _oContainer = null;
 	private boolean _initialized = false;

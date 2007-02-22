@@ -36,15 +36,16 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
 import org.jdom.Element;
 
 
-
 /**
+ * Screen used to send message. User is pressed with a choice to proceed or abort. The signal
+ * method will react accordingly.
  * @author katharina
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class BeanSendScreen extends BeanScreen {
 
+	/**
+	 * Add to make simulation more realistic. Without a delay the controller reacts too quickly.
+	 */
 	private static long SLEEP_AFTER_SEND = 1500;
 	/**
 	 * @param oScreenElement
@@ -62,7 +63,6 @@ public class BeanSendScreen extends BeanScreen {
 		super(oScreenElement, oCMngr);
 		// TODO Auto-generated constructor stub
 				
-		
 		int firstLine = getHeaderCount();
 		_currLine = firstLine+1;
 		_minLine = firstLine;
@@ -72,21 +72,26 @@ public class BeanSendScreen extends BeanScreen {
 		
 	}
 	
+	/**
+	 * initialize screen line and fields.
+	 */
     public void init() {
 	   	super.init();
 	   	setCursonOn(false);  
 	   	_currLine = getHeaderCount();
     }
     
-	public int getActiveLine() {
-		
-		int t = super.getActiveLine();
-		
+    /**
+     * return the active line on the screen
+     * @return int for current line on screen.
+     */
+	public int getActiveLine() {		
+		int t = super.getActiveLine();		
 		AppLogger.debug("BeanSendScreen.getActiveLine=" + t);
 		return t;
 	}
-	/* (non-Javadoc)
-	 * @see applet.screen.content.ScreenContent#signal(applet.BusMessage)
+	/**
+	 * handle outgoing messages and channel switching logic. 
 	 */
 	public ScreenContent signal(BusMessage oMessage) {
 		
@@ -103,26 +108,19 @@ public class BeanSendScreen extends BeanScreen {
 			String event = getAttributeValue("event");
 			
 			if(event != null && keyID.equals(event)){
-			
-				String screenName = this.getAttributeValue("link");
-													
+				String screenName = this.getAttributeValue("link");					
 				ScreenContent oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
-							
 				oScreenNext.setParent(this);
-	
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
 				oScreenNext.setIncomingDscMessage(getIncomingDscMessage());
-
 				oScreenNext.setInstanceContext(getInstanceContext());
-			
 				return oScreenNext;
 	 		}
 			
 			return null;
 		}
 	
-		if(FK_ENT.equals(keyID))
-		{
+		if(FK_ENT.equals(keyID)){
 			
 			Element oContext = _oScreenElement.getChild("context");
 			DscMessage oMsg = null;
@@ -137,8 +135,8 @@ public class BeanSendScreen extends BeanScreen {
 			}
 			
 	
+			/*if individual call, then wait for ack before changing channel*/
 			DscMessage oInbound = getIncomingDscMessage();
-			
 			if(oInbound != null && oInbound.getCallType().equals(CALL_TYPE_INDIVIDUAL)){
 				if(oInbound.getChannel().equals(oMsg.getChannel())==false){
 					oMsg.setCallType(CALL_TYPE_INDIVIDUAL);
@@ -150,7 +148,15 @@ public class BeanSendScreen extends BeanScreen {
 				}
 				
 			}
+			/*if outgoing is one of the following, then switch the channel immediately as there 
+			 * will be no acks.*/
+			if(CALL_TYPE_ALL_SHIPS.equals(oMsg.getCallType())
+					|| CALL_TYPE_GROUP.equals(oMsg.getCallType())){
+				RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
+				oRadio.setChannel(oMsg.getChannel());				
+			}
 
+			/*make sure outgoing message has my mmsi*/
 			oMsg.setFromMMSI(getInstanceContext().getContentManager().getMMSI());
 			getInstanceContext().getBeeper().beepSync(MultiBeeper.BEEP_TRANSMITTING);
 			AppLogger.debug("BeanSendScreen.signal ="+ oMsg.toString());			

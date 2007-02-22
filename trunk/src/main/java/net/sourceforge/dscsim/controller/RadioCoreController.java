@@ -146,7 +146,7 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.radio.core.RadioEventListener#notifyMasterSwitch()
 	 */
-	public void notifyMasterSwitch() {
+	public synchronized void notifyMasterSwitch() {
 		
 		Button btn  = _masterSwitchOn ? BTN_POWER_OFF : BTN_POWER_ON;		
 		_masterSwitchOn = !_masterSwitchOn;
@@ -171,6 +171,14 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 	public void notifyPower() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	/**
+	 * for components that are not notified this may be helpful.
+	 * @return boolean.
+	 */
+	public synchronized boolean masterSwitchOn(){
+		return _masterSwitchOn;
 	}
 	
 }
