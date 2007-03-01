@@ -11,6 +11,8 @@ licenses of the bundled libraries in directory "legal".
 
 ==================================================
 New in dscsim X.X.X:
+- Fixed [1667405] Sendetaste des Radios darf nicht bedient werden...
+New in dscsim 1.3.1:
 - Separate Installation Guide (PDF, only German) will be installed
   with Pack "Advanced and Administrative Options". The document is
   intended to be given away to students.
