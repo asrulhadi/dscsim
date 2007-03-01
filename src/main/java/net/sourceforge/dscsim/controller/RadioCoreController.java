@@ -131,7 +131,7 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 	 * @param dscSignal
 	 * @see net.sourceforge.dscsim.radio.core.RadioCore#sendDscSignal(byte[])
 	 */
-	public void sendDscSignal(byte[] dscSignal) {
+	public void sendDscSignal(byte[] dscSignal) throws java.io.IOException {
 		_radioCore.sendDscSignal(dscSignal);
 	}
 
@@ -148,8 +148,11 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 	 */
 	public synchronized void notifyMasterSwitch() {
 		
-		Button btn  = _masterSwitchOn ? BTN_POWER_OFF : BTN_POWER_ON;		
-		_masterSwitchOn = !_masterSwitchOn;
+		_masterSwitchOn = _radioCore.getMasterSwitch();
+		Button btn  = _masterSwitchOn ? BTN_POWER_ON : BTN_POWER_OFF;	
+		// (Old coding: worked but not robust)
+		// Button btn  = _masterSwitchOn ? BTN_POWER_OFF : BTN_POWER_ON;	
+		// _masterSwitchOn = !_masterSwitchOn; 
 		_instCtx.getBus().publish(new BusMessage(this, btn));
 		
 		if(_masterSwitchOn)
@@ -161,16 +164,19 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 	 * @see net.sourceforge.dscsim.radio.core.RadioEventListener#notifyChannel()
 	 */
 	public void notifyChannel() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.radio.core.RadioEventListener#notifyPower()
 	 */
 	public void notifyPower() {
-		// TODO Auto-generated method stub
-		
+	}
+
+	/* (non-Javadoc)
+	 * @see net.sourceforge.dscsim.radio.core.RadioEventListener#notifyDscTransmissionFinished()
+	 */
+	public void notifyDscTransmissionFinished() {
+		// TODO @William: needs to be implemented
 	}
 	
 	/**
@@ -180,5 +186,6 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 	public synchronized boolean masterSwitchOn(){
 		return _masterSwitchOn;
 	}
+
 	
 }

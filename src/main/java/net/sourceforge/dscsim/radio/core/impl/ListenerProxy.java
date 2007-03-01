@@ -72,6 +72,16 @@ public class ListenerProxy implements RadioEventListener {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sourceforge.dscsim.radio.core.RadioEventListener#notifyDscTransmissionFinished()
+	 */
+	public void notifyDscTransmissionFinished() {
+		for( Iterator i = listeners.iterator(); i.hasNext(); ){
+			((RadioEventListener)i.next()).notifyDscTransmissionFinished();
+		}
+	}
+
+
 	/**
 	 * Registers a RadioEventListener to receive notifications from this
 	 * proxy.
