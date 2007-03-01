@@ -702,6 +702,9 @@ public class SimpleRadioGUI extends AppFrame implements RadioEventListener {
 		registerUpdate();
 	}
 
+	public void notifyDscTransmissionFinished() {
+	}
+	
 	/**
 	 * Getter for the used RadioCore. Might be used by the DCS-Controller
 	 * to changed the channel of the radio or send a DSC signal (sending DSC
@@ -725,5 +728,5 @@ public class SimpleRadioGUI extends AppFrame implements RadioEventListener {
 		}
 
 	}
-	
+
 }

@@ -18,6 +18,8 @@
  */
 package net.sourceforge.dscsim.radio.core.impl;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.radio.core.RadioCore;
@@ -38,6 +40,10 @@ import net.sourceforge.dscsim.util.ByteConverter;
  */
 public class RadioCoreImpl implements RadioCore, Demodulator {
 
+	/**
+	 * The duration of sending the DSC-Signal
+	 */
+	private static final int DSC_SEND_DURATION = 1000;
 	/**
 	 * The logger for this class
 	 */
@@ -92,6 +98,12 @@ public class RadioCoreImpl implements RadioCore, Demodulator {
 	 * Flag which indicates if the transmit button is pressed
 	 */
 	private boolean _transmit;
+	
+	/**
+	 * Flag which indicates if the radio is currently transmitting
+	 * a DSC signal
+	 */
+	private boolean _dscTransmit;
 	
 	/**
 	 * The VHF channel
@@ -158,6 +170,7 @@ public class RadioCoreImpl implements RadioCore, Demodulator {
 //		_audioByteBuffer = new ByteBuffer();
 		_audioDataBuffer = new SoundSignalQueueGroup();
 		_transmit = false;
+		_dscTransmit = false;
 		_packetSequence = new SoundDataPacketSequence();
 		_soundCaptureThread = new SoundCaptureThread(this);
 		_soundPlaybackThread = new SoundPlaybackThread(this);
@@ -169,10 +182,13 @@ public class RadioCoreImpl implements RadioCore, Demodulator {
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.radio.core.RadioCore#setTransmit(boolean)
 	 */
-	public void setTransmit(boolean active) {
-		_transmit = active;
-		_soundCaptureThread.setTransmit(active);
-		_receiver.disable(active);  //disable receiving while sending
+	public synchronized void setTransmit(boolean active) {
+		if( !(_dscTransmit && active ) ) {
+			// no switching on, if dsc is active
+			_transmit = active;
+			_soundCaptureThread.setTransmit(active);
+			_receiver.disable(active);  //disable receiving while sending
+		}
 	}
 
 	/**
@@ -257,32 +273,56 @@ public class RadioCoreImpl implements RadioCore, Demodulator {
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.radio.core.RadioCore#sendDscSignal(byte[])
 	 */
-	public void sendDscSignal(byte[] dscSignal) {
+	public void sendDscSignal(final byte[] dscSignal) throws IOException {
 		if( !_on ) {
 			_logger.debug("Not sending DSC-Signal because radio is OFF ");
-			return;
+			throw new IOException("Unable to send DSC-Signal because radio is OFF ");
+		}
+		synchronized(this) {
+			if(_transmit) {
+				_logger.debug("Not sending DSC-Signal because voice transmission is active");
+				throw new IOException("Unable to send DSC-Signal because voice transmission is active");
+			}
+			_dscTransmit = true;
 		}
 		_logger.debug("Sending DSC-Signal");
-		VHFChannel oldChannel = getChannel();
-		boolean oldPower = getPower();
+		final VHFChannel oldChannel = getChannel();
+		final boolean oldPower = getPower();
 		_receiver.disable(true);  // disable receiver (also switched to 70)
-		setChannel(VHFChannel.VHF_CHANNEL_70);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		_transmitter.transmit(dscSignal, null);
-		setPower(oldPower);
-		setChannel(oldChannel);
-		_receiver.disable(false);
+		setPowerUnconditional(true);
+		setChannelUnconditional(VHFChannel.VHF_CHANNEL_70);
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					Thread.sleep(DSC_SEND_DURATION);
+				} catch (InterruptedException e) {
+					_logger.error(e);
+				}
+				_transmitter.transmit(dscSignal, null);
+				setPowerUnconditional(oldPower);
+				setChannelUnconditional(oldChannel);
+				_receiver.disable(false);
+				_dscTransmit = false;
+			}
+		};
+		t.start();
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.radio.core.RadioCore#setChannel(int)
 	 */
-	public void setChannel(VHFChannel channel) {
+	public synchronized void setChannel(VHFChannel channel) {
+		if( !_dscTransmit ) {
+			setChannelUnconditional(channel);
+		}
+	}
+
+
+	/**
+	 * Sets the channel without checking for preconditions
+	 * @param channel the new VHF channel
+	 */
+	private void setChannelUnconditional(VHFChannel channel) {
 		_channel = channel;
 		_listenerProxy.notifyChannel();
 		if(_shipstation){
@@ -314,7 +354,18 @@ public class RadioCoreImpl implements RadioCore, Demodulator {
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.radio.core.RadioCore#setPower(boolean)
 	 */
-	public void setPower(boolean high) {
+	public synchronized void setPower(boolean high) {
+		if( !_dscTransmit ) {
+			setPowerUnconditional(high);
+		}
+	}
+
+
+	/**
+	 * Set the power flag without checking for any preconditions
+	 * @param high the power flag 
+	 */
+	private void setPowerUnconditional(boolean high) {
 		_high=high;
 		_transmitter.setPower((float)(high ? HIGH_POWER : LOW_POWER) );
 		_listenerProxy.notifyPower();

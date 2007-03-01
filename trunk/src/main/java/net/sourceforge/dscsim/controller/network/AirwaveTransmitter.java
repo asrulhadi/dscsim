@@ -23,6 +23,7 @@ package net.sourceforge.dscsim.controller.network;
 import java.net.MulticastSocket;
 import java.net.InetAddress;
 import java.net.DatagramPacket;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -125,8 +126,15 @@ public class AirwaveTransmitter extends DscRadioTransmitter implements Runnable 
 
 	                ByteConverter.intToByteArray(PACKET_TYPE, msgWithHeader, 0 );
 	                System.arraycopy(byteMsg, 0, msgWithHeader, 4, byteMsg.length);
-	                
-	                radioCoreController.sendDscSignal(msgWithHeader);
+	                try {
+		                radioCoreController.sendDscSignal(msgWithHeader);
+	                } catch( IOException ioE ) {
+	                	// TODO: This Exception indicates that the dsc message could not be sent
+	                	// (radio off or currently transmitting voice). The Controller should
+	                	// switch back to basic status (see [1667403] Beim Senden über das Radio sollte der
+	                	// Controller in den..)
+	                	// how can we give this feedback to the controller?
+	                }
 	    			synchronized(tmpMessage){
 	    				tmpMessage.notifyAll();
 	    			}			

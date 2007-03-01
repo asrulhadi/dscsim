@@ -85,12 +85,17 @@ public interface RadioCore {
 	public void setSquelch(double squelch);
 	
 	/**
-	 * Sends a (DSC) signal. The radio will switch to the predefined DSC channel
-	 * and transmit the given signal. The method will block for the simulated time
-	 * of sending the dsc signal.
-	 * @param dscSignal the data to be transmitted on channel 70    
+	 * Sends a (DSC) signal. The radio will immediately switch to the predefined
+	 * DSC channel and return. Sending is done asynchronously after some waiting
+	 * time. When sending is finished the channel will be switched back to the
+	 * initial value and method
+	 * {@link net.sourceforge.dscsim.radio.core.RadioEventListener#notifyDscTransmissionFinished()}
+	 * will be called on all registered listeners.
+	 * @param dscSignal the data to be transmitted on channel 70
+	 * @throws java.lang.IOException if the current state of the radio does not
+	 *  permit to send the signal (e.g. switched off or transmitting voice) 
 	 */
-	public void sendDscSignal(byte[] dscSignal);
+	public void sendDscSignal(byte[] dscSignal) throws java.io.IOException;
 	
 	/**
 	 * Registers a RadioEventListener to receive notifications about

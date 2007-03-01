@@ -38,4 +38,9 @@ public interface RadioEventListener {
 	 * The transmitting power has changed
 	 */
 	public void notifyPower();
+	
+	/**
+	 * The dsc transmission has finished
+	 */
+	public void notifyDscTransmissionFinished();
 }
