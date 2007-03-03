@@ -34,9 +34,14 @@ public class NoiseSoundSignalQueue extends SoundSignalQueue {
 	public static final double NOISE_POWER = 1e-6; 
 	
 	/**
-	 * data representing silence
+	 * Scaling factor for noise volume
 	 */
-	private byte[] noise;
+	private static final int NOISE_SCALE = 1;
+	
+//	/**
+//	 * data representing silence
+//	 */
+//	private byte[] noise;
 
 	/**
 	 * The random signal generator
@@ -66,15 +71,16 @@ public class NoiseSoundSignalQueue extends SoundSignalQueue {
 			e.printStackTrace();
 		}
 		packetLength = dummyData.length;
-		noise = new byte[dummyData.length]; // implicitely all 0
 		r = new Random();
-		r.nextBytes(noise);
 		noisePower = Decibel.fromLinearPower(NOISE_POWER);
 	}
 
 	public byte[] getNextSoundPacket() {
 		byte noise[] = new byte[packetLength];
 		r.nextBytes(noise);
+		for(int i=0; i<noise.length; i++ ){
+			noise[i] = (byte)(noise[i]>>>NOISE_SCALE);
+		}
 		return noise;
 	}
 
@@ -92,6 +98,5 @@ public class NoiseSoundSignalQueue extends SoundSignalQueue {
 	public boolean isEmpty() {
 		return false;
 	}
-	
 
 }
