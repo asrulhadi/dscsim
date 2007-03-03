@@ -11,6 +11,8 @@ licenses of the bundled libraries in directory "legal".
 
 ==================================================
 New in dscsim X.X.X:
+- Fixed (?) [1673020] White noise to loud as compared to speech:
+  Level of white noise sound reduced by factor 2
 - Fixed [1667405] Sendetaste des Radios darf nicht bedient werden...
 New in dscsim 1.3.1:
 - Separate Installation Guide (PDF, only German) will be installed
