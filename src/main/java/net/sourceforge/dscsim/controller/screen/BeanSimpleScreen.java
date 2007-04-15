@@ -104,7 +104,7 @@ public class BeanSimpleScreen extends BeanBaseScreen implements Constants{
 	
 
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 
 		String msgType = oMessage.getType();
 				
@@ -119,7 +119,7 @@ public class BeanSimpleScreen extends BeanBaseScreen implements Constants{
 			
 				String screenName = this.getAttributeValue("link");
 													
-				ScreenContent oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 							
 				oScreenNext.setParent(this);
 	

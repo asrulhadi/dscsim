@@ -25,8 +25,10 @@ import net.sourceforge.dscsim.controller.network.DscIACManager;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.network.SyncPublisher;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
+import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.SendDistressScreen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
+
 
 
 /**
@@ -55,14 +57,16 @@ public class MultiClu  implements  BusListener, Constants {
 		 * @param oTarget.
 		 * @return index of screen on stack.
 		 */
-		private int indexOf(ScreenContent oTarget){
+		private int indexOf(ScreenInterface oTarget){	
 			if(oTarget == null) 
 				return -1;
 			
 			int idxLast = _oScreenStack.size()-1;
-			ScreenContent oCurr = null;
+			ScreenInterface oCurr = null;
 			for(int idxCurr = idxLast; idxCurr >= 0; idxCurr--){
-				oCurr = (ScreenContent)_oScreenStack.get(idxCurr);
+				
+				oCurr = (ScreenInterface)_oScreenStack.get(idxCurr);
+				
 				if(oTarget.getAttributeValue("name").equals(oCurr.getAttributeValue("name")))
 					return idxCurr;
 			}
@@ -93,17 +97,22 @@ public class MultiClu  implements  BusListener, Constants {
 		 * @param oMessage
 		 * @throws Exception
 		 */
+		/**
+		 * remove the top entry from the Stack.
+		 * @param oMessage
+		 * @throws Exception
+		 */
 		private void popStock(BusMessage oMessage) throws Exception{
 			
 			int idxLast = _oScreenStack.size() -1;
 			
 			if(idxLast>0){
 				
-				ScreenContent oScreen = (ScreenContent)_oScreenStack.remove(idxLast);
+				ScreenInterface oScreen = (ScreenInterface)_oScreenStack.remove(idxLast);
 				
 				//oScreen.exit(oMessage);
 				
-				oScreen = (ScreenContent)_oScreenStack.get(idxLast-1);
+				oScreen = (ScreenInterface)_oScreenStack.get(idxLast-1);
 				
 				_oContext.getController().setScreenContent(oScreen);	
 					
@@ -131,14 +140,25 @@ public class MultiClu  implements  BusListener, Constants {
 		 * @param oMessage
 		 * @throws Exception
 		 */
+		/**
+		 * reset the state stack and call exit for all states. Return
+		 * to the welcome screen.
+		 * @param oMessage
+		 * @throws Exception
+		 */
 		private void resetScreenStack(BusMessage oMessage)throws Exception {
 						
 			//leave bottom 0 elment on stack.
-			ScreenContent oScreen = null;			
-			for(int i= _oScreenStack.size()-1; i>=0; i--){				
-				oScreen = (ScreenContent)_oScreenStack.remove(i);				
-				oScreen.exit(oMessage);				
-				_oContext.getContentManager().putCache(oScreen);								
+			ScreenInterface oScreen = null;
+			
+			for(int i= _oScreenStack.size()-1; i>=0; i--){
+				
+				oScreen = (ScreenInterface)_oScreenStack.remove(i);
+				
+				 oScreen.exit(oMessage);
+				
+				_oContext.getContentManager().putCache(oScreen);
+								
 				_oContext.getController().setScreenContent(oScreen);	
 			}
 
@@ -147,6 +167,7 @@ public class MultiClu  implements  BusListener, Constants {
 			_oContext.getController().setScreenContent(oScreen);	
 
 		}
+		
 		/**
 		 * handle incoming message and dispatch them to appropriate screen.
 		 */
@@ -154,7 +175,7 @@ public class MultiClu  implements  BusListener, Constants {
 
 				//AppLogger.debug("Clu.signal - BusMessage type="+ oMessage.getId());
 
-				ScreenContent oScreen = null;
+				ScreenInterface oScreen = null;
 
 				DscIACManager.getSyncPublisher().sendSync(_oContext.getContentManager().getMMSI(), oMessage);
 
@@ -209,7 +230,8 @@ public class MultiClu  implements  BusListener, Constants {
 						&& BusMessage.MSGTYPE_KEY.equals(oMessage.getType())
 						&& FK_SOS.equals(oMessage.getButtonEvent().getKeyId())){
 						
-						oScreen = (ScreenContent)_oScreenStack.get(_oScreenStack.size()-1);						
+						oScreen = (ScreenInterface)_oScreenStack.get(_oScreenStack.size()-1);
+						
 						if((oScreen instanceof SendDistressScreen)==false){
 							oScreen = _oContext.getContentManager().getScreenContent("distress_call_send", _oContext);
 							_oScreenStack.add(oScreen);
@@ -224,8 +246,10 @@ public class MultiClu  implements  BusListener, Constants {
 				
 
 					//not handled default to screen actions
-					oScreen = (ScreenContent)_oScreenStack.get(_oScreenStack.size()-1);			
-					ScreenContent oReturnScreen = oScreen.signal(oMessage);
+					oScreen = (ScreenInterface)_oScreenStack.get(_oScreenStack.size()-1);
+					
+					ScreenInterface oReturnScreen = oScreen.signal(oMessage);
+					
 					if(oReturnScreen == null){
 						//send clr message and return
 						//Bus.getInstance().publish(new BusMessage(null, FK_CLR));
@@ -233,26 +257,27 @@ public class MultiClu  implements  BusListener, Constants {
 						popStock(oMessage);
 						return;
 						
-					} else if(oReturnScreen != oScreen){						
-						int idxOf = indexOf(oReturnScreen);
+					} else if(oReturnScreen != oScreen){
+												
+						int idxOf = indexOf(oReturnScreen);						
 						//instance of screen is already on stack backup to it.
 						//therefore backup stack. no cylces in state diagram.
 						if(idxOf > -1){						
 							oScreen.exit(oMessage);
-							ScreenContent oTmp=null;
+							ScreenInterface oTmp=null;
 							for(int i=_oScreenStack.size()-1; i >= idxOf; i--){
-								oTmp = (ScreenContent)_oScreenStack.get(i);
+								oTmp = (ScreenInterface)_oScreenStack.get(i);
 								//oTmp.exit(oMessage);
 								_oScreenStack.remove(i);
 							}
 						} else {
 							//moving down deeper in state diagram
-							oScreen.exit(oMessage);
+							oScreen.exit(oMessage);							
 							oReturnScreen.setIncomingDscMessage(oScreen.getIncomingDscMessage());
 							oReturnScreen.setOutGoingDscMessage(oScreen.getOutGoingDscMessage());
 						}
 											
-						oReturnScreen.enter(oScreen.getIncomingDscMessage());
+						oReturnScreen.enter(oScreen.getIncomingDscMessage());		
 						_oScreenStack.add(oReturnScreen);
 					}
 					

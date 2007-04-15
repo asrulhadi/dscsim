@@ -57,7 +57,7 @@ class DscMainPanel extends JPanel implements  ItemListener, SyncListenerSubscrib
 	
 	public DscMainPanel(){
 		
-		setLayout(new BorderLayout());
+		//setLayout(new BorderLayout());
 		setBorder(new EtchedBorder());
 	    add(createMenuBar(), BorderLayout.NORTH);
     
@@ -144,7 +144,7 @@ public class MultiDscApplet extends JApplet implements Constants, ApplicationCon
 		AppletSoundList.createSingleton(getCodeBase());
 
 		DscMainPanel oMainPanel = new DscMainPanel();
-		getContentPane().setLayout(new BorderLayout());
+		//getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(oMainPanel, BorderLayout.CENTER);
 	
 

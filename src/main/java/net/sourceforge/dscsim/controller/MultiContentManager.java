@@ -32,6 +32,7 @@ import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.screen.BeanList;
 import net.sourceforge.dscsim.controller.screen.MenuScreen;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
+import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.types.ActiveField;
 import net.sourceforge.dscsim.controller.screen.types.DscBoolean;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
@@ -158,7 +159,7 @@ public class MultiContentManager implements BusListener, Constants {
 			return "";
 	}
 	
-	public void putCache(ScreenContent oScreen) {
+	public void putCache(ScreenInterface oScreen) {
 		
 		/*
 		String scope = oScreen.getAttributeValue("scope");
@@ -209,20 +210,18 @@ public class MultiContentManager implements BusListener, Constants {
 				
 		return oStorage;
 	}
-	private ScreenContent getCache(String srchName){
+	private ScreenInterface getCache(String srchName){
 		
 		String name = null;
-		ScreenContent oScreen = null;
+		ScreenInterface oScreen = null;
 		for(int i=0; i < this._oSessionCache.size(); i++){
 			
-			oScreen = (ScreenContent)_oSessionCache.get(i);
+			oScreen = (ScreenInterface)_oSessionCache.get(i);
 			
-			name = oScreen.getScreenName();
+			name = oScreen.getAttributeValue("name");
 			
 			if(name.equals(srchName))
-				return oScreen;
-			
-			
+				return oScreen;	
 			
 		}
 		
@@ -230,8 +229,8 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 	
 	
-	public ScreenContent getScreenContent(String strScreenName, InstanceContext oCtx) {
-		ScreenContent oRet = null;
+	public ScreenInterface getScreenContent(String strScreenName, InstanceContext oCtx) {
+		ScreenInterface oRet = null;
 		
 		try{
 

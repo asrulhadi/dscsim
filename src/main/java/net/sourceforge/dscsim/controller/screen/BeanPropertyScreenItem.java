@@ -181,7 +181,7 @@ public class BeanPropertyScreenItem extends BeanScreen implements Constants {
 	}
 	
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();

@@ -18,8 +18,11 @@
  */
 package net.sourceforge.dscsim.controller;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Graphics;
+import java.awt.Panel;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -31,9 +34,7 @@ import net.sourceforge.dscsim.controller.network.InternalBusListener;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 
-/**
- * Panel for drawing of controller
- */
+
 class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener, Constants {
 	
 	    /*members needed for InstanceContext implementation*/
@@ -62,11 +63,14 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			
 		}
 		
+
 		/**
 		 * get the context specific instance of the CLU object.
 		 */
 		public MultiClu getClu(){
 			return _oClu;
+			
+			
 		}
 		/**
 		 * get the context specific instance of teh ContentManager.
@@ -74,7 +78,6 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 		public MultiContentManager getContentManager(){
 			return _oContentManager;
 		}
-		
 		/**
 		 * get the context specific instance of the bus.
 		 */
@@ -100,6 +103,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			return _oController;
 		}
 
+		
 		/**
 		 * stop and remove dependents. 
 		 *
@@ -109,12 +113,11 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			AppletSoundList.destroySingleton();	
 			AppLogger.debug("applet.DscAppPanel stop finished");
 		}
-		
 		/**
 		 * initialization for startup.
 		 * @param oComponent
 		 */
-		public void init(Component oComponent) {
+		public void init(Container oComponent) {
 						
 			AppLogger.debug("applet.DscAppPanel init started");
 			
@@ -123,6 +126,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			_oClu = MultiClu.getInstance(this);
 									
 			getController().init(oComponent, 0, 0);
+//			getController().init(this, 0, 0);
 			
 			addMouseListener(getController());
 							
@@ -134,7 +138,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			getBus().putOnline(getClu());
 			
 			AppLogger.debug("applet.DscAppPane putting Beeper on line.");	
-			_oBeeper = MultiBeeper.getInstance(this);
+			_oBeeper = MultiBeeper.getInstance();
 			getBus().putOnline(_oBeeper);
 													
 			AppLogger.debug("applet.DscApp sending RESET");						
@@ -145,13 +149,16 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 
     }
 	
-	/**
+ 	/**
 	 * call back for awt.
 	 */
-    public void paint(Graphics g) {   	
-       getController().paint(g);       
+    public void paint(Graphics g) {
+       getController().paint(g, this);
        //_oRadio.paint(g);
     }
+
+
+
 
     /**
      * awt key released event.
@@ -159,6 +166,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 	public void keyReleased(String keyId) {
 		
 	}
+
 
 	/**
 	 * handle notification for network and dispatch the into the application.
@@ -168,9 +176,11 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 		AppLogger.debug("applet.DscAppPanel.updateSignal=" + oDscMessage.toString());
 		
 		/*if the power is off then ignore all incoming.*/
+		/*
 		if(!getRadioCoreController().masterSwitchOn()){
 			return;
 		}
+		*/
 		
 		String msgFromMMSI = oDscMessage.getFromMMSI();
 		String msgType = oDscMessage.getCallType();
@@ -241,6 +251,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 	public void setRadioCoreController(RadioCoreController oRadioCoreController){
 		_oRadioCoreController = oRadioCoreController;
 	}
+
 
 	/**
 	 *removeProperties  

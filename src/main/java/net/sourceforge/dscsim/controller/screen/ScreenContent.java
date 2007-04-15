@@ -662,7 +662,7 @@ class DataListItemScreen extends ScreenContent implements Constants{
 	}
 
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 	
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();
@@ -694,7 +694,7 @@ class DataListScreen extends ScreenContent implements Constants {
 		super(oSource);
 		
 	}
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 		// TODO Auto-generated method stub
 		
 		if(FK_CLR.equals(oMessage.getButtonEvent().getKeyId())) {
@@ -740,7 +740,7 @@ class DataListScreen extends ScreenContent implements Constants {
 				
 				String screenName = _oScreenElement.getAttributeValue("link");
 				
-				ScreenContent oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 				
 				//getInstanceContext().setProperty(screenName, oData);
 				
@@ -837,7 +837,7 @@ class SendActionScreen extends SendBaseScreen {
 	}
 	
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 		
 		if(oMessage.getButtonEvent().getAction().equals(RELEASED))
 			return this;
@@ -1125,7 +1125,7 @@ class EntryScreen extends ScreenContent implements Constants {
 
     }
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 				
 		
 		if(oMessage.getButtonEvent().getAction().equals(RELEASED))
@@ -1172,7 +1172,7 @@ class EntryScreen extends ScreenContent implements Constants {
 
 }
 
-public abstract class ScreenContent implements Constants {
+public abstract class ScreenContent implements Constants, ScreenInterface {
 	
 	protected ScreenLineList _oLines = new ScreenLineList();
 	protected Element _oScreenElement = null; 
@@ -1245,7 +1245,7 @@ public abstract class ScreenContent implements Constants {
 		_displayedFrom = -1;
 		_displayedTo = -1;
 	}
-	public abstract ScreenContent signal(BusMessage oMessage);
+	public abstract ScreenInterface signal(BusMessage oMessage);
     public void init() {
     	
 	    _currLine = 0;
@@ -1522,10 +1522,16 @@ public abstract class ScreenContent implements Constants {
 		return "";	
 	}
 	
-	private static ScreenContent createScreenContent(Element oRoot, Element oScreenRoot, MultiContentManager oCMngr)  throws Exception {
+	private static ScreenInterface createScreenContent(Element oRoot, Element oScreenRoot, MultiContentManager oCMngr)  throws Exception {
 		
-		ScreenContent oRet= null;
+		ScreenInterface oRet= null;
 		
+		 if(oScreenRoot.getAttribute("clazz") != null ) {
+			oRet = createClazz(oScreenRoot, oCMngr);
+			return oRet;
+		 }
+		 
+		 
 		//is bean screen
 		 if(oScreenRoot.getAttribute("class") != null ) {
 			oRet = createBeanScreen(oScreenRoot, oCMngr);
@@ -1564,13 +1570,18 @@ public abstract class ScreenContent implements Constants {
 	}
 	
 
-	public static ScreenContent createFromXml(Element oRoot, Element oScreenRoot, MultiContentManager oCMngr)  {
+	public static ScreenInterface createFromXml(Element oRoot, Element oScreenRoot, MultiContentManager oCMngr)  {
 		
-		ScreenContent oRet = null;
-		
+		ScreenInterface oRet1 = null;
+		ScreenContent oRet =null;
 		try {
 			
-			oRet = ScreenContent.createScreenContent(oRoot, oScreenRoot, oCMngr);
+			oRet1 = ScreenContent.createScreenContent(oRoot, oScreenRoot, oCMngr);
+			
+			if (oRet1 instanceof net.sourceforge.dscsim.controller.screen.StateScreen)
+				return oRet1;
+			else
+				oRet = (ScreenContent)oRet1;
 			
 			oRet.parseScreenAttributes(oScreenRoot);
 			
@@ -1851,7 +1862,30 @@ public abstract class ScreenContent implements Constants {
 				
 		return oScreenContent;
 		
-	}		
+	}	
+	
+	
+	public static ScreenInterface createClazz(Element oScreenRoot, MultiContentManager oCMngr)
+	throws Exception {
+
+		ScreenInterface oScreenContent = null;
+				
+		String strClazzName = oScreenRoot.getAttributeValue("clazz");
+		
+		
+		Class scrnClazz = Class.forName(strClazzName);
+		
+		Constructor oCtr = scrnClazz.getConstructor(new Class[]{oScreenRoot.getClass(), oCMngr.getClass()});
+		
+		oScreenContent = (ScreenInterface)oCtr.newInstance(new Object[]{oScreenRoot, oCMngr});
+		
+		oScreenContent.setInstanceContext(oCMngr.getInstanceContext());
+
+		//oScreenContent.init();
+				
+		return oScreenContent;
+		
+	}	
 		
 
 }
