@@ -88,7 +88,7 @@ public class BeanSetupSendEntryScreen extends BeanBaseScreen implements
 	}
 
 	
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();
@@ -106,7 +106,7 @@ public class BeanSetupSendEntryScreen extends BeanBaseScreen implements
 				
 				String nextScreen = _oScreenElement.getAttributeValue("next");
 				
-				ScreenContent oScreenNext = _oContentManager.getScreenContent(nextScreen, getInstanceContext());
+				ScreenInterface oScreenNext = _oContentManager.getScreenContent(nextScreen, getInstanceContext());
 				
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());

@@ -102,7 +102,7 @@ public class MenuScreen extends ScreenContent  implements Constants{
 		return def;	
 	}
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 		
 		//only up, down, enter, sos, reset
 		//all other ignored
@@ -132,7 +132,7 @@ public class MenuScreen extends ScreenContent  implements Constants{
 					
 					if(event.equals(keyID) || (event.length()==0 && FK_ENT.equals(keyID))) {
 						
-						ScreenContent oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getLink(), getInstanceContext());
+						ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getLink(), getInstanceContext());
 						
 						//oScreen.enter(_enterArg0);
 						

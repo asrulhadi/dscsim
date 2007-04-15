@@ -160,7 +160,7 @@ public class BeanMenuScreen extends BeanBaseScreen implements Constants{
 		
 	}
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 
 		String typeId = oMessage.getType();
 		
@@ -198,7 +198,7 @@ public class BeanMenuScreen extends BeanBaseScreen implements Constants{
 				
 				getInstanceContext().setProperty(oCurrLine.getAttributeValue("storage"), oData);				
 									
-				ScreenContent oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 							
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
@@ -219,7 +219,7 @@ public class BeanMenuScreen extends BeanBaseScreen implements Constants{
 				
 				if(event.equals(keyID) || (event.length()==0 && event.equals(keyID))) {
 					
-					ScreenContent oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getAttributeValue("link"), getInstanceContext());
+					ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getAttributeValue("link"), getInstanceContext());
 					
 					//oScreen.enter(_enterArg0);
 					

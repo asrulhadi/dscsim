@@ -57,7 +57,7 @@ class SingleDscMainPanel extends JPanel implements  ItemListener, ActionListener
 	
 	public SingleDscMainPanel(){
 		
-		setLayout(new BorderLayout());
+		//setLayout(new BorderLayout());
 		setBorder(new EtchedBorder());
 	    add(createMenuBar(), BorderLayout.NORTH);
     

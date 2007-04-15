@@ -22,6 +22,7 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,9 +36,17 @@ import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import net.sourceforge.dscsim.controller.screen.Screen;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
+import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.ScreenLine;
 import net.sourceforge.dscsim.controller.screen.ScreenLineList;
+import net.sourceforge.dscsim.controller.screen.StateScreen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
@@ -64,6 +73,12 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	
 	public String _text = "N/A";
 	private ScreenContent _oContent = null;
+	
+	
+	/*lcd screen*/
+	private Component lcd = null;
+	private Container container = null;
+
 	
 	/*
 	 * for minimizing keyboard events.
@@ -100,10 +115,10 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	private int [][] _screenSize = {{94, 84},{372, 243}};	
 	private final int DISPLAY_X = _screenSize[0][0]-5;
 	private final int DISPLAY_Y = _screenSize[0][1];
-	private final int DISPLAY_W = _screenSize[1][0] - _screenSize[0][0]+5;		
-	private final int DISPLAY_H = _screenSize[1][1] - _screenSize[0][1]+5;
+	private final int DISPLAY_W = _screenSize[1][0] - _screenSize[0][0]+10;		
+	private final int DISPLAY_H = _screenSize[1][1] - _screenSize[0][1];
 	
-	private Component _oContainer = null;
+	private Container _oContainer = null;
 	private boolean _initialized = false;
   	
 	//button shading
@@ -121,6 +136,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		
 		//start auto refreshin after so many seconds.
 		_paintElapsedTime = System.currentTimeMillis()+2000;
+			
 		start();
 		
 	}
@@ -135,10 +151,10 @@ public class MultiController extends Thread implements MouseListener, Constants,
 
 	}
 	
-	public void init(Component oContainer, int x, int y) {
+	public void init(Container oContainer, int x, int y) {
 		
 		AppLogger.debug("MultiController.init - started");
-
+				
 		_oContainer = oContainer;
 		_x_offset = x;
 		_y_offset = y;
@@ -163,7 +179,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		}
 				
 		_oButtons = createButtons();
-		
+	
 		AppLogger.debug("MultiController.init - end");
 		
 		_initialized = true;
@@ -174,7 +190,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	private synchronized ScreenContent getScreenContent(){
 		return _oContent;
 	}
-	public synchronized void setScreenContent(ScreenContent oContent) {
+	public synchronized void setScreenContent(ScreenInterface oScreen) {
 		
 		/* a possibility in run to save CPU
 		if(_oContent != null && _oContent.forceRefresh()==false){
@@ -189,8 +205,16 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		}
 		*/
 		
-		_oContent = oContent;		
-		_oContainer.repaint();
+		
+		if(oScreen instanceof StateScreen){
+			Component lcd = (Component)oScreen;
+			this.setLcdOn(lcd);
+		} else {	
+			this.setLcdOff();
+			_oContent = (ScreenContent)oScreen;		
+			_oContainer.repaint();			
+		}
+	
 	}
 
 	private int calculateMaxLines(Font o, int yOffset){
@@ -206,22 +230,22 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		return maxLines;
 	}
 	
-	public void paint(Graphics g){		
+	public void paint(Graphics g, Container container ){		
 		
         if(_imageDsc == null)
     			return;
     
-        Graphics2D g2 = (Graphics2D) g;      
+        Graphics2D g2 = (Graphics2D) g; 
+        
                
         /*draw the dsc image*/
-    		int x = (_oContainer.getSize().width - _imageDsc.getWidth(_oContainer))/2;
-    		int y = (_oContainer.getSize().height - _imageDsc.getHeight(_oContainer))/2;
+    		//int x = (_oContainer.getSize().width - _imageDsc.getWidth(_oContainer))/2;
+    		//int y = (_oContainer.getSize().height - _imageDsc.getHeight(_oContainer))/2;
     
     		g2.drawImage(_imageDsc, _x_offset, _y_offset, _oContainer);
-
-    		
+	
     		if(_powerOn)
-    			paintScreen(g2);
+    			paintScreen(g2, container);
     		else
     			paintBlank(g2);	
 		
@@ -265,123 +289,136 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		}
 		
 	}
+	
+	
+	private void handleState(StateScreen scr, Container con, Graphics2D g2d){
+		
+		/*
+		Screen sc = scr.getScreen(DISPLAY_X,DISPLAY_Y,DISPLAY_W, DISPLAY_H);
+		//sc.paint(g2d);
+		
+		for(int i=0; i<10;i++){			
+			g2d.drawString("hell", i*5, i*5);			
+		}
+		*/
+	}
 	/**
 	 * paintScreen - paint device's screen area.
 	 * @param g Graphics
 	 */
-	private void paintScreen(Graphics2D g2) {
+	private void paintScreen(Graphics2D g2, Container container) {
 		    
 		//AppLogger.debug("Controller.paint - started");
                         
         ScreenContent oContent = getScreenContent();
         
         if(oContent != null) {
-		//AppLogger.debug("Controller.paint - adding ScreenContent lines=" + oContent.getLines());
-     	
-     	Font thisFont = new Font("Courier", Font.PLAIN, 14);
-            
-    		ScreenLineList oLines = oContent.getLines();
-    		ScreenLine oLine = null;
-    		int fontHeight = _oContainer.getFontMetrics(thisFont).getHeight();
-   		
-    		int xOffset = 0, yOffset = 15;
-    		int screenMaxLines = calculateMaxLines(thisFont, yOffset); 
-    		
-    		//laydown headers first
-    		int headerCount = oContent.getHeaderCount();
-    		int displayLine = 0;
-    		for(; displayLine < headerCount; displayLine++){
-    			oLine = (ScreenLine)oLines.get(displayLine);
-    			AppLogger.debug("printing header#" + displayLine + ":" + oLine.getDisplayText());
-    			
-    			xOffset = oLine.getAttributeIntValue("column");
-			    g2.setColor(Color.black);	 				
-        		g2.setFont(thisFont);	 
-        		g2.drawString(oLine.getDisplayText(), 
-        				_screenSize[0][0]+xOffset, 
-        				_screenSize[0][1]+yOffset + displayLine*fontHeight);	      				
-    			
-    		}
-    		
-    		int footerCnt = oContent.getFooterCount();
-    		int maxBodyLines = screenMaxLines - footerCnt - headerCount;
-    		int visibleLines = oLines.getVisibleCount();
-    		int actBodyLines = visibleLines - footerCnt - headerCount;
-    		int calcBodyLines = actBodyLines > maxBodyLines ? maxBodyLines : actBodyLines;
-    		//AppLogger.debug2("headers=" + headerCount + ",body=" +maxBodyLines + ",footer="+footerCnt);
-    			
-    		 
-    		int displayFrom = oContent.getDisplayedFrom();   	
-    		displayFrom = displayFrom > -1 ? displayFrom : headerCount;
-    			
-    		int displayTo = oContent.getDisplayedTo();
-    		displayTo = displayTo > -1 ? displayTo : displayFrom + calcBodyLines-1;
-      		
-    		int activeLine = oContent.getActiveLine();
-    		
-       	//AppLogger.debug2("displayFrom=" + displayFrom + ",displayTo=" +displayTo + ",activeLine="+activeLine);
-       	    		
-    		if(activeLine > displayTo){
-    			displayFrom++;
-    			displayTo++;
-    		} else if(activeLine < displayFrom){
-    			displayFrom--;
-    			displayTo--;
-    		}
-    		
-    		if(displayTo == visibleLines)
-    			displayTo = oContent.getFooterCount()-1;
-    		
-    		if(displayFrom == 0)
-    			displayFrom  = oContent.getHeaderCount();
-    		
-    		oContent.setDisplayedFrom(displayFrom);
-    		oContent.setDisplayedTo(displayTo);
-    		int leading = 2;
-  		
-
-    		//laydown body 
-    		for(int i=displayFrom; i < displayTo+1; i++, displayLine++){
- 
-        		oLine = (ScreenLine)oLines.get(i);
-       		//AppLogger.debug("printing body#" + displayLine + ":" + oLine.getDisplayText());
-        		/*
-        		if(oLine.isVisible() == false)
-        			continue;
-        		*/
-        		
-		 	if(oContent.getActiveLine() == i
-		 				&&oContent.isCursorOn())
-				g2.setColor(Color.red);
-			else
-				g2.setColor(Color.black);
-			
-        		g2.setFont(thisFont);       		
-        		xOffset = oLine.getAttributeIntValue("column");
-
-        		g2.drawString(oLine.getDisplayText(), 
-        				_screenSize[0][0]+xOffset, 
-        				_screenSize[0][1]+yOffset + displayLine*fontHeight+(leading*i));
-        		
-	        		      		             			
-        	}
-    		
-    		//laydown footers
-    		displayLine = screenMaxLines - footerCnt+1;
-    		for(int k= visibleLines-footerCnt; k < visibleLines; k++, displayLine++){
-        		oLine = (ScreenLine)oLines.get(k);
-    			//AppLogger.debug("printing footer#" + displayLine + ":" + oLine.getDisplayText());
-    			
-				g2.setColor(Color.black);	 				
-		    		g2.setFont(thisFont);	 
-		   		xOffset = oLine.getAttributeIntValue("column");
-		    		g2.drawString(oLine.getDisplayText(), 
-		    				_screenSize[0][0]+xOffset, 
-		    				_screenSize[0][1]+yOffset + displayLine*fontHeight);
-		      				
- 			
-        	}
-    		
+    		//AppLogger.debug("Controller.paint - adding ScreenContent lines=" + oContent.getLines());      
+	    	
+	     	Font thisFont = new Font("Courier", Font.PLAIN, 14);
+	            
+	    		ScreenLineList oLines = oContent.getLines();
+	    		ScreenLine oLine = null;
+	    		int fontHeight = _oContainer.getFontMetrics(thisFont).getHeight();
+	   		
+	    		int xOffset = 0, yOffset = 15;
+	    		int screenMaxLines = calculateMaxLines(thisFont, yOffset); 
+	    		
+	    		//laydown headers first
+	    		int headerCount = oContent.getHeaderCount();
+	    		int displayLine = 0;
+	    		for(; displayLine < headerCount; displayLine++){
+	    			oLine = (ScreenLine)oLines.get(displayLine);
+	    			AppLogger.debug("printing header#" + displayLine + ":" + oLine.getDisplayText());
+	    			
+	    			xOffset = oLine.getAttributeIntValue("column");
+				    g2.setColor(Color.black);	 				
+	        		g2.setFont(thisFont);	 
+	        		g2.drawString(oLine.getDisplayText(), 
+	        				_screenSize[0][0]+xOffset, 
+	        				_screenSize[0][1]+yOffset + displayLine*fontHeight);	      				
+	    			
+	    		}
+	    		
+	    		int footerCnt = oContent.getFooterCount();
+	    		int maxBodyLines = screenMaxLines - footerCnt - headerCount;
+	    		int visibleLines = oLines.getVisibleCount();
+	    		int actBodyLines = visibleLines - footerCnt - headerCount;
+	    		int calcBodyLines = actBodyLines > maxBodyLines ? maxBodyLines : actBodyLines;
+	    		//AppLogger.debug2("headers=" + headerCount + ",body=" +maxBodyLines + ",footer="+footerCnt);
+	    			
+	    		 
+	    		int displayFrom = oContent.getDisplayedFrom();   	
+	    		displayFrom = displayFrom > -1 ? displayFrom : headerCount;
+	    			
+	    		int displayTo = oContent.getDisplayedTo();
+	    		displayTo = displayTo > -1 ? displayTo : displayFrom + calcBodyLines-1;
+	      		
+	    		int activeLine = oContent.getActiveLine();
+	    		
+	       	//AppLogger.debug2("displayFrom=" + displayFrom + ",displayTo=" +displayTo + ",activeLine="+activeLine);
+	       	    		
+	    		if(activeLine > displayTo){
+	    			displayFrom++;
+	    			displayTo++;
+	    		} else if(activeLine < displayFrom){
+	    			displayFrom--;
+	    			displayTo--;
+	    		}
+	    		
+	    		if(displayTo == visibleLines)
+	    			displayTo = oContent.getFooterCount()-1;
+	    		
+	    		if(displayFrom == 0)
+	    			displayFrom  = oContent.getHeaderCount();
+	    		
+	    		oContent.setDisplayedFrom(displayFrom);
+	    		oContent.setDisplayedTo(displayTo);
+	    		int leading = 2;
+	  		
+	
+	    		//laydown body 
+	    		for(int i=displayFrom; i < displayTo+1; i++, displayLine++){
+	 
+	        		oLine = (ScreenLine)oLines.get(i);
+	       		//AppLogger.debug("printing body#" + displayLine + ":" + oLine.getDisplayText());
+	        		/*
+	        		if(oLine.isVisible() == false)
+	        			continue;
+	        		*/
+	        		
+			 	if(oContent.getActiveLine() == i
+			 				&&oContent.isCursorOn())
+					g2.setColor(Color.red);
+				else
+					g2.setColor(Color.black);
+				
+	        		g2.setFont(thisFont);       		
+	        		xOffset = oLine.getAttributeIntValue("column");
+	
+	        		g2.drawString(oLine.getDisplayText(), 
+	        				_screenSize[0][0]+xOffset, 
+	        				_screenSize[0][1]+yOffset + displayLine*fontHeight+(leading*i));
+	        		
+		        		      		             			
+	        	}
+	    		
+	    		//laydown footers
+	    		displayLine = screenMaxLines - footerCnt+1;
+	    		for(int k= visibleLines-footerCnt; k < visibleLines; k++, displayLine++){
+	        		oLine = (ScreenLine)oLines.get(k);
+	    			//AppLogger.debug("printing footer#" + displayLine + ":" + oLine.getDisplayText());
+	    			
+					g2.setColor(Color.black);	 				
+			    		g2.setFont(thisFont);	 
+			   		xOffset = oLine.getAttributeIntValue("column");
+			    		g2.drawString(oLine.getDisplayText(), 
+			    				_screenSize[0][0]+xOffset, 
+			    				_screenSize[0][1]+yOffset + displayLine*fontHeight);
+			      				
+	 			
+	        	}
+	    		
         }
                      
         
@@ -681,5 +718,42 @@ public class MultiController extends Thread implements MouseListener, Constants,
 			AppLogger.debug2("keyReleased " + arg0.toString());
 		}		
 	}
+	
+	private void setLcdOn(Component lcd){
+		
+		this.lcd = lcd;
+		this.setScreenContent(null);		
+		JFrame o = (JFrame)_oContainer;		
+		o.getContentPane().add(lcd,0);
+		/*if container is already visible then validate must be called 
+		 * on the container - java api doc.*/
+		o.getContentPane().validate();
+		o.getContentPane().repaint();	
+		
+	}
+	
+	public void initLcd(){
+		lcd = new Screen(getScreenX(), getScreenY(), 210, 160, 8, 21);		
+	}
+	
+	private void setLcdOff(){		
+		//this.setScreenContent(null);	
+		if(lcd != null){
+			JFrame o = (JFrame)_oContainer;		
+			o.getContentPane().remove(lcd);
+			o.getContentPane().validate();		
+			o.getContentPane().repaint();				
+		}
+
+	}
+	
+	public int getScreenX(){
+		return this.DISPLAY_X;
+	}	
+	
+	public int getScreenY(){
+		return this.DISPLAY_Y;
+	}
+
 }
 

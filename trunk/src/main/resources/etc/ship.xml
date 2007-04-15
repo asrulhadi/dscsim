@@ -74,6 +74,7 @@
 	  		</line>	
 	  			  		
 			<line type="choice" link="position_input" condition="GPS"><bean>Entry position/time</bean></line>
+			<line type="choice" link="state_test"><bean>state test</bean></line>	
 			<line type="choice" link="select_call_id" code="TYPE_INDIVIDUAL"><bean>Individual call</bean></line>			
 			<line type="choice" link="select_ack_quick"><bean>Individual ACK</bean></line>
 			<line type="choice" link="select_group_id" code="TYPE_GROUP"><bean>Group call</bean></line>
@@ -1219,6 +1220,32 @@
 			<context name="individual_call">
 			</context>
 						
+		</screen>
+		
+		
+		<screen name="state_test"  clazz="net.sourceforge.dscsim.controller.screen.impl.MainMenuScreen" >
+	
+			<element type="textbox" name="header" column="2" row="0" height="1" width="16">Select a subject</element>	
+
+			<element type="menu"  name="main_menu" column="0" row="1" height="6" width="21">			
+				<choice name="position" link="position_input" condition="GPS">Entry position/time</choice>
+				<choice  link="state_test">state test</choice>	
+				<choice  link="select_call_id">Individual call</choice>			
+				<choice  link="select_ack_quick">Individual ACK</choice>
+				<choice  link="select_group_id">Group call</choice>
+				<choice  link="select_category">All ship calls</choice>			
+				<choice  link="posreq_select_call_id">Position request</choice>
+				<choice  link="select_message">Received calls</choice>
+				<choice  link="select_distress_nature">Distress setting</choice>
+				<choice  link="setup_menu">Set up</choice>		
+			</element>	
+
+			<element type="textbox" name="footer" column="2" row="7" height="1" width="15">Exit / ENT->OK</element>	
+	
+		</screen>
+		
+		<screen name="state_editbox"  clazz="net.sourceforge.dscsim.controller.screen.impl.EnterMmsiScreen" >
+	
 		</screen>
 	
 	</screens>

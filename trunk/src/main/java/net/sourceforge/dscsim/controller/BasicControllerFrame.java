@@ -97,13 +97,15 @@ public class BasicControllerFrame extends AppFrame implements  ItemListener, Act
 	public void init() {
 
 		AppletSoundList.createSingleton(_url);
-		getContentPane().setLayout(new BorderLayout());
+		//getContentPane().setLayout(new BorderLayout());
 		
-		getContentPane().add(createMenuBar(), BorderLayout.NORTH);
+		//getContentPane().add(createMenuBar(), BorderLayout.NORTH);
+		getContentPane().add(createMenuBar());
 		        
 		String strMMSI = _applCtx.getIndividualMmsi();
 		_oAppPanel = new DscAppPanel(strMMSI, _applCtx);
-		getContentPane().add(_oAppPanel, BorderLayout.CENTER);
+		//getContentPane().add(_oAppPanel, BorderLayout.CENTER);
+		getContentPane().add(_oAppPanel);
 			
 		_oAppPanel.setRadioCoreController(new RadioCoreController(_radioCore, getInstanceContext()));
 

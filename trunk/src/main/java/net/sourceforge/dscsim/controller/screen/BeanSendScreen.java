@@ -36,6 +36,7 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
 import org.jdom.Element;
 
 
+
 /**
  * Screen used to send message. User is pressed with a choice to proceed or abort. The signal
  * method will react accordingly.
@@ -93,7 +94,7 @@ public class BeanSendScreen extends BeanScreen {
 	/**
 	 * handle outgoing messages and channel switching logic. 
 	 */
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 		
 		
 		String keyID = oMessage.getButtonEvent().getKeyId();
@@ -108,8 +109,11 @@ public class BeanSendScreen extends BeanScreen {
 			String event = getAttributeValue("event");
 			
 			if(event != null && keyID.equals(event)){
-				String screenName = this.getAttributeValue("link");					
-				ScreenContent oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+			
+				String screenName = this.getAttributeValue("link");
+													
+				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+							
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
 				oScreenNext.setIncomingDscMessage(getIncomingDscMessage());

@@ -133,7 +133,7 @@ public class BeanScreen extends BeanBaseScreen implements Constants {
 		return -1;
 	}
 
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();

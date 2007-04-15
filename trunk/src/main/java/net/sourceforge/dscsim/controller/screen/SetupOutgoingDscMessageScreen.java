@@ -200,7 +200,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 	
 	}
 	
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 		
 		if(_mode.equals(MENU_MODE))
 			return menuSignal(oMessage);
@@ -223,7 +223,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 		else
 			return _oLines;
 	}
-	public ScreenContent inputScreenSignal(BusMessage oMessage) {
+	public ScreenInterface inputScreenSignal(BusMessage oMessage) {
 
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();
@@ -241,7 +241,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 				
 				String nextScreen = _oScreenElement.getAttributeValue("next");
 				
-				ScreenContent oScreenNext = _oContentManager.getScreenContent(nextScreen, getInstanceContext());
+				ScreenInterface oScreenNext = _oContentManager.getScreenContent(nextScreen, getInstanceContext());
 				
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
@@ -449,7 +449,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 
 	}
 	
-	public ScreenContent menuSignal(BusMessage oMessage) {
+	public ScreenInterface menuSignal(BusMessage oMessage) {
 
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();
@@ -484,7 +484,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 				
 				//getInstanceContext().setProperty(oCurrLine.getAttributeValue("storage"), oData);				
 				
-				ScreenContent oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 							
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
@@ -505,7 +505,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 				
 				if(event.equals(keyID) || (event.length()==0 && event.equals(keyID))) {
 					
-					ScreenContent oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getAttributeValue("link"), getInstanceContext());
+					ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getAttributeValue("link"), getInstanceContext());
 					
 					//oScreen.enter(_enterArg0);
 					

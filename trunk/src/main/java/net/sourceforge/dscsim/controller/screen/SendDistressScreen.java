@@ -103,7 +103,7 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 	/**
 	 * signal - GUI and airwave incoming event handler.
 	 */
-	public ScreenContent signal(BusMessage oMessage) {
+	public ScreenInterface signal(BusMessage oMessage) {
 						
 		String msgType = oMessage.getType();
 		
@@ -316,9 +316,9 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 		//now every five 5 minutes resend signal
 		long currTime = 0;
 		long interVal = 300000; //5 minutes		
-		//long interVal = 60000; //1 minutes
+//		long interVal = 60000; //1 minutes
 		
-		ScreenContent oScreen  = getInstanceContext().getContentManager().getScreenContent("distress_call_sent", getInstanceContext());
+		ScreenContent oScreen  = (ScreenContent)getInstanceContext().getContentManager().getScreenContent("distress_call_sent", getInstanceContext());
 		
 		_oLines = oScreen.getLines();
 		oScreen.init();

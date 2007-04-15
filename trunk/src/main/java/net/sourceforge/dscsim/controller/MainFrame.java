@@ -216,7 +216,7 @@ public class MainFrame extends Frame implements Runnable, Constants
     String s2 = myStub.getParameter("barebones");
     if(s2 != null && s2.equals("true"))
       barebones = true;
-    setLayout(new BorderLayout());
+    //setLayout(new BorderLayout());
     add("Center", applet1);
     pack();
     validate();
