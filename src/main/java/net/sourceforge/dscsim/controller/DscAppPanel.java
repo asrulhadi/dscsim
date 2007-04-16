@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.swing.JApplet;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import net.sourceforge.dscsim.controller.network.DscMessage;
@@ -117,8 +118,9 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 		 * initialization for startup.
 		 * @param oComponent
 		 */
+
 		public void init(Container oComponent) {
-						
+
 			AppLogger.debug("applet.DscAppPanel init started");
 			
 			_oBus = MultiBus.getInstance();
@@ -138,7 +140,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			getBus().putOnline(getClu());
 			
 			AppLogger.debug("applet.DscAppPane putting Beeper on line.");	
-			_oBeeper = MultiBeeper.getInstance();
+			_oBeeper = MultiBeeper.getInstance(this);
 			getBus().putOnline(_oBeeper);
 													
 			AppLogger.debug("applet.DscApp sending RESET");						
@@ -152,9 +154,10 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
  	/**
 	 * call back for awt.
 	 */
-    public void paint(Graphics g) {
-       getController().paint(g, this);
-       //_oRadio.paint(g);
+    public void paint(Graphics g) {   
+    	   	
+       getController().paint(g, this);     
+ 
     }
 
 
