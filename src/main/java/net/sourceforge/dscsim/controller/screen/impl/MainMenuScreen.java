@@ -50,9 +50,6 @@ public class MainMenuScreen extends SingleMenuScreen {
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#enter()
 	 */
 	public void enter(Object msg) {
-
-		getInstanceContext().getController().initLcd();
-
 		super.enter(msg);
 		
 		//create the single menu.

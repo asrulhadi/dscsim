@@ -207,8 +207,9 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		
 		
 		if(oScreen instanceof StateScreen){
-			Component lcd = (Component)oScreen;
-			this.setLcdOn(lcd);
+			this.setLcdOff();
+			Component nxtlcd = (Component)oScreen;
+			this.setLcdOn(nxtlcd);
 		} else {	
 			this.setLcdOff();
 			_oContent = (ScreenContent)oScreen;		
@@ -730,10 +731,6 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		o.getContentPane().validate();
 		o.getContentPane().repaint();	
 		
-	}
-	
-	public void initLcd(){
-		lcd = new Screen(getScreenX(), getScreenY(), 210, 160, 8, 21);		
 	}
 	
 	private void setLcdOff(){		
