@@ -234,7 +234,7 @@ public class EditBox  extends ScreenComponent {
 		}
 		
 		public boolean isComplete(String strMMSI) {
-			if(strMMSI.length() == strMMSI.length()){
+			if(strMMSI.length() == 9){
 				return true;
 			}else{
 				return false;

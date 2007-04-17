@@ -78,6 +78,14 @@ public class EnterMmsiScreen extends EditBoxInputScreen {
 			String action = this.getAction(msg.getButtonEvent().getKeyId());
 			if(action != null)
 				return this.getInstanceContext().getContentManager().getScreenContent(action, getInstanceContext());		
+		}else{
+			String keyId = msg.getButtonEvent().getKeyId();
+			String action = this.getAction(keyId);
+
+			if(FK_ENT.equals(keyId)==false && action != null){
+				return this.getInstanceContext().getContentManager().getScreenContent(action, getInstanceContext());		
+
+			}
 		}
 		
 		return this;
