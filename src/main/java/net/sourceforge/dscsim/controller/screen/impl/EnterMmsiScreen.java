@@ -29,6 +29,7 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.MultiController;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.screen.EditBox;
+import net.sourceforge.dscsim.controller.screen.EditBoxInputScreen;
 import net.sourceforge.dscsim.controller.screen.Screen;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
 import net.sourceforge.dscsim.controller.screen.ScreenInterface;
@@ -40,7 +41,7 @@ import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class EnterMmsiScreen extends SingleMenuScreen {
+public class EnterMmsiScreen extends EditBoxInputScreen {
 
 	private EditBox eb = null;
 	public EnterMmsiScreen(Element oScreenElement, MultiContentManager oCMngr) {
@@ -54,26 +55,31 @@ public class EnterMmsiScreen extends SingleMenuScreen {
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
-
-		//create the single menu.
-		eb = new EditBox(3, 1, 8, 3);
-		MultiController cntrl = this.getInstanceContext().getController();		
-		
-		//screen.removeAll();		
-		this.add(eb);
-		eb.setValue("good");
-		
+		eb = (EditBox) this.getComponentByName("mmsi_input",0);
+		eb.setValidator(new EditBox.MMSIValidator());
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
-	public void exit(DscMessage msg) {
+	public void exit(DscMessage msg) {		
+		DscMessage outGoing = getOutGoingDscMessage();
+		outGoing.setToMMSI(eb.getValue());
 	}
 	
-	public ScreenInterface signal(BusMessage msg){
+	public ScreenInterface signal(BusMessage msg){		
+
+		String keyAction = msg.getButtonEvent().getAction();
+		if(keyAction.equals(RELEASED))
+			return this;
 		
 		eb.signal(msg);
+		if(eb.isComplete()){
+			String action = this.getAction(msg.getButtonEvent().getKeyId());
+			if(action != null)
+				return this.getInstanceContext().getContentManager().getScreenContent(action, getInstanceContext());		
+		}
+		
 		return this;
 	}
 
