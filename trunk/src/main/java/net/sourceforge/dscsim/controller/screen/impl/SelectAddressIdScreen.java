@@ -22,17 +22,16 @@
  
 package net.sourceforge.dscsim.controller.screen.impl;
 
+import java.util.List;
+
 import org.jdom.Element;
 
-import net.sourceforge.dscsim.controller.BusMessage;
+import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.MultiController;
 import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.screen.EditBox;
-import net.sourceforge.dscsim.controller.screen.Screen;
-import net.sourceforge.dscsim.controller.screen.ScreenContent;
-import net.sourceforge.dscsim.controller.screen.ScreenInterface;
+import net.sourceforge.dscsim.controller.screen.Menu;
 import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
+import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
  * @author katharina
@@ -40,12 +39,10 @@ import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class EnterMmsiScreen extends SingleMenuScreen {
+public class SelectAddressIdScreen extends SingleMenuScreen {
 
-	private EditBox eb = null;
-	public EnterMmsiScreen(Element oScreenElement, MultiContentManager oCMngr) {
-		super(oScreenElement, oCMngr);
-		
+	public SelectAddressIdScreen(Element oScreenElement, MultiContentManager oCMngr) {
+		super(oScreenElement, oCMngr);		
 	}
 
 
@@ -53,29 +50,24 @@ public class EnterMmsiScreen extends SingleMenuScreen {
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#enter()
 	 */
 	public void enter(Object msg) {
-		super.enter(msg);
-
-		//create the single menu.
-		eb = new EditBox(3, 1, 8, 3);
-		MultiController cntrl = this.getInstanceContext().getController();		
-		
-		//screen.removeAll();		
-		this.add(eb);
-		eb.setValue("good");
-		
+		super.enter(msg);		
+		Menu m = (Menu)this.getComponentByName("address_ids_list", 0);
+		List addresses = this.getInstanceContext().getContentManager().getStorageList("mmsi_addressbook");
+		AddressIdEntry addr = null;
+		for(int i=0; i<addresses.size();i++){
+			addr = (AddressIdEntry)addresses.get(i);
+			m.addItem(addr.getName(), "select_category");
+		}		
+		setMenu(m);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
-	public void exit(DscMessage msg) {
+	public void exit(Object msg) {
+		AppLogger.debug2("-----------"+this.getMenu().getSelectedData());
 	}
-	
-	public ScreenInterface signal(BusMessage msg){
-		
-		eb.signal(msg);
-		return this;
-	}
+
 
 	
 }

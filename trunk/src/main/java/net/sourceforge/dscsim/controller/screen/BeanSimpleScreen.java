@@ -57,7 +57,7 @@ public class BeanSimpleScreen extends BeanBaseScreen implements Constants{
 	public void enter(Object arg0){
 	   
 	}
-	//TODO:add case for different storages - object, list etc.
+	//add case for different storages - object, list etc.
 	//also add index processing.
 	private Object getScreenData(Element elemData){
 
@@ -66,8 +66,7 @@ public class BeanSimpleScreen extends BeanBaseScreen implements Constants{
 		
 		String storeName = elemData.getAttributeValue("name");
 		
-	    Object storeObj = null;
-	    
+	    Object storeObj = null;	    
 		if(storeName != null){
 			java.util.List storeList = getInstanceContext().getContentManager().getStorageList(storeName);
 			

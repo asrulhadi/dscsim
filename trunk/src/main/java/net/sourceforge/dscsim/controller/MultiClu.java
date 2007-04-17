@@ -279,9 +279,10 @@ public class MultiClu  implements  BusListener, Constants {
 											
 						oReturnScreen.enter(oScreen.getIncomingDscMessage());		
 						_oScreenStack.add(oReturnScreen);
+						_oContext.getController().setScreenContent(oReturnScreen);				
+
 					}
 					
-					_oContext.getController().setScreenContent(oReturnScreen);				
 					
 					if(BusMessage.MSGTYPE_KEY.equals(oMessage.getType())
 							&& oMessage.getButtonEvent().isMasterSwitch()){						
