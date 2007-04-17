@@ -13,9 +13,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.util.Iterator;
+import java.util.List;
+
+import org.jdom.Element;
+import org.jdom.xpath.XPath;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.DscUtils;
+import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
  * @author Administrator
@@ -25,8 +31,15 @@ import net.sourceforge.dscsim.controller.DscUtils;
  */
 public class EditBox  extends ScreenComponent {
 
+	/**
+	 * value of box content.
+	 */
 	private String value = "";
 
+	/**
+	 * pattern used to check input.
+	 */
+	private Validator validator= null;
 	/**
 	 * @param row
 	 * @param col
@@ -35,6 +48,7 @@ public class EditBox  extends ScreenComponent {
 	 */
 	public EditBox(int row, int col, int width, int height) {
 		super(row, col, width, height);
+		
 	}
 
 	/* (non-Javadoc)
@@ -42,9 +56,18 @@ public class EditBox  extends ScreenComponent {
 	 */
 	public void signal(BusMessage oMessage) {
 		
-		if(_oKeySet.contains(oMessage.getButtonEvent().getKeyId())){
-			if(value.length() < getWidthInColumns())
-				value +=  DscUtils.getKeyStringValue(oMessage.getButtonEvent().getKeyId());	
+		String keyAction = oMessage.getButtonEvent().getAction();
+		if(RELEASED.equals(keyAction))
+			return;
+		
+		String keyID = oMessage.getButtonEvent().getKeyId();
+		if(_oKeySet.contains(keyID)){			
+			if((value.length() < getWidthInColumns())){
+				String testValue = value + DscUtils.getKeyStringValue(oMessage.getButtonEvent().getKeyId());						
+				if((validator == null) || (validator != null && validator.validate(testValue))){
+					value = testValue; 
+				}
+			}			
 		}else if(MV_LEFT.equals(oMessage.getButtonEvent().getKeyId())
 				|| KP_BS.equals(oMessage.getButtonEvent().getKeyId())){
 			
@@ -67,10 +90,19 @@ public class EditBox  extends ScreenComponent {
 	}
 	
 	/**
-	 * 
+	 * set contents of editbox.
+	 * @param value
 	 */
-	public void setValue(String value){
+	public void setValue(String value){		
 		this.value = value;
+	}
+	
+	/**
+	 * get the contents of the editbox.
+	 * @return
+	 */
+	public String getValue(){		
+		return this.value;
 	}
     /**
      * 
@@ -134,4 +166,80 @@ public class EditBox  extends ScreenComponent {
      	g2d.fill(cursor);
 			
     }
+    
+	public static void parseEditBox(Screen dest, Element source){
+		
+		try {
+			XPath xpath = XPath.newInstance("element[@type='editbox']");			
+			List list = xpath.selectNodes(source);			
+			Iterator itr  = list.iterator();
+			Element elem = null;
+			EditBox eb = null;
+			while(itr.hasNext()){
+				elem = (Element)itr.next();		
+				int c = Integer.parseInt(elem.getAttributeValue("column"));
+				int r = Integer.parseInt(elem.getAttributeValue("row"));
+				int w = Integer.parseInt(elem.getAttributeValue("width"));
+				int h = Integer.parseInt(elem.getAttributeValue("height"));			
+				eb = new EditBox(r, c, w, h);
+				eb.setValue(elem.getText());
+				eb.setComponentName(elem.getAttributeValue("name"));
+				dest.add(eb);
+			}
+		} catch (Exception e) {
+			AppLogger.error(e.getMessage());
+		}
+		
+	}
+	/**
+	 * set validator according to type of box.
+	 * @param validator
+	 */
+	public void setValidator(Validator validator){
+		this.validator = validator;
+	}
+	
+	/**
+	 * is the box done according to validation rules.
+	 *
+	 */
+	public boolean isComplete(){
+		return this.validator.isComplete(value);
+	}
+	
+	
+	interface Validator{
+    		boolean validate(String input);
+    		public boolean isComplete(String strMMSI);
+    }
+	
+	public static class MMSIValidator implements Validator{
+
+		/* (non-Javadoc)
+		 * @see net.sourceforge.dscsim.controller.screen.EditBox.Validator#validate(java.lang.String)
+		 */
+		public boolean validate(String strMMSI) {
+			boolean result = false;
+			try {
+				int intMMSI = Integer.parseInt(strMMSI);
+				if(strMMSI.length()<=9){
+					result = true;
+				}else{
+					result =  false;
+				}						
+			}catch(Exception oEx){
+				AppLogger.error(oEx);
+			}		
+			return result;
+		}
+		
+		public boolean isComplete(String strMMSI) {
+			if(strMMSI.length() == strMMSI.length()){
+				return true;
+			}else{
+				return false;
+			}			
+		}
+		
+	}
 }

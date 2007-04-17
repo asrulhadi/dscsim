@@ -24,6 +24,7 @@ package net.sourceforge.dscsim.controller.screen;
 
 
 import java.awt.Component;
+import java.util.List;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
@@ -43,7 +44,12 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	/*
 	 * xml screen descr
 	 */
-	private Element elemScreen = null;
+	protected Element elemScreen = null;
+	
+	/*
+	 * 
+	 */
+	private DscMessage outGoing = null;
 	
 	/*
 	 * reference to Context.
@@ -65,8 +71,6 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	public void enter(Object msg){
 		/*parse fixed text elements*/
 		TextBox.parseTextBox(this, this.elemScreen);
-		/*parse menu*/
-		Menu.parseMenu(this, this.elemScreen);
 	}
 	
 	/**
@@ -78,16 +82,14 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	 * @see net.sourceforge.dscsim.common.screen.ScreenInterface#getOutGoingDscMessage()
 	 */
 	public DscMessage getOutGoingDscMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		return outGoing;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sourceforge.dscsim.common.screen.ScreenInterface#setOutGoingDscMessage(net.sourceforge.dscsim.controller.network.DscMessage)
+	/**
+	 * set message used during outgoing processing.
 	 */
 	public void setOutGoingDscMessage(DscMessage oDscMessage) {
-		// TODO Auto-generated method stub
-		
+		this.outGoing = oDscMessage;		
 	}
 
 	/* (non-Javadoc)
@@ -178,6 +180,33 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 		}
 		
 		return sc;
+		
+	}
+	
+	public String getAction(String eventId){
+		
+		String rt = null;
+		
+		if(eventId == null)
+			return rt;
+		
+		Element actions = this.elemScreen.getChild("actions");		
+		if(actions == null)
+			return rt;
+
+		List list = actions.getChildren();
+		Element target = null;
+		for(int i=0; list != null && i<list.size(); i++){
+			target=(Element)list.get(i);
+			if(eventId.equals(target.getAttributeValue("id"))){
+				rt = target.getAttributeValue("action");
+				break;
+			} else{
+				target =null;
+			}
+		}
+		
+		return rt;
 		
 	}
 	

@@ -26,7 +26,6 @@ import org.jdom.Element;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.MultiController;
 
 /**
  * @author katharina
@@ -34,13 +33,12 @@ import net.sourceforge.dscsim.controller.MultiController;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public abstract class SingleMenuScreen extends StateScreen  {
+public abstract class EditBoxInputScreen extends StateScreen  {
 
-	protected Menu menu = null;
 	/**
 	 * @param oScreenElement
 	 */
-	public SingleMenuScreen(Element oScreenElement, MultiContentManager oCMngr) {
+	public EditBoxInputScreen(Element oScreenElement, MultiContentManager oCMngr) {
 		super(oScreenElement, oCMngr);
 	}
 
@@ -50,25 +48,9 @@ public abstract class SingleMenuScreen extends StateScreen  {
 	 */
 	public void enter(Object msg){
 		super.enter(msg);
-		/*parse menu*/
-		Menu.parseMenu(this, elemScreen);
-	}
-	/**
-	 * 
-	 */
-	protected void setMenu(Menu menu){	
-		this.menu  = menu;
-		this.add(menu);
+		EditBox.parseEditBox(this, elemScreen);		
 	}
 	
-	
-	/**
-	 * 
-	 * @return menu item.
-	 */
-	protected Menu getMenu(){
-		return this.menu;		
-	}
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
@@ -78,16 +60,13 @@ public abstract class SingleMenuScreen extends StateScreen  {
 		String keyAction = oMessage.getButtonEvent().getAction();
 
 		if(keyAction.equals(PRESSED) && keyID.equals(super.FK_ENT)){			
-    			String chosen = getMenu().getSelectedData();
-    			net.sourceforge.dscsim.controller.utils.AppLogger.debug2("SingleMenuScreen.signal - chosen = " + chosen);
-    			ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(chosen, getInstanceContext());		
-    			return oScreen;
+
 		}	
-		
-		menu.signal(oMessage);
-		
+				
 		return this;
 
 	}
+	
+
 
 }

@@ -227,18 +227,6 @@
 							
 		</screen>
 				
-		<screen name="posreq_enter_address" type="input" next="individual_send" scope="transient">
-			<line type="text" subtype="header" column="45">Input an address</line>	
-			<line type="text">ID:(9 digit)</line>					
-			<line type="input">			
-				<field type="text">MMSI:</field>
-				<field type="input" name="MMSI" format="#########"></field>
-			</line>		
-			<line type="text" subtype="footer" column="45">CLR->Exit / ENT->OK</line>	
-								
-		</screen>
-		
-		
 		<screen name="individual_send" class="net.sourceforge.dscsim.controller.screen.BeanSendScreen">
 			<line type="text" subtype="header" column="45"><bean>Push [CALL] and [ENT]</bean></line>
 			<line type="text" subtype="header" column="45"><bean>simultaneously</bean></line>						
@@ -1247,14 +1235,28 @@
 			<element type="textbox" name="header" column="2" row="0" height="1" width="16">Select address ID</element>	
 		 		
 		 	<element type="menu"  name="address_ids_list" column="0" row="1" height="6" width="21">			
-				<choice  link="enter_address">Manual entry</choice>		
+				<choice  link="enter_mmsi">Manual entry</choice>		
 			</element>	
 
 			<element type="textbox" name="footer" column="2" row="7" height="1" width="15">Exit / ENT->OK</element>	
 			
 		</screen>			
 		
+		<screen name="enter_mmsi" clazz="net.sourceforge.dscsim.controller.screen.impl.EnterMmsiScreen">
+
+			<element type="textbox" name="header" column="2" row="0" height="1" width="16">Input an address</element>	
 		
+			<element type="textbox" name="header" column="2" row="1" height="1" width="16">ID:(9 digit)</element>	
+			
+			<element type="editbox" name="mmsi_input" column="2" row="4" height="1" width="9"></element>	
+	
+			<element type="textbox" name="footer" column="2" row="7" height="1" width="15">CLR->Exit / ENT->OK</element>	
+					
+			<actions>
+				<event id="FK_ENT" action="select_category"/>
+				<event id="FK_CLR" action="welcome"/>
+			</actions>			
+		</screen>		
 		
 		<screen name="state_editbox"  clazz="net.sourceforge.dscsim.controller.screen.impl.EnterMmsiScreen" >
 	
