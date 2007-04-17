@@ -27,6 +27,7 @@ import java.util.List;
 import org.jdom.Element;
 
 import net.sourceforge.dscsim.controller.AddressIdEntry;
+import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.screen.Menu;
@@ -41,6 +42,12 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
  */
 public class SelectAddressIdScreen extends SingleMenuScreen {
 
+
+	/**
+	 * default generated version id.
+	 */
+	private static final long serialVersionUID = -2605966413906785454L;
+
 	public SelectAddressIdScreen(Element oScreenElement, MultiContentManager oCMngr) {
 		super(oScreenElement, oCMngr);		
 	}
@@ -54,7 +61,7 @@ public class SelectAddressIdScreen extends SingleMenuScreen {
 		Menu m = (Menu)this.getComponentByName("address_ids_list", 0);
 		List addresses = this.getInstanceContext().getContentManager().getStorageList("mmsi_addressbook");
 		AddressIdEntry addr = null;
-		for(int i=0; i<addresses.size();i++){
+		for(int i=0; addresses!=null && i<addresses.size();++i){
 			addr = (AddressIdEntry)addresses.get(i);
 			m.addItem(addr.getName(), "select_category");
 		}		
@@ -64,7 +71,7 @@ public class SelectAddressIdScreen extends SingleMenuScreen {
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
-	public void exit(Object msg) {
+	public void exit(BusMessage oMessage) {
 		AppLogger.debug2("-----------"+this.getMenu().getSelectedData());
 	}
 
