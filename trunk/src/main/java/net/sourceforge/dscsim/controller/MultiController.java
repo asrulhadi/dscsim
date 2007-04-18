@@ -76,7 +76,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	
 	
 	/*lcd screen*/
-	private Component lcd = null;
+	private StateScreen lcd = null;
 	private Container container = null;
 
 	
@@ -208,7 +208,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		
 		if(oScreen instanceof StateScreen){
 			this.setLcdOff();
-			Component nxtlcd = (Component)oScreen;
+			StateScreen nxtlcd = (StateScreen)oScreen;
 			this.setLcdOn(nxtlcd);
 		} else {	
 			this.setLcdOff();
@@ -604,54 +604,53 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		}
 		
 	}
-	
-	public void run(){
-		
+	/* primarily for blinking.
+	 *  (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run(){		
 		boolean bContinue = true;
 		while(bContinue){
 			long timeDiff = System.currentTimeMillis() - _paintElapsedTime;			
 			//AppLogger.info("MultiController.run - timeDiff =" + timeDiff);
 			ScreenContent oScreen = getScreenContent();
-			if(oScreen != null && oScreen.forceRefresh()){
-				
+			if((oScreen != null && oScreen.forceRefresh())
+					 || (lcd != null && lcd.forceRefresh())){				
 				if(timeDiff >= PAINT_EXPIRE_TIME){
-					//screen has expired repaint it;
-					_oContainer.repaint();
+					//screen has expired repaint it;					
+					if(lcd != null){
+						lcd.validate();
+						lcd.repaint();
+					}
 					
-				} else {
-	
-					try{			
-						
-						long sleepTime = PAINT_EXPIRE_TIME - timeDiff;	
-						
+					if(oScreen != null)
+						_oContainer.repaint();
+					
+				} else {	
+					try{									
+						long sleepTime = PAINT_EXPIRE_TIME - timeDiff;							
 						//AppLogger.info("MultiController.run 1 - sleepTime =" + sleepTime);
-						Thread.sleep(sleepTime);
-						
+						Thread.sleep(sleepTime);	
 					}catch(InterruptedException oEx){
 						//AppLogger.error(oEx);
 						AppLogger.error(oEx);
 						bContinue = false;
 						continue;
 					}
-				}
-			
+				}			
 			} else {
 				
-				try{			
-					
+				try{								
 					long sleepTime = PAINT_EXPIRE_TIME;					
 					//AppLogger.info("MultiController.run 2 - sleepTime =" + sleepTime);
-					Thread.sleep(sleepTime);
-					
+					Thread.sleep(sleepTime);				
 				}catch(InterruptedException oEx){
 					//AppLogger.error(oEx);
 					AppLogger.error(oEx);
 					bContinue = false;
 					continue;
-				}				
-				
-			}
-									
+				}								
+			}									
 		}
 		
 	}
@@ -720,7 +719,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		}		
 	}
 	
-	private void setLcdOn(Component lcd){
+	private void setLcdOn(StateScreen lcd){
 		
 		this.lcd = lcd;
 		this.setScreenContent(null);		

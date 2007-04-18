@@ -32,10 +32,19 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
 public class EditBox  extends ScreenComponent {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 891796259681334714L;
+
+	/**
 	 * value of box content.
 	 */
 	private String value = "";
 
+	/**
+	 * used for blinking cursor.
+	 */
+	private int updateCnt = 0;
 	/**
 	 * pattern used to check input.
 	 */
@@ -150,20 +159,23 @@ public class EditBox  extends ScreenComponent {
      	for(int p=0; p<value.length();p++){     		
      		g2d.drawString(Character.toString(value.charAt(p)),p*xscale,yscale-5);
      	}
-     	    	
-		int[]xx = new int[4];
-		int[]yy = new int[4];
-		int n = 4;
-		Screen scr = this.getScreen(); 		
-		int xs = scr.getXScale();
-		int ys = scr.getYScale(); 
-		
-		xx[0]=0; xx[1]=xs; xx[2]=xs;xx[3]=0; 
-		yy[0]=0; yy[1]=0; yy[2]=ys;yy[3]=ys;
-		Polygon cursor = new Polygon(xx, yy, n);
-     	cursor.translate(value.length()*xs, 0);
-     	g2d.draw(cursor);
-     	g2d.fill(cursor);
+     	    
+     	AppLogger.debug2("EditBox - cursor " + updateCnt);
+     	if((++updateCnt)%5 > 1){
+    		int[]xx = new int[4];
+    		int[]yy = new int[4];
+    		int n = 4;
+    		Screen scr = this.getScreen(); 		
+    		int xs = scr.getXScale();
+    		int ys = scr.getYScale(); 
+    		
+    		xx[0]=0; xx[1]=xs; xx[2]=xs;xx[3]=0; 
+    		yy[0]=0; yy[1]=0; yy[2]=ys;yy[3]=ys;
+    		Polygon cursor = new Polygon(xx, yy, n);
+         	cursor.translate(value.length()*xs, 0);
+         	g2d.draw(cursor);
+         	g2d.fill(cursor);   		
+     	}
 			
     }
     

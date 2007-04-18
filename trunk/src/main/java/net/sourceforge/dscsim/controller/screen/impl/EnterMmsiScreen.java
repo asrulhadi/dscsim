@@ -57,6 +57,7 @@ public class EnterMmsiScreen extends EditBoxInputScreen {
 		super.enter(msg);
 		eb = (EditBox) this.getComponentByName("mmsi_input",0);
 		eb.setValidator(new EditBox.MMSIValidator());
+		this.setForceRefresh(true);
 	}
 
 	/* (non-Javadoc)
