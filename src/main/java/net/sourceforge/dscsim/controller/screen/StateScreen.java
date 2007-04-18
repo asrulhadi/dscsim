@@ -50,10 +50,15 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	 * 
 	 */
 	private DscMessage outGoing = null;
-	
+
+	/*
+	 * 
+	 */
+	private boolean forceRefresh = false;
+
 	/*
 	 * reference to Context.
-	 */
+	 */	
 	private MultiContentManager contentMngr = null;
 	/**
 	 * @param oScreenElement
@@ -208,6 +213,22 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 		
 		return rt;
 		
+	}
+
+	/**
+	 * set true for blinking.
+	 * @param value
+	 * @return
+	 */
+	public void setForceRefresh(boolean value){
+		this.forceRefresh = value;
+	}
+	
+	/**
+	 * used for blinking.
+	 */
+	public boolean forceRefresh(){
+		return forceRefresh;
 	}
 	
 }

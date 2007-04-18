@@ -60,4 +60,6 @@ public interface ScreenInterface {
 	
 	public abstract String getAttributeValue(String attrName);
 	
+	public boolean forceRefresh();
+	
 }
