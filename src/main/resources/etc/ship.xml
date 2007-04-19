@@ -784,7 +784,7 @@
 			
 		</screen>
 		
-		<screen name="setup_menu" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen" scope="transient">
+		<screen name="setup_menu_old" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen" scope="transient">
 			<line type="text" subtype="header" column="45">
 				<bean>Select a subject</bean>
 			</line>	
@@ -815,7 +815,7 @@
 			</line>								
 		</screen>
 		
-		<screen name="setup_address_info" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen" scope="transient">
+		<screen name="setup_address_info_old" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreen" scope="transient">
 			<line type="text" subtype="header" column="45">
 				<bean>Select a subject</bean>
 			</line>	
@@ -868,7 +868,7 @@
 		</screen>		
 			
 		
-	  	<screen name="add_address" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="add" storage="mmsi_addressbook" >
+	  	<screen name="add_address_old" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="add" storage="mmsi_addressbook" >
 	  		<line subtype="header" column="45">
 	  			<bean>Add an address ID</bean>
 	  		</line>	
@@ -1258,10 +1258,60 @@
 			</actions>			
 		</screen>		
 		
+		
+		<screen name="setup_menu"  clazz="net.sourceforge.dscsim.controller.screen.SingleMenuScreen" >
+	
+			<element type="textbox" name="header" column="2" row="0" height="1" width="16">Select a subject</element>	
+
+			<element type="menu"  name="the_menu" column="0" row="1" height="6" width="21">		
+				<choice  link="setup_address_info">Add an address ID</choice>		
+				<choice  link="display_addresses">Offset time</choice>		
+				<choice  link="">Contrast</choice>						
+				<choice  link="setup_auto_answer">Setup auto answer</choice>	
+				<choice  link="display_about_dscsim">About dscsim</choice>	
+			</element>	
+			
+			<element type="textbox" name="footer" column="2" row="7" height="1" width="15">CLR->Exit / ENT->OK</element>	
+
+		</screen>	
+		
+		<screen name="setup_address_info"  clazz="net.sourceforge.dscsim.controller.screen.SingleMenuScreen" >
+	
+			<element type="textbox" name="header" column="2" row="0" height="1" width="16">Select a subject</element>	
+
+			<element type="menu"  name="the_menu" column="0" row="1" height="6" width="21">		
+				<choice  link="add_address">Add an address ID</choice>		
+				<choice  link="display_addresses">Delete an address ID</choice>		
+				<choice  link="add_group">Add a group</choice>						
+				<choice  link="display_groups">Delete a group ID</choice>	
+			</element>	
+			
+			<element type="textbox" name="footer" column="2" row="7" height="1" width="15">CLR->Exit / ENT->OK</element>
+							
+		</screen>	
+		
+		<screen name="add_address" clazz="net.sourceforge.dscsim.controller.screen.impl.EnterAddressIdScreen">
+
+			<element type="textbox" name="header" column="2" row="0" height="1" width="18">Add an address ID</element>	
+		
+			<element type="textbox" name="label1" column="1" row="1" height="1" width="16">ID:(9 digit)</element>				
+			<element type="editbox" name="mmsi" column="1" row="2" height="1" width="9"></element>	
+
+			<element type="textbox" name="label2" column="1" row="4" height="1" width="19">Name:(15characters)</element>				
+			<element type="editbox" name="addressid" column="1" row="5" height="1" width="18"></element>	
+	
+			<element type="textbox" name="footer" column="2" row="7" height="1" width="15">CLR->Exit / ENT->OK</element>	
+					
+			<actions>
+				<event id="FK_ENT" action="setup_address_info"/>
+				<!--<event id="FK_CLR" action="welcome"/>-->
+			</actions>			
+		</screen>		
+		
 		<screen name="state_editbox"  clazz="net.sourceforge.dscsim.controller.screen.impl.EnterMmsiScreen" >
 	
 		</screen>
-	
+	    
 	</screens>
 	
 

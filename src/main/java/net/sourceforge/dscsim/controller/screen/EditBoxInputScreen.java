@@ -35,7 +35,7 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public abstract class EditBoxInputScreen extends StateScreen  {
+public class EditBoxInputScreen extends StateScreen  {
 
 	/**
 	 * for tabbing within screen.
@@ -83,7 +83,12 @@ public abstract class EditBoxInputScreen extends StateScreen  {
 			return this;
 		
 		if(FK_CLR.equals(keyID)){
-			return null;
+			MultiContentManager oMCmgr = getInstanceContext().getContentManager();
+			String action = this.getAction(keyID);
+			if(action != null)
+				return oMCmgr.getScreenContent(action, getInstanceContext());
+			else
+				return null;
 		} 
 		
 		if(FK_ENT.equals(keyID)){
@@ -109,7 +114,7 @@ public abstract class EditBoxInputScreen extends StateScreen  {
 				}
 			}
 			
-		} else if(MV_RIGHT.equals(keyID) 
+		} else if((MV_RIGHT.equals(keyID) || FK_ENT.equals(keyID))
 				&& this.activeComponent != null){				
 			if(this.activeComponent.isComplete()){
 				ScreenComponent next = getNieghborEditBox(this.activeComponent, true);			
