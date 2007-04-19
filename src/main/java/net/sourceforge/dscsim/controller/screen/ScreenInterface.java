@@ -56,7 +56,7 @@ public interface ScreenInterface {
 
 	public abstract void enter(Object arg0);
 
-	public abstract void setParent(ScreenContent oParent);
+	public abstract void setParent(ScreenInterface oParent);
 	
 	public abstract String getAttributeValue(String attrName);
 	

@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -76,6 +77,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	
 	
 	/*lcd screen*/
+	private Object screenGuard = new Object();
 	private StateScreen lcd = null;
 	private Container container = null;
 
@@ -190,7 +192,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	private synchronized ScreenContent getScreenContent(){
 		return _oContent;
 	}
-	public synchronized void setScreenContent(ScreenInterface oScreen) {
+	public  void setScreenContent(ScreenInterface oScreen) {
 		
 		/* a possibility in run to save CPU
 		if(_oContent != null && _oContent.forceRefresh()==false){
@@ -205,17 +207,18 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		}
 		*/
 		
-		
-		if(oScreen instanceof StateScreen){
-			this.setLcdOff();
-			StateScreen nxtlcd = (StateScreen)oScreen;
-			this.setLcdOn(nxtlcd);
-		} else {	
-			this.setLcdOff();
-			_oContent = (ScreenContent)oScreen;		
-			_oContainer.repaint();			
+		synchronized (screenGuard){
+			if(oScreen instanceof StateScreen){
+				this.setLcdOff();
+				StateScreen nxtlcd = (StateScreen)oScreen;
+				this.setLcdOn(nxtlcd);
+			} else {	
+				this.setLcdOff();
+				_oContent = (ScreenContent)oScreen;		
+				_oContainer.repaint();			
+			}			
 		}
-	
+		
 	}
 
 	private int calculateMaxLines(Font o, int yOffset){
@@ -617,15 +620,15 @@ public class MultiController extends Thread implements MouseListener, Constants,
 			if((oScreen != null && oScreen.forceRefresh())
 					 || (lcd != null && lcd.forceRefresh())){				
 				if(timeDiff >= PAINT_EXPIRE_TIME){
-					//screen has expired repaint it;					
-					if(lcd != null){
-						lcd.validate();
-						lcd.repaint();
+					//screen has expired repaint the children and not the grid;		
+					
+					synchronized (this.screenGuard){
+						if(lcd != null)					
+							lcd.repaintChildren();
+						
+						if(oScreen != null)
+							_oContainer.repaint();
 					}
-					
-					if(oScreen != null)
-						_oContainer.repaint();
-					
 				} else {	
 					try{									
 						long sleepTime = PAINT_EXPIRE_TIME - timeDiff;							

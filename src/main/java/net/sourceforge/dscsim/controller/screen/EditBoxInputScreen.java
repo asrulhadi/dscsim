@@ -35,6 +35,10 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
  */
 public abstract class EditBoxInputScreen extends StateScreen  {
 
+	private  ScreenComponent activeComponent = null;
+	private  ScreenComponent firstComponent = null;
+	private  ScreenComponent lastComponent = null;
+	
 	/**
 	 * @param oScreenElement
 	 */
@@ -55,18 +59,131 @@ public abstract class EditBoxInputScreen extends StateScreen  {
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
 	public ScreenInterface signal(BusMessage oMessage) {
-		
+	/*	
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();
 
-		if(keyAction.equals(PRESSED) && keyID.equals(super.FK_ENT)){			
+		if(keyAction.equals(RELEASED))
+			return this;
+		
+		if(FK_CLR.equals(keyID)){
+			return null;
+		} 
+		
+		if(FK_ENT.equals(keyID)){
+						
+			if(isComplete()){
+				MultiContentManager oMCmgr = getInstanceContext().getContentManager();
 
-		}	
+				//storePageProperties();
 				
+				return oMCmgr.getScreenContent(this.getAttributeValue("next"), getInstanceContext());
+
+			} 
+		}
+		
+		if(MV_LEFT.equals(keyID) 
+				&& this.activeComponent != null){
+
+			ScreenComponent oPrev = getNieghborInputLine(this.activeComponent, false);
+
+			if(oPrev != null)
+				this.activeComponent = oPrev;
+			
+			return this;
+			
+		} else 	if(MV_RIGHT.equals(keyID) 
+				&& this.activeComponent != null){
+			
+			ScreenComponent oNext = getNieghborInputLine(this.activeComponent, true);
+			
+			if(oNext != null)
+				this.activeComponent = oNext;							
+			
+			return this;
+		}
+
+		if( this.activeComponent != null){
+			
+			int lineFocus =  this.activeComponent.signal(oMessage);
+			
+			if(lineFocus > 0){
+				
+				ScreenComponent oNext = getNieghborInputLine(_activeBeanLine, true);
+					
+				if(oNext != null)
+					 this.activeComponent = oNext;							
+				
+			} else if(lineFocus < 0){
+				
+				ScreenComponent oPrev = getNieghborInputLine(_activeBeanLine, false);
+					
+				if(oPrev != null)
+					 this.activeComponent = oPrev;
+				
+			} 
+			
+			//_currLine = getIndexOfLine( this.activeComponent) -getHeaderCount();
+			
+		}
+	
+		*/
 		return this;
 
 	}
 	
+	public ScreenComponent getNieghborInputLine(ScreenComponent target, boolean next) {
+		
+	ScreenComponent curr = null;
+	BeanLine oLine = null;
+/*	
+	//forwards
+	if(next == false){			
+		ScreenComponent arr[] = (ScreenComponent[])this.getComponents();
+		for(int i = 0; i < arr.length); i++) {
+			curr = arr[i];
+			
+			if(target == curr)
+				return oNeighborBeanLine;
+			
+			if(oLine.hasEntryBean()){
+				oNeighborBeanLine = oLine;
+				
+			}					
+		}						
+	} else {
+	
+		for(int i = _oLines.size()-1; i > -1; i--) {
+			oLine = (BeanLine)_oLines.get(i);
+			
+			if(oTarget == oLine)
+				return oNeighborBeanLine;
+			
+			if(oLine.hasEntryBean()){
+				oNeighborBeanLine = oLine;
+				
+			}					
+		}	
+	}
 
+	return oNeighborBeanLine;
+*/
+	return null;
+}
+
+	/**
+	 * are all ScreenComponents complete.
+	 * @return
+	 */
+	public boolean isComplete(){		
+		ScreenComponent oObj =null;
+		ScreenComponent arr[] = (ScreenComponent[])this.getComponents();		
+		for(int i=0; i <arr.length; i++){			
+			oObj = (ScreenComponent)arr[i];			
+			if(oObj.isComplete()==false)
+				return false;			
+		}
+		return true;
+	}
 
 }

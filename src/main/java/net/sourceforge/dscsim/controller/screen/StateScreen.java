@@ -47,9 +47,12 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	protected Element elemScreen = null;
 	
 	/*
-	 * 
+	 * session related info.
 	 */
 	private DscMessage outGoing = null;
+	private DscMessage inComing = null;
+	private InstanceContext instCtx = null;
+	private ScreenInterface parent = null;
 
 	/*
 	 * 
@@ -101,8 +104,7 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	 * @see net.sourceforge.dscsim.common.screen.ScreenInterface#getIncomingDscMessage()
 	 */
 	public DscMessage getIncomingDscMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.inComing;
 	}
 	
 	/**
@@ -119,15 +121,14 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	 * @see net.sourceforge.dscsim.common.screen.ScreenInterface#setIncomingDscMessage(net.sourceforge.dscsim.controller.network.DscMessage)
 	 */
 	public void setIncomingDscMessage(DscMessage oDscMessage) {
-		// TODO Auto-generated method stub
-		
+		this.inComing = oDscMessage;		
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.screen.ScreenInterface#setInstanceContext(net.sourceforge.dscsim.controller.InstanceContext)
 	 */
 	public void setInstanceContext(InstanceContext oCtx) {
-		// TODO Auto-generated method stub	
+			this.instCtx = oCtx;
 	}
 
 	/* (non-Javadoc)
@@ -141,9 +142,8 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.screen.ScreenInterface#setParent(net.sourceforge.dscsim.controller.screen.ScreenContent)
 	 */
-	public void setParent(ScreenContent oParent) {
-		// TODO Auto-generated method stub
-		
+	public void setParent(ScreenInterface oParent) {
+		this.parent = oParent;
 	}	
 	
 
@@ -229,6 +229,16 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	 */
 	public boolean forceRefresh(){
 		return forceRefresh;
+	}
+	/**
+	 * trigger children of container to be repainted.
+	 *
+	 */
+	public void repaintChildren(){
+		Component[]arr = getComponents();
+		for(int i=0; i<arr.length;i++){
+			arr[i].repaint();
+		}
 	}
 	
 }
