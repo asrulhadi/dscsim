@@ -46,7 +46,6 @@ public class EnterMmsiScreen extends EditBoxInputScreen {
 	private EditBox eb = null;
 	public EnterMmsiScreen(Element oScreenElement, MultiContentManager oCMngr) {
 		super(oScreenElement, oCMngr);
-		
 	}
 
 
@@ -58,6 +57,8 @@ public class EnterMmsiScreen extends EditBoxInputScreen {
 		eb = (EditBox) this.getComponentByName("mmsi_input",0);
 		eb.setValidator(new EditBox.MMSIValidator());
 		this.setForceRefresh(true);
+		if(this.activeComponent != null)
+			this.activeComponent.setCursor(true);
 	}
 
 	/* (non-Javadoc)
@@ -70,6 +71,8 @@ public class EnterMmsiScreen extends EditBoxInputScreen {
 	
 	public ScreenInterface signal(BusMessage msg){		
 
+		return super.signal(msg);
+		/*
 		String keyAction = msg.getButtonEvent().getAction();
 		if(keyAction.equals(RELEASED))
 			return this;
@@ -90,6 +93,7 @@ public class EnterMmsiScreen extends EditBoxInputScreen {
 		}
 		
 		return this;
+		*/
 	}
 
 	

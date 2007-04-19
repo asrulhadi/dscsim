@@ -133,4 +133,20 @@ public abstract class ScreenComponent extends JComponent implements BusListener,
 	public boolean isComplete(){
 		return true;
 	}
+	
+	/**
+	 * for edit input boxes and menus.
+	 * @return
+	 */
+	public void setCursor(boolean onoff){
+		
+	}
+	
+	/**
+	 * for edit input boxes return charactor positon and for menus line offset.
+	 * @return
+	 */
+	public int getCursorPos(){
+		return -1;
+	}
 }
