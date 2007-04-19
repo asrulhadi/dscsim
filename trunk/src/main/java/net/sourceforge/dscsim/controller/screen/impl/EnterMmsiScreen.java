@@ -63,7 +63,7 @@ public class EnterMmsiScreen extends EditBoxInputScreen {
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
-	public void exit(DscMessage msg) {		
+	public void exit(BusMessage msg) throws Exception {		
 		DscMessage outGoing = getOutGoingDscMessage();
 		outGoing.setToMMSI(eb.getValue());
 	}

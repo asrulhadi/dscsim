@@ -126,4 +126,11 @@ public abstract class ScreenComponent extends JComponent implements BusListener,
 	public int getTopRow(){
 		return row_y;
 	}
+	/**
+	 * for edit input boxes.
+	 * @return
+	 */
+	public boolean isComplete(){
+		return true;
+	}
 }

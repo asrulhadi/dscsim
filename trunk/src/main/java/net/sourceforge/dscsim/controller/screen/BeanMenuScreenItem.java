@@ -145,7 +145,7 @@ public ScreenInterface signal(BusMessage oMessage) {
 				
 				oMCmgr.storeBeanList(oBeanList);
 				
-				ScreenContent oParent = getParent();
+				ScreenInterface oParent = getParent();
 								
 				//call init as a line has been deleted and _currLine and 
 				//the rest state variables have to be reset.

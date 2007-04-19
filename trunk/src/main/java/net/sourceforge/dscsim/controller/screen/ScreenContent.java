@@ -1177,7 +1177,7 @@ public abstract class ScreenContent implements Constants, ScreenInterface {
 	protected ScreenLineList _oLines = new ScreenLineList();
 	protected Element _oScreenElement = null; 
 	protected Object _enterArg0 = null;
-	protected ScreenContent _oParent = null;
+	protected ScreenInterface _oParent = null;
 	private InstanceContext _oInstanceContext = null;
 	
 	protected int _currLine = 0;
@@ -1412,11 +1412,11 @@ public abstract class ScreenContent implements Constants, ScreenInterface {
 		return _minLine;
 	}
 	
-	public ScreenContent getParent(){
+	public ScreenInterface getParent(){
 		return _oParent;
 	}
 	
-	public void setParent(ScreenContent oParent){
+	public void setParent(ScreenInterface oParent){
 		_oParent = oParent;
 	}
 	

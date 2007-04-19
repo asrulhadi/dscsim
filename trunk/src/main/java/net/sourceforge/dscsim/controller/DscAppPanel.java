@@ -140,7 +140,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			getBus().putOnline(getClu());
 			
 			AppLogger.debug("applet.DscAppPane putting Beeper on line.");	
-			_oBeeper = MultiBeeper.getInstance();
+			_oBeeper = MultiBeeper.getInstance(this);
 			getBus().putOnline(_oBeeper);
 													
 			AppLogger.debug("applet.DscApp sending RESET");						
