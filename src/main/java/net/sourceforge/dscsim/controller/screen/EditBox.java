@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class EditBox  extends ScreenComponent {
-
+	
 	/**
 	 * 
 	 */
@@ -41,6 +42,11 @@ public class EditBox  extends ScreenComponent {
 	 */
 	private String value = "";
 
+	/**
+	 * cursor is on or off
+	 */
+	private boolean cursorOn = true;
+	
 	/**
 	 * used for blinking cursor.
 	 */
@@ -113,6 +119,13 @@ public class EditBox  extends ScreenComponent {
 	public String getValue(){		
 		return this.value;
 	}
+	/**
+	 * for edit input boxes and menus.
+	 * @return
+	 */
+	public void setCursor(boolean onoff){
+		this.cursorOn = onoff;
+	}
     /**
      * 
      * @author katharina
@@ -160,8 +173,20 @@ public class EditBox  extends ScreenComponent {
      		g2d.drawString(Character.toString(value.charAt(p)),p*xscale,yscale-5);
      	}
      	    
-     	AppLogger.debug2("EditBox - cursor " + updateCnt);
-     	if((++updateCnt)%5 > 1){
+     	/*underline it*/
+    	Stroke tmp = g2d.getStroke();
+     	g2d.setStroke(new BasicStroke(3));
+		g2d.drawLine(0,yscale, x*xscale, yscale);
+     	g2d.setStroke(tmp);
+     	/*
+      	for(int j=0; j< x; j++){
+     		g2d.drawLine(j*xscale,yscale, j*xscale+xscale, yscale);
+     	}
+     	*/
+     	
+     	//AppLogger.debug2("EditBox - cursor " + updateCnt);
+
+     	if(cursorOn && (++updateCnt%5 > 1)){
     		int[]xx = new int[4];
     		int[]yy = new int[4];
     		int n = 4;
@@ -218,7 +243,13 @@ public class EditBox  extends ScreenComponent {
 	public boolean isComplete(){
 		return this.validator.isComplete(value);
 	}
-	
+	/**
+	 * returns position of cursor in character offset.
+	 * @return
+	 */
+	public int getCursorPos(){
+		return value.length();
+	}
 	
 	interface Validator{
     		boolean validate(String input);

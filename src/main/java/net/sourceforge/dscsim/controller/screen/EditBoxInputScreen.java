@@ -22,6 +22,8 @@
  
 package net.sourceforge.dscsim.controller.screen;
 
+import java.awt.Component;
+
 import org.jdom.Element;
 
 import net.sourceforge.dscsim.controller.BusMessage;
@@ -35,9 +37,10 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
  */
 public abstract class EditBoxInputScreen extends StateScreen  {
 
-	private  ScreenComponent activeComponent = null;
-	private  ScreenComponent firstComponent = null;
-	private  ScreenComponent lastComponent = null;
+	/**
+	 * for tabbing within screen.
+	 */
+	protected  ScreenComponent activeComponent = null;
 	
 	/**
 	 * @param oScreenElement
@@ -52,14 +55,27 @@ public abstract class EditBoxInputScreen extends StateScreen  {
 	 */
 	public void enter(Object msg){
 		super.enter(msg);
-		EditBox.parseEditBox(this, elemScreen);		
+		EditBox.parseEditBox(this, elemScreen);	
+		
+		/*set first screen element to active one and turn of all other cursors*/
+		Component arr[] = this.getComponents();
+		ScreenComponent curr = null;
+		for(int i=0; i<arr.length; i++){
+			curr = (ScreenComponent)arr[i];
+			curr.setCursor(false);
+			if(curr instanceof EditBox){
+				if(activeComponent == null){
+					activeComponent = curr;
+				}	
+			}
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
 	public ScreenInterface signal(BusMessage oMessage) {
-	/*	
+		
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();
 
@@ -71,113 +87,93 @@ public abstract class EditBoxInputScreen extends StateScreen  {
 		} 
 		
 		if(FK_ENT.equals(keyID)){
-						
-			if(isComplete()){
+			if(isScreenComplete()){
 				MultiContentManager oMCmgr = getInstanceContext().getContentManager();
-
-				//storePageProperties();
-				
-				return oMCmgr.getScreenContent(this.getAttributeValue("next"), getInstanceContext());
-
+				String action = this.getAction(keyID);
+				if(action != null)
+					return oMCmgr.getScreenContent(action, getInstanceContext());
+				else
+					return this;
 			} 
 		}
 		
 		if(MV_LEFT.equals(keyID) 
-				&& this.activeComponent != null){
-
-			ScreenComponent oPrev = getNieghborInputLine(this.activeComponent, false);
-
-			if(oPrev != null)
-				this.activeComponent = oPrev;
+				&& this.activeComponent != null){			
+			if(this.activeComponent.getCursorPos()==0){
+				ScreenComponent prev = getNieghborEditBox(this.activeComponent, false);
+				if(prev != null){
+					this.activeComponent.setCursor(false);
+					this.activeComponent = prev;
+					this.activeComponent.setCursor(true);
+					return this;
+				}
+			}
 			
-			return this;
-			
-		} else 	if(MV_RIGHT.equals(keyID) 
-				&& this.activeComponent != null){
-			
-			ScreenComponent oNext = getNieghborInputLine(this.activeComponent, true);
-			
-			if(oNext != null)
-				this.activeComponent = oNext;							
-			
-			return this;
+		} else if(MV_RIGHT.equals(keyID) 
+				&& this.activeComponent != null){				
+			if(this.activeComponent.isComplete()){
+				ScreenComponent next = getNieghborEditBox(this.activeComponent, true);			
+				if(next != null){
+					this.activeComponent.setCursor(false);
+					this.activeComponent = next;
+					this.activeComponent.setCursor(true);
+					return this;
+				}										
+			}
 		}
 
-		if( this.activeComponent != null){
-			
-			int lineFocus =  this.activeComponent.signal(oMessage);
-			
-			if(lineFocus > 0){
-				
-				ScreenComponent oNext = getNieghborInputLine(_activeBeanLine, true);
-					
-				if(oNext != null)
-					 this.activeComponent = oNext;							
-				
-			} else if(lineFocus < 0){
-				
-				ScreenComponent oPrev = getNieghborInputLine(_activeBeanLine, false);
-					
-				if(oPrev != null)
-					 this.activeComponent = oPrev;
-				
-			} 
-			
-			//_currLine = getIndexOfLine( this.activeComponent) -getHeaderCount();
-			
+		if( this.activeComponent != null){			
+			this.activeComponent.signal(oMessage);
 		}
 	
-		*/
 		return this;
 
 	}
 	
-	public ScreenComponent getNieghborInputLine(ScreenComponent target, boolean next) {
+	public ScreenComponent getNieghborEditBox(ScreenComponent target, boolean next) {
 		
 	ScreenComponent curr = null;
-	BeanLine oLine = null;
-/*	
+	ScreenComponent ret = null;
+	boolean passed = false;
+	Component arr[] = this.getComponents();
+
 	//forwards
-	if(next == false){			
-		ScreenComponent arr[] = (ScreenComponent[])this.getComponents();
-		for(int i = 0; i < arr.length); i++) {
-			curr = arr[i];
-			
-			if(target == curr)
-				return oNeighborBeanLine;
-			
-			if(oLine.hasEntryBean()){
-				oNeighborBeanLine = oLine;
-				
-			}					
+	if(next == true){			
+		for(int i = 0; i < arr.length; i++) {
+			curr = (ScreenComponent)arr[i];
+			if(target == curr){
+				passed = true;
+				continue;
+			}
+			if(passed && curr instanceof EditBox){
+				ret = curr;
+				break;
+			}
 		}						
 	} else {
-	
-		for(int i = _oLines.size()-1; i > -1; i--) {
-			oLine = (BeanLine)_oLines.get(i);
-			
-			if(oTarget == oLine)
-				return oNeighborBeanLine;
-			
-			if(oLine.hasEntryBean()){
-				oNeighborBeanLine = oLine;
-				
-			}					
+		for(int i = arr.length-1; i > -1; i--) {
+			curr = (ScreenComponent)arr[i];
+			if(target == curr){
+				passed = true;
+				continue;
+			}
+			if(passed && curr instanceof EditBox){
+				ret = curr;
+				break;
+			}		
 		}	
 	}
 
-	return oNeighborBeanLine;
-*/
-	return null;
+	return ret;
 }
 
 	/**
 	 * are all ScreenComponents complete.
 	 * @return
 	 */
-	public boolean isComplete(){		
+	public boolean isScreenComplete(){		
 		ScreenComponent oObj =null;
-		ScreenComponent arr[] = (ScreenComponent[])this.getComponents();		
+		Component arr[] = this.getComponents();		
 		for(int i=0; i <arr.length; i++){			
 			oObj = (ScreenComponent)arr[i];			
 			if(oObj.isComplete()==false)
