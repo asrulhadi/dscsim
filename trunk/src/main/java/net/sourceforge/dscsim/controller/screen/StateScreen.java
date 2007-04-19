@@ -188,6 +188,31 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 		
 	}
 	
+	/**
+	 * get a sceen element by its name.
+	 * 
+	 * @author katharina
+	 * 
+	 */
+	public ScreenComponent getComponentByType(Class type, int start){
+		ScreenComponent sc = null;
+		Component all[] = this.getComponents();
+		String typeName = type.getName();
+		String targName = null;
+		String targ = null;
+		for(int i=0; i<all.length;i++){
+			sc = (ScreenComponent)all[i];			
+			targName = sc.getClass().getName();
+			if(i>=start && targName.equals(typeName))
+				break;
+			else 
+				sc = null;
+		}
+		
+		return sc;
+		
+	}
+	
 	public String getAction(String eventId){
 		
 		String rt = null;

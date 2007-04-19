@@ -34,7 +34,7 @@ import net.sourceforge.dscsim.controller.MultiController;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public abstract class SingleMenuScreen extends StateScreen  {
+public class SingleMenuScreen extends StateScreen  {
 
 	protected Menu menu = null;
 	/**
@@ -52,6 +52,9 @@ public abstract class SingleMenuScreen extends StateScreen  {
 		super.enter(msg);
 		/*parse menu*/
 		Menu.parseMenu(this, elemScreen);
+		
+		/**/
+		setMenu((Menu)this.getComponentByType(Menu.class, 0));	
 	}
 	/**
 	 * 
@@ -83,6 +86,15 @@ public abstract class SingleMenuScreen extends StateScreen  {
     			ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(chosen, getInstanceContext());		
     			return oScreen;
 		}	
+		
+		if(keyAction.equals(PRESSED) && keyID.equals(super.FK_CLR)){			
+			MultiContentManager oMCmgr = getInstanceContext().getContentManager();
+			String action = this.getAction(keyID);
+			if(action != null)
+				return oMCmgr.getScreenContent(action, getInstanceContext());
+			else
+				return null;
+	}		
 		
 		menu.signal(oMessage);
 		

@@ -38,6 +38,44 @@ public class EditBox  extends ScreenComponent {
 	private static final long serialVersionUID = 891796259681334714L;
 
 	/**
+	 * tracking values for alphanumeric mode.
+	 */
+	private String lastKeyId = null;
+	private int counter = 0;
+	private int insertAt = -1;
+	private boolean upperCase = true;
+	
+	private static final String KEY2UPPER [][] ={
+		{"0000"},	
+		{"1ABC"},
+		{"2DEF"},
+		{"3GHI"},
+		{"4JKL"},
+		{"5MNO"},
+		{"6PQR"},
+		{"7STU"},
+		{"8VWY"},
+		{"9YZY"},			
+	};
+		
+	private static final String KEY2LOWER [][] ={
+		{"0000"},	
+		{"1abc"},
+		{"2def"},
+		{"3ghi"},
+		{"4jkl"},
+		{"5mno"},
+		{"6pqr"},
+		{"7stu"},
+		{"8vwx"},
+		{"9yzy"},			
+	};
+	
+	/**
+	 * 
+	 */
+	private boolean digitMode = true;
+	/**
 	 * value of box content.
 	 */
 	private String value = "";
@@ -65,11 +103,70 @@ public class EditBox  extends ScreenComponent {
 		super(row, col, width, height);
 		
 	}
-
+	public void signal(BusMessage oMessage) {
+		
+		if(digitMode== true)
+			doDigitMode(oMessage);
+		else
+			doAlphaMode(oMessage);
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
-	public void signal(BusMessage oMessage) {
+	public void doAlphaMode(BusMessage oMessage) {
+		String keyId = oMessage.getButtonEvent().getKeyId();
+		
+		if(KP_Aa.equals(keyId)){			
+			upperCase = !upperCase;
+			return;
+		}
+		
+		if(MV_RIGHT.equals(keyId)){
+			lastKeyId = keyId;
+			counter = 0;
+			return;
+		}
+						
+		if(_oKeySet.contains(keyId)){			
+			if(lastKeyId == null || !lastKeyId.equals(keyId)){
+				counter = 0;
+				insertAt++;
+				lastKeyId = keyId;
+			} else{
+				counter = (counter+1)%4;
+			}
+			
+			if((value.length() < getWidthInColumns())){				
+				int keyNum = Integer.parseInt(DscUtils.getKeyStringValue(keyId));				
+				String currCase[][] = upperCase == true ? KEY2UPPER : KEY2LOWER;				
+				String nextChar = "";
+				if(keyNum > -1 && keyNum < 10)
+					nextChar = currCase[keyNum][0].substring(counter,counter+1);
+
+				String testValue  = value;
+				testValue= testValue.substring(0, insertAt) + nextChar;				
+				if((validator == null) || (validator != null && validator.validate(testValue))){
+					value = testValue; 
+				}	
+		
+			}
+			
+		}else if(MV_LEFT.equals(oMessage.getButtonEvent().getKeyId())
+				|| KP_BS.equals(oMessage.getButtonEvent().getKeyId())){			
+			int len = value.length();
+			if(len > 0){
+				value = value.substring(0, len-1);		
+			}
+		}
+		 
+		
+	}
+	/* (non-Javadoc)
+	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
+	 */
+	public void doDigitMode(BusMessage oMessage) {
 		
 		String keyAction = oMessage.getButtonEvent().getAction();
 		if(RELEASED.equals(keyAction))
@@ -84,22 +181,13 @@ public class EditBox  extends ScreenComponent {
 				}
 			}			
 		}else if(MV_LEFT.equals(oMessage.getButtonEvent().getKeyId())
-				|| KP_BS.equals(oMessage.getButtonEvent().getKeyId())){
-			
+				|| KP_BS.equals(oMessage.getButtonEvent().getKeyId())){			
 			int len = value.length();
 			if(len > 0){
 				value = value.substring(0, len-1);		
 			}
 		}
-		 		
-		int focus = 0;
-		if(this.getWidthInColumns() == value.length())
-			focus = 1;
-		else if(value.length()==0)
-			focus = -1;
-		else
-			focus = 0;
-				
+		 					
 		return;
 		
 	}
@@ -228,6 +316,10 @@ public class EditBox  extends ScreenComponent {
 		}
 		
 	}
+	
+	public void setModeDigit(boolean tf){
+		this.digitMode = tf;
+	}
 	/**
 	 * set validator according to type of box.
 	 * @param validator
@@ -241,7 +333,10 @@ public class EditBox  extends ScreenComponent {
 	 *
 	 */
 	public boolean isComplete(){
-		return this.validator.isComplete(value);
+		if(this.validator != null)
+			return this.validator.isComplete(value);
+		else
+			return false;
 	}
 	/**
 	 * returns position of cursor in character offset.
@@ -278,6 +373,25 @@ public class EditBox  extends ScreenComponent {
 		
 		public boolean isComplete(String strMMSI) {
 			if(strMMSI.length() == 9){
+				return true;
+			}else{
+				return false;
+			}			
+		}
+		
+	}
+	
+	public static class AddressIdValidator implements Validator{
+
+		/* (non-Javadoc)
+		 * @see net.sourceforge.dscsim.controller.screen.EditBox.Validator#validate(java.lang.String)
+		 */
+		public boolean validate(String strMMSI) {	
+			return true;
+		}
+		
+		public boolean isComplete(String strMMSI) {
+			if(strMMSI.length() > 0){
 				return true;
 			}else{
 				return false;

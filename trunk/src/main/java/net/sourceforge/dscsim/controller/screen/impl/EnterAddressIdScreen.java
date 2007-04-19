@@ -26,10 +26,13 @@ import org.jdom.Element;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.MultiController;
 import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.screen.Menu;
+import net.sourceforge.dscsim.controller.screen.EditBox;
+import net.sourceforge.dscsim.controller.screen.EditBoxInputScreen;
 import net.sourceforge.dscsim.controller.screen.Screen;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
+import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
 
 /**
@@ -38,11 +41,13 @@ import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class MainMenuScreen extends SingleMenuScreen {
+public class EnterAddressIdScreen extends EditBoxInputScreen {
 
-	public MainMenuScreen(Element oScreenElement, MultiContentManager oCMngr) {
+	private EditBox ebMmsi = null;
+	private EditBox ebAddress = null;
+	
+	public EnterAddressIdScreen(Element oScreenElement, MultiContentManager oCMngr) {
 		super(oScreenElement, oCMngr);
-		
 	}
 
 
@@ -51,27 +56,27 @@ public class MainMenuScreen extends SingleMenuScreen {
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
+		ebMmsi = (EditBox) this.getComponentByName("mmsi",0);
+		ebMmsi.setValidator(new EditBox.MMSIValidator());
+		this.setForceRefresh(true);
+		if(this.activeComponent != null)
+			this.activeComponent.setCursor(true);
 		
-		//create the single menu.
-		/*
-		Menu m = new Menu(1, 0, 8, 3);
-		m.addItem("gchoice1", new String("state_editbox"));
-		m.addItem("pchoice2", new String("main_menu"));
-		m.addItem("3choice3", new String("state_test"));
-		m.addItem("pchoice4", new String("next4"));
-		m.addItem("Achoice5", new String("next5"));
-		m.addItem("6choice6", new String("next6"));
-		m.addItem("7choice7", new String("next7"));
-		*/	
-		//setMenu((Menu)this.getComponentByName("main_menu", 0));	
+		ebAddress = (EditBox) this.getComponentByName("addressid",0);
+		ebAddress.setModeDigit(false);
+		ebAddress.setValidator(new EditBox.AddressIdValidator());
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
-	public void exit(DscMessage msg) {
-	}
+	public void exit(BusMessage msg) throws Exception {		
 
+	}
+	
+	public ScreenInterface signal(BusMessage msg){		
+		return super.signal(msg);
+	}
 
 	
 }
