@@ -22,14 +22,18 @@
  
 package net.sourceforge.dscsim.controller.screen;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
 
@@ -43,6 +47,16 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
  */
 public class Screen extends Container {
 	
+	/**
+	 * 
+	 */
+	private Color background = Color.YELLOW;
+	
+	/**
+	 * used for blending text over background.
+	 */
+	AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
+
 	/**
 	 * original top left position of screen.
 	 */
@@ -108,10 +122,8 @@ public class Screen extends Container {
 		this.setBounds(x, y, width+1, height+1);		
 		//AppLogger.debug2("Screen count=" + (++count) + ";width="+ width + "; height="+ height);
 		perim = new RoundRectangle2D.Float(x, y, width, height, 1, 1);	
-		
 		Font theFont = new Font("Courier", Font.PLAIN, 14);
 	 	this.setFont(theFont);
-	 	
 	 	//AppLogger.debug2("Screen.Screen parent=" + this.getParent());
 	 
 	 	
@@ -131,9 +143,8 @@ public class Screen extends Container {
 		this.setBounds(x, y, width+1, height+1);		
 		AppLogger.debug2("Screen.addNotify after getBounds=" + this.toString());
 	 	//AppLogger.debug2("Screen.addNotify parent=" + this.getParent());
-
 		/*this must be done because the children were 
-		 * were added in before the container was active.*/
+		 * were added in before the container was active.*/		
 		Component children[] = this.getComponents();
 		for(int i = 0; i<children.length;i++){
 			synchronized(children[i]){
@@ -180,27 +191,31 @@ public class Screen extends Container {
 	 * overriden paint method.
 	 */
 	public void paint(Graphics g) {
-		super.paint(g);	
 		Graphics2D g2d = (Graphics2D)g; 
+        Composite original = g2d.getComposite();         
 		
+		/*first paint the background*/
+        g2d.setComposite(this.ac);
+		g2d.setColor(this.background);
+		g2d.fill(perim);
+		
+		/*draw the grid perimeter*/
+		g2d.setComposite(original);
 		g2d.setStroke(stroke);
 		g2d.setColor(Color.gray);
 		g2d.draw(perim);
-	
-		//AppLogger.debug2("Screen.paint this=" + this + ";x= " + x + ";y= " + y);
-		//AppLogger.debug2("Screen.paint getBounds= " + this.getBounds().toString());
-	 	//AppLogger.debug2("Screen.paint parent =" + this.getParent());		
 
 		/*draw horizontal lines*/
 		for(int r=1; r<=rows;r++){
 			g2d.drawLine(x,  y+yscale*r, x+width,  y+yscale*r);
 		}
-
 		/*draw vertical lines*/
 		for(int c=1; c<=cols;c++){
 			g2d.drawLine(x+xscale*c, y, x+xscale*c, y+height);
-			//AppLogger.debug2("x+xscale*c = "+ (x+xscale*c) + ";y= " + y + ";height= " + height);
 		}
+		/*call base class impl*/
+		super.paint(g);	
+
 	}
 
 	/**
