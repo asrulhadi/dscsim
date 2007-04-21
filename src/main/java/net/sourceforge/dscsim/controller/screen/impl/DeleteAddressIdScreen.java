@@ -22,20 +22,19 @@
  
 package net.sourceforge.dscsim.controller.screen.impl;
 
+import java.awt.Component;
+import java.util.List;
+
 import org.jdom.Element;
 
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.MultiController;
-import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.screen.BeanList;
 import net.sourceforge.dscsim.controller.screen.EditBox;
 import net.sourceforge.dscsim.controller.screen.EditBoxInputScreen;
-import net.sourceforge.dscsim.controller.screen.Screen;
-import net.sourceforge.dscsim.controller.screen.ScreenContent;
+import net.sourceforge.dscsim.controller.screen.ScreenComponent;
 import net.sourceforge.dscsim.controller.screen.ScreenInterface;
-import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
 
 /**
  * @author katharina
@@ -43,12 +42,12 @@ import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class EnterAddressIdScreen extends EditBoxInputScreen {
+public class DeleteAddressIdScreen extends EditBoxInputScreen {
 
 	private EditBox ebMmsi = null;
 	private EditBox ebAddress = null;
 	
-	public EnterAddressIdScreen(Element oScreenElement, MultiContentManager oCMngr) {
+	public DeleteAddressIdScreen(Element oScreenElement, MultiContentManager oCMngr) {
 		super(oScreenElement, oCMngr);
 	}
 
@@ -58,15 +57,19 @@ public class EnterAddressIdScreen extends EditBoxInputScreen {
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
+		
+		AddressIdEntry addr = this.getInstanceContext().getContentManager().getSelectedAddressEntryId();	
+		if(addr == null)
+			return;
+		
 		ebMmsi = (EditBox) this.getComponentByName("mmsi",0);
-		ebMmsi.setValidator(new EditBox.MMSIValidator());
-		this.setForceRefresh(true);
-		if(this.activeComponent != null)
-			this.activeComponent.setCursor(true);
+		ebMmsi.setValue(addr.getId());
+		ebMmsi.setEditMode(false);
 		
 		ebAddress = (EditBox) this.getComponentByName("addressid",0);
-		ebAddress.setModeDigit(false);
-		ebAddress.setValidator(new EditBox.AddressIdValidator());
+		ebAddress.setValue(addr.getName());
+		ebAddress.setEditMode(false);
+
 	}
 
 	/* (non-Javadoc)
@@ -75,15 +78,36 @@ public class EnterAddressIdScreen extends EditBoxInputScreen {
 	public void exit(BusMessage msg) throws Exception {		
 		
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
-			MultiContentManager oMCmgr = getInstanceContext().getContentManager();				
-			Element oStorage = oMCmgr.getStorageElement("mmsi_addressbook");
-			BeanList beanList = oMCmgr.getBeanList(oStorage);
-			beanList.addItem(new AddressIdEntry(this.ebMmsi.getValue(), this.ebAddress.getValue()));					
-			oMCmgr.storeBeanList(beanList);			
+			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
+			BeanList beanList = oMCmgr.getBeanList("mmsi_addressbook");
+			
+			String entMmsi = this.ebMmsi.getValue();
+			String entAddr = this.ebAddress.getValue();
+			List list = beanList.getList();	
+			AddressIdEntry address = null; 
+			for(int i=0; i<list.size();i++){
+				address = (AddressIdEntry)list.get(i);		
+				if(entMmsi.equals(address.getId()) && entAddr.equals(address.getName())){
+					break;
+				} else {
+					address = null;
+				}
+			}	
+			
+			if(address != null){
+				beanList.removeItem(address);
+				oMCmgr.storeBeanList(beanList);
+			}
 		}
 	
 	}
-	
+	/**
+	 * are all ScreenComponents complete.
+	 * @return
+	 */
+	public boolean isScreenComplete(){		
+		return true;
+	}
 	public ScreenInterface signal(BusMessage msg){		
 		return super.signal(msg);
 	}

@@ -22,19 +22,18 @@
  
 package net.sourceforge.dscsim.controller.screen.impl;
 
+import java.util.List;
+
 import org.jdom.Element;
 
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.MultiController;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.screen.BeanList;
-import net.sourceforge.dscsim.controller.screen.EditBox;
-import net.sourceforge.dscsim.controller.screen.EditBoxInputScreen;
+import net.sourceforge.dscsim.controller.screen.Menu;
 import net.sourceforge.dscsim.controller.screen.Screen;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
-import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
 
 /**
@@ -43,13 +42,10 @@ import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class EnterAddressIdScreen extends EditBoxInputScreen {
+public class DisplayAddressIdsScreen extends SingleMenuScreen {
 
-	private EditBox ebMmsi = null;
-	private EditBox ebAddress = null;
-	
-	public EnterAddressIdScreen(Element oScreenElement, MultiContentManager oCMngr) {
-		super(oScreenElement, oCMngr);
+	public DisplayAddressIdsScreen(Element oScreenElement, MultiContentManager oCMngr) {
+		super(oScreenElement, oCMngr);	
 	}
 
 
@@ -58,35 +54,42 @@ public class EnterAddressIdScreen extends EditBoxInputScreen {
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
-		ebMmsi = (EditBox) this.getComponentByName("mmsi",0);
-		ebMmsi.setValidator(new EditBox.MMSIValidator());
-		this.setForceRefresh(true);
-		if(this.activeComponent != null)
-			this.activeComponent.setCursor(true);
 		
-		ebAddress = (EditBox) this.getComponentByName("addressid",0);
-		ebAddress.setModeDigit(false);
-		ebAddress.setValidator(new EditBox.AddressIdValidator());
+		Menu menu = (Menu)this.getComponentByName("the_menu", 0);			
+		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
+		BeanList beanList = oMCmgr.getBeanList("mmsi_addressbook");
+		List list = beanList.getList();	
+		AddressIdEntry address = null; 
+		for(int i=0; i<list.size();i++){
+			address = (AddressIdEntry)list.get(i);		
+			menu.addItem(address.getName(), "delete_address");
+		}	
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
-	public void exit(BusMessage msg) throws Exception {		
-		
-		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
-			MultiContentManager oMCmgr = getInstanceContext().getContentManager();				
-			Element oStorage = oMCmgr.getStorageElement("mmsi_addressbook");
-			BeanList beanList = oMCmgr.getBeanList(oStorage);
-			beanList.addItem(new AddressIdEntry(this.ebMmsi.getValue(), this.ebAddress.getValue()));					
-			oMCmgr.storeBeanList(beanList);			
+	public void exit(BusMessage msg) throws Exception {
+
+		Menu menu = (Menu)this.getComponentByName("the_menu", 0);	
+		String selectedKey = menu.getSelectedKey();
+		if(msg.getButtonEvent().getKeyId().equals(FK_ENT) && selectedKey != null){
+			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
+			BeanList beanList = oMCmgr.getBeanList("mmsi_addressbook");
+			List list = beanList.getList();	
+			AddressIdEntry address = null; 
+			for(int i=0; i<list.size();i++){
+				address = (AddressIdEntry)list.get(i);			
+				if(selectedKey.equals(address.getName())){
+					oMCmgr.setSelectedAddressEntryId(address);
+					break;
+				}
+			}	
+		}else{
+			getInstanceContext().getContentManager().setSelectedAddressEntryId(null);
 		}
-	
 	}
-	
-	public ScreenInterface signal(BusMessage msg){		
-		return super.signal(msg);
-	}
+
 
 	
 }

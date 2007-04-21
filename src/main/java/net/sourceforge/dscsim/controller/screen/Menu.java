@@ -180,6 +180,15 @@ public class Menu extends ScreenComponent {
     }
     
     /**
+     * get selected key.
+     * @return
+     */
+    public String getSelectedKey(){
+    		return list.keySet().toArray()[selected].toString();
+    }
+    
+    
+    /**
      * 
      * @returns data stored with text.
      */

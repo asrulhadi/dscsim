@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,7 +41,9 @@ import org.jdom.xpath.XPath;
 //spoof that list is ScreenContent
 public class BeanList implements Serializable {
 	
-	
+	/*
+	 * main list.
+	 */
 	private ArrayList _oBeans = new ArrayList();
 
 	//see storage section of xml
@@ -49,6 +52,22 @@ public class BeanList implements Serializable {
 	//class of elements in list
 	private String _beanType = null;
 	
+	//field of stored element which acts as key.
+	private String _keyFieldName;
+	
+	/*currently select item in list*/
+	private int _selectedIdx = 0;
+	
+	public BeanList(){
+		//super(null);
+	}
+	public BeanList(String listName, String beanType, String keyFieldName){
+		//super(null);		
+		_listName = listName;
+		_beanType = beanType;
+		_keyFieldName = keyFieldName;		
+	}
+
 	public String getListName(){
 		return _listName;
 	}
@@ -57,12 +76,26 @@ public class BeanList implements Serializable {
 		return _oBeans;
 	}
 
+	/**
+	 * remove object from list.
+	 * @param oObj
+	 */
 	public void removeItem(Object oObj){
 		_oBeans.remove(oObj);
 	}
+	/**
+	 * add item to list.
+	 * @param oObj
+	 */
 	public void addItem(Object oObj){
 		_oBeans.add(0, oObj);
 	}
+	
+	/**
+	 * test 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String args[]) throws Exception {
 		
 	
@@ -81,50 +114,38 @@ public class BeanList implements Serializable {
 	
 		
 	}
-	
-	//field of stored element which acts as key.
-	private String _keyFieldName;
-	
-	/*currently select item in list*/
-	private int _selectedIdx = 0;
-	
-	public BeanList(){
-		//super(null);
-	}
-	public BeanList(String listName, String beanType, String keyFieldName){
-		//super(null);
 		
-		_listName = listName;
-		_beanType = beanType;
-		_keyFieldName = keyFieldName;
-		
-	}
-	
+	/**
+	 * set select index of item.
+	 * @param idx
+	 */
 	public void setSelectedIdx(int idx){
 		_selectedIdx = idx;
 	}
 	
+	/**
+	 * get index of selected item.
+	 * @return
+	 */
 	public int getSelectedIdx(){
 		return _selectedIdx;
 	}
 	
 
-	public void store(String extension, String name){
-    	
-	    	AppLogger.debug("BeanList.store " + name + extension);
-	 	
-	    	try {
-	    				
-	    	   	FileOutputStream fos = new FileOutputStream(name + "_" + extension);
-	    	   	
-	        	ObjectOutputStream oos = new ObjectOutputStream(fos);
-	        		
-	        	oos.writeObject(this);
-	        	
+	/**
+	 * store list to file.
+	 * @param extension
+	 * @param name
+	 */
+	public void store(String extension, String name){   	
+	    	AppLogger.debug("BeanList.store " + name + extension);	 	
+	    	try {	    				
+	    	   	FileOutputStream fos = new FileOutputStream(name + "_" + extension);	    	   	
+	        	ObjectOutputStream oos = new ObjectOutputStream(fos);	        		
+	        	oos.writeObject(this);	        	
 	    	} catch(Exception oEx){
 	    		AppLogger.error(oEx);
-	    	}
-	    	 	
+	    	}	    	 	
     }
       
 

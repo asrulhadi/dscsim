@@ -59,6 +59,11 @@ import java.util.Properties;
 
 public class MultiContentManager implements BusListener, Constants {
 	
+	/*
+	 * temp storage for address ids for both group and individual.
+	 */
+	private AddressIdEntry selectedAddress = null;
+	
 	private static String cDISTRESS_CALL_PERSISTANCE = STORE_BASE + "distresscalls";
 	private String _strMMSI = "";
 		
@@ -685,14 +690,10 @@ public class MultiContentManager implements BusListener, Constants {
     	//AppLogger.debug("MultiContentManager.storeCalls " + name + getStoreExtension());
  	
     	BeanList oBeanList = null;
-    	try {
-    				
-    	   	FileInputStream fis = new FileInputStream(getStorePrefix() + name + getStoreExtension());
-    	   	
-        	ObjectInputStream ois = new ObjectInputStream(fis);
-        		
-        	oBeanList = (BeanList)ois.readObject();
-        	
+    	try {   				
+    	   	FileInputStream fis = new FileInputStream(getStorePrefix() + name + getStoreExtension());   	   	
+        	ObjectInputStream ois = new ObjectInputStream(fis);       		
+        	oBeanList = (BeanList)ois.readObject();       	
     	} catch(Exception oEx){
     		AppLogger.error(oEx);
     	}
@@ -787,26 +788,18 @@ public class MultiContentManager implements BusListener, Constants {
        
        
        public void storeBeanList(BeanList oList){
-       	
-       	
+       	       	
 	       	String listName = oList.getListName();
 	       	String storeExt = getStoreExtension();
-	       	
-	       	//AppLogger.debug("MultiContentManager.storeBeanList " + listName + storeExt);
-	 	
-	       	try {
-	       		
-	    	   		FileOutputStream fos = new FileOutputStream(getStorePrefix() + listName + storeExt);
-	    	   	
-	    	   		ObjectOutputStream oos = new ObjectOutputStream(fos);
-	        		
-	    	   		oos.writeObject(oList);
-	        	
-	    	   		//refreshBeanListCache(oList);
-	        	
-	    			} catch(Exception oEx){
-	    				AppLogger.error(oEx);
-	    			}
+	       	 	
+	       	try {	       		
+	    	   		FileOutputStream fos = new FileOutputStream(getStorePrefix() + listName + storeExt);	    	   	
+	    	   		ObjectOutputStream oos = new ObjectOutputStream(fos);	        		
+	    	   		oos.writeObject(oList);	        	
+	    	   		//refreshBeanListCache(oList);        	
+	    		} catch(Exception oEx){
+	    			AppLogger.error(oEx);
+	    		}
        	
        }
        /*
@@ -1256,7 +1249,6 @@ public class MultiContentManager implements BusListener, Constants {
     	
     }
 
-
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
@@ -1266,5 +1258,21 @@ public class MultiContentManager implements BusListener, Constants {
 			getInstanceContext().removeProperties();
 			return;
 		} 		
+	}
+	
+	/**
+	 * set selected AddressEntryId into session info.
+	 * @param addr
+	 */
+	public void setSelectedAddressEntryId(AddressIdEntry addr){
+		this.selectedAddress = addr;
+	}
+	
+	/**
+	 * get selected AddressEntryId from session info.
+	 * @param addr
+	 */
+	public AddressIdEntry getSelectedAddressEntryId(){
+		return this.selectedAddress;
 	}
 }
