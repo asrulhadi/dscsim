@@ -87,4 +87,17 @@ public class AddressIdEntry implements Serializable {
 	public String getName(){
 		return _name;
 	}
+	
+	/**
+	 * 
+	 * @author katharina
+	 */
+	public boolean equals(Object other){
+		AddressIdEntry a1 = (AddressIdEntry)other;
+		if(a1._id.equals(this._id) && a1._name.equals(this._name))
+			return true;
+		else
+			return false;
+		
+	}
 }

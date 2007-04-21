@@ -74,6 +74,10 @@ public class EditBox  extends ScreenComponent {
 	/**
 	 * 
 	 */
+	private boolean editable = true;
+	/**
+	 * 
+	 */
 	private boolean digitMode = true;
 	/**
 	 * value of box content.
@@ -104,6 +108,9 @@ public class EditBox  extends ScreenComponent {
 		
 	}
 	public void signal(BusMessage oMessage) {
+		
+		if(this.editable == false)
+			return;
 		
 		if(digitMode== true)
 			doDigitMode(oMessage);
@@ -344,6 +351,13 @@ public class EditBox  extends ScreenComponent {
 	 */
 	public int getCursorPos(){
 		return value.length();
+	}
+	
+	/**
+	 */
+	public void setEditMode(boolean onoff){
+		this.editable = onoff;
+		this.setCursor(onoff);
 	}
 	
 	interface Validator{
