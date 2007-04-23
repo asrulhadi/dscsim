@@ -58,6 +58,10 @@ public class DisplayAddressIdsScreen extends SingleMenuScreen {
 		Menu menu = (Menu)this.getComponentByName("the_menu", 0);			
 		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
 		BeanList beanList = oMCmgr.getBeanList("mmsi_addressbook");
+		
+		if(beanList == null)
+			return;
+		
 		List list = beanList.getList();	
 		AddressIdEntry address = null; 
 		for(int i=0; i<list.size();i++){
