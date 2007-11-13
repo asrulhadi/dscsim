@@ -114,7 +114,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	
 	//Area where text is displayed.
 	//top rh and bottom lh corners
-	private int [][] _screenSize = {{94, 84},{372, 243}};	
+	private int [][] _screenSize = {{110, 83},{372, 243}};	
 	private final int DISPLAY_X = _screenSize[0][0]-5;
 	private final int DISPLAY_Y = _screenSize[0][1];
 	private final int DISPLAY_W = _screenSize[1][0] - _screenSize[0][0]+10;		

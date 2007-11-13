@@ -67,7 +67,7 @@ public abstract class StateScreen extends Screen implements ScreenInterface, Con
 	 * @param oScreenElement
 	 */
 	public StateScreen(Element elemScreen,  MultiContentManager contentMngr) {
-		super(contentMngr.getInstanceContext().getController().getScreenX(), contentMngr.getInstanceContext().getController().getScreenX(),  210, 160, 8, 21);
+		super(contentMngr.getInstanceContext().getController().getScreenX(), contentMngr.getInstanceContext().getController().getScreenY(),  260, 160, 8, 21);
 		this.elemScreen = elemScreen;
 		this.contentMngr = contentMngr;
 	}

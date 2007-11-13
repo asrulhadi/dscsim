@@ -365,6 +365,81 @@ public class EditBox  extends ScreenComponent {
     		public boolean isComplete(String strMMSI);
     }
 	
+	public static class PositionValidator implements Validator{
+
+		public enum MODE {
+			LAT,
+			LON,
+			MIN;
+		};
+		
+		MODE mode = MODE.LAT;
+		
+		public PositionValidator setMode(MODE m){
+			mode = m;
+			return this;
+		}
+		public boolean validate(String strValue) {
+			boolean result = true;
+			try {
+				int intValue = Integer.parseInt(strValue);
+		
+				if(mode.equals(MODE.LAT)) {
+					if(strValue.length()==1 && intValue > 8)
+						result = false;
+					else if(strValue.length()==2 && intValue > 90)
+						result = false;					
+				}
+				
+				if(mode.equals(MODE.LON)){
+					if(strValue.length()==1 && intValue > 1)
+						result = false;
+					else if(strValue.length()==2 && intValue > 18)
+						result = false;	
+					else if(strValue.length()==3 && intValue > 180)
+						result = false;					
+				}
+							
+				if(mode.equals(MODE.MIN)){
+					if(strValue.length()==1 && intValue > 5)
+						result = false;
+					else if(strValue.length()==2 && intValue > 59)
+						result = false;					
+				}
+
+			
+			}catch(Exception oEx){
+				AppLogger.error(oEx);
+				result = false;
+			}		
+			return result;
+		}
+		public boolean isComplete(String strValue) {
+			
+			boolean rv = false;
+			
+			if(strValue == null)
+				return rv;
+			
+			switch(mode){
+			
+			case LAT:
+			case MIN:
+				rv = strValue.length() == 2 ? true : false;
+				break;
+			case LON:
+				rv = strValue.length() == 3 ? true : false;
+				break;
+			default:
+				rv = false;
+			};
+		
+			return rv;
+		}
+		
+	}
+	
+	
 	public static class MMSIValidator implements Validator{
 
 		/* (non-Javadoc)
