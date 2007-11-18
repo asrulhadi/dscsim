@@ -46,7 +46,7 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class Menu extends ScreenComponent {
+public class ChoiceBox extends ScreenComponent {
 
 	/**
 	 * 
@@ -69,7 +69,7 @@ public class Menu extends ScreenComponent {
 	 * @param width in columns
 	 * @param height in rows
 	 */
-	public Menu(int row, int col, int width, int height) {
+	public ChoiceBox(int row, int col, int width, int height) {
 		super(row, col, width, height);
 	}
 	/**
@@ -123,24 +123,6 @@ public class Menu extends ScreenComponent {
      		}
      	}
      	
-     	/*draw cursor*/     	
-     	//AppLogger.debug2("Menu.paint cursor.getBound" + cursor.getBounds().toString());
-		/*create cursor*/
-		int[]xx = new int[3];
-		int[]yy = new int[3];
-		int n = 3; 
-
-		Screen scr = this.getScreen(); 
-		int xs = scr.getXScale();
-		int ys = scr.getYScale();   		
-		xx[0]=0; xx[1]=xs; xx[2]=0;
-		yy[0]=0; yy[1]=ys/2; yy[2]=ys;
-		Cursor cursor = new Cursor(xx, yy, n);
-		int curpos = selected-from;
-     	//AppLogger.debug2("Menu.paint curpos " + curpos + "; selected "+ selected);
-     	cursor.translate(0, curpos*yscale);
-     	g2d.draw(cursor);
-     	g2d.fill(cursor);
 
     }
    
@@ -260,23 +242,23 @@ public class Menu extends ScreenComponent {
 	 * @author katharina
 	 * @return void
 	 */
-	public static void parseMenu(Screen dest, Element source){
+	public static void parseChoiceBox(Screen dest, Element source){
 		
 		try {
-			XPath xpath = XPath.newInstance("element[@type='menu']");			
+			XPath xpath = XPath.newInstance("element[@type='choicebox']");			
 			List list = xpath.selectNodes(source);			
 			Iterator itr  = list.iterator();
 			Element elem = null;
-			Menu m = null;
+			ChoiceBox m = null;
 			while(itr.hasNext()){
 				elem = (Element)itr.next();		
 				int c = Integer.parseInt(elem.getAttributeValue("column"));
 				int r = Integer.parseInt(elem.getAttributeValue("row"));
 				int w = Integer.parseInt(elem.getAttributeValue("width"));
 				int h = Integer.parseInt(elem.getAttributeValue("height"));			
-				m = new Menu(r, c, w, h);
+				m = new ChoiceBox(r, c, w, h);
 				m.setComponentName(elem.getAttributeValue("name"));
-				parseMenuItems(m, elem);
+				parseChoices(m, elem);
 				m.setName(elem.getAttributeValue("name"));
 				dest.add(m);
 			}
@@ -292,7 +274,7 @@ public class Menu extends ScreenComponent {
 	 * @author katharina
 	 *
 	 */
-	private static void parseMenuItems(Menu m, Element source) throws Exception{
+	private static void parseChoices(ChoiceBox m, Element source) throws Exception{
 
 		XPath xpath = XPath.newInstance("choice");			
 		List list = xpath.selectNodes(source);			
@@ -300,8 +282,8 @@ public class Menu extends ScreenComponent {
 		Element elem = null;
 		while(itr.hasNext()){
 			elem = (Element)itr.next();		
-			parseMenuItems(m, elem);
-			m.addItem(elem.getText(), elem.getAttributeValue("data"));
+			parseChoices(m, elem);
+			m.addItem(elem.getText(), elem.getAttributeValue("link"));
 		}
 
 	}

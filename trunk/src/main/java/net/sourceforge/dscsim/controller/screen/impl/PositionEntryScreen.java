@@ -19,7 +19,7 @@
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  */
- 
+
 package net.sourceforge.dscsim.controller.screen.impl;
 
 import org.jdom.Element;
@@ -37,12 +37,15 @@ import net.sourceforge.dscsim.controller.screen.Screen;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
 import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
+import net.sourceforge.dscsim.controller.utils.AppLogger;
+import net.sourceforge.dscsim.controller.screen.types.Latitude;
+import net.sourceforge.dscsim.controller.screen.types.Longitude;
 
 /**
  * @author katharina
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 
+ * TODO To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Style - Code Templates
  */
 public class PositionEntryScreen extends EditBoxInputScreen {
 
@@ -50,63 +53,109 @@ public class PositionEntryScreen extends EditBoxInputScreen {
 	private EditBox ebLatMin = null;
 	private EditBox ebLonDeg = null;
 	private EditBox ebLonMin = null;
-	
-	public PositionEntryScreen(Element oScreenElement, MultiContentManager oCMngr) {
+
+	public PositionEntryScreen(Element oScreenElement,
+			MultiContentManager oCMngr) {
 		super(oScreenElement, oCMngr);
+
+		this.setSignalHandler(new MoveWhenComplete());
+
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#enter()
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
-		
-		
-		ebLatDeg = (EditBox) this.getComponentByName("latdeg",0);
-		ebLatDeg.setValidator(new EditBox.PositionValidator().setMode(EditBox.PositionValidator.MODE.LAT));
+
+		//set respective local member.
+		ebLatDeg = (EditBox) this.getComponentByName("latdeg", 0);
+		ebLatDeg.setValidator(new EditBox.PositionValidator()
+				.setMode(EditBox.PositionValidator.MODE.LAT));
 		this.setForceRefresh(true);
-		if(this.activeComponent != null || this.activeComponent == ebLatDeg)
-			this.activeComponent.setCursor(true);
-		
-		ebLatMin = (EditBox) this.getComponentByName("latmin",0);
-		ebLatMin.setValidator(new EditBox.PositionValidator().setMode(EditBox.PositionValidator.MODE.MIN));
+
+		ebLatMin = (EditBox) this.getComponentByName("latmin", 0);
+		ebLatMin.setValidator(new EditBox.PositionValidator()
+				.setMode(EditBox.PositionValidator.MODE.MIN));
 		this.setForceRefresh(true);
-		if(this.activeComponent == ebLatMin)
-			this.activeComponent.setCursor(true);
-	
-		ebLonDeg = (EditBox) this.getComponentByName("londeg",0);
-		ebLonDeg.setValidator(new EditBox.PositionValidator().setMode(EditBox.PositionValidator.MODE.LON));
+
+		ebLonDeg = (EditBox) this.getComponentByName("londeg", 0);
+		ebLonDeg.setValidator(new EditBox.PositionValidator()
+				.setMode(EditBox.PositionValidator.MODE.LON));
 		this.setForceRefresh(true);
-		if(this.activeComponent == ebLonDeg)
-			this.activeComponent.setCursor(true);
-		
-		ebLonMin = (EditBox) this.getComponentByName("lonmin",0);
-		ebLonMin.setValidator(new EditBox.PositionValidator().setMode(EditBox.PositionValidator.MODE.MIN));
+
+		ebLonMin = (EditBox) this.getComponentByName("lonmin", 0);
+		ebLonMin.setValidator(new EditBox.PositionValidator()
+				.setMode(EditBox.PositionValidator.MODE.MIN));
 		this.setForceRefresh(true);
-		if(this.activeComponent == ebLonMin)
-			this.activeComponent.setCursor(true);
-	
+
+		//retrieve existing values if they exist.
+		MultiContentManager oMngr = getInstanceContext().getContentManager();
+
+		Latitude lat = null;
+		Longitude lon = null;
+		try {
+			lat = (Latitude) oMngr.getSetting("Latitude");
+			lon = (Longitude) oMngr.getSetting("Longitude");
+		} catch (Exception e) {
+			AppLogger.error(e);
+		}
+
+		if (lat != null && lat.isValid()) {
+			this.ebLatDeg
+					.setValue(Integer.valueOf(lat.getDegrees()).toString());
+			this.ebLatMin
+					.setValue(Integer.valueOf(lat.getMinutes()).toString());
+		}
+
+		if (lon != null && lon.isValid()) {
+			this.ebLonDeg
+					.setValue(Integer.valueOf(lon.getDegrees()).toString());
+			this.ebLonMin
+					.setValue(Integer.valueOf(lon.getMinutes()).toString());
+		}
+
+		//position cursur.
+		this.activeComponent = ebLatDeg;
+
+		if (ebLatMin.isComplete())
+			this.activeComponent = ebLatMin;
+		if (ebLonDeg.isComplete())
+			this.activeComponent = ebLonDeg;
+		if (ebLonMin.isComplete())
+			this.activeComponent = ebLonMin;
+
+		this.activeComponent.setCursor(true);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
-	public void exit(BusMessage msg) throws Exception {		
-		
-		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
-			MultiContentManager oMCmgr = getInstanceContext().getContentManager();				
-			Element oStorage = oMCmgr.getStorageElement("mmsi_addressbook");
-			BeanList beanList = oMCmgr.getBeanList(oStorage);
-			//beanList.addItem(new AddressIdEntry(this.ebMmsi.getValue(), this.ebAddress.getValue()));					
-			oMCmgr.storeBeanList(beanList);			
+	public void exit(BusMessage msg) throws Exception {
+
+		if (msg.getButtonEvent().getKeyId().equals(FK_ENT)) {
+			MultiContentManager oMCmgr = getInstanceContext()
+					.getContentManager();
+
+			Latitude lat = new Latitude(this.ebLatDeg.getValue(), this.ebLatMin
+					.getValue(), "N");
+			Longitude lon = new Longitude(this.ebLonDeg.getValue(),
+					this.ebLonMin.getValue(), "E");
+
+			oMCmgr.setSetting("Latitude", lat);
+			oMCmgr.setSetting("Longitude", lon);
+
+			oMCmgr.storeAppSettings();
 		}
-	
+
 	}
-	
-	public ScreenInterface signal(BusMessage msg){		
+
+	public ScreenInterface signal(BusMessage msg) {
 		return super.signal(msg);
 	}
 
-	
 }

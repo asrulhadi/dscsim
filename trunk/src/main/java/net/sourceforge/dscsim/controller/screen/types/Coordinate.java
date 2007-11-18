@@ -66,11 +66,11 @@ public abstract class Coordinate extends BaseType {
 		_activePart = i;
 		
 	}
-	protected int getDegrees(){
+	public int getDegrees(){
 		return getPart(DEG_COORD);
 	}
 	
-	protected int getMinutes(){
+	public int getMinutes(){
 		return getPart(MIN_COORD);
 	}
 	
