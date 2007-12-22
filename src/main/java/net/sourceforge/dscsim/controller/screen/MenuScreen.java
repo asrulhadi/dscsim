@@ -132,7 +132,7 @@ public class MenuScreen extends ScreenContent  implements Constants{
 					
 					if(event.equals(keyID) || (event.length()==0 && FK_ENT.equals(keyID))) {
 						
-						ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getLink(), getInstanceContext());
+						ScreenInterface oScreen = (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(oLine.getLink(), getInstanceContext());
 						
 						//oScreen.enter(_enterArg0);
 						

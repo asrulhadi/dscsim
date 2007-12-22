@@ -16,6 +16,7 @@
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  */
+
 package net.sourceforge.dscsim.radio.core;
 
 import net.sourceforge.dscsim.radiotransport.Antenna;

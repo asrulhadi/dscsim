@@ -118,7 +118,7 @@ public class BeanSimpleScreen extends BeanBaseScreen implements Constants{
 			
 				String screenName = this.getAttributeValue("link");
 													
-				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 							
 				oScreenNext.setParent(this);
 	

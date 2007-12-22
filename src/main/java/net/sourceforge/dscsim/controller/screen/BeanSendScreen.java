@@ -112,7 +112,7 @@ public class BeanSendScreen extends BeanScreen {
 			
 				String screenName = this.getAttributeValue("link");
 													
-				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 							
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
@@ -177,7 +177,7 @@ public class BeanSendScreen extends BeanScreen {
 			
 			oInstanceContext.removeProperties();
 			
-			return oInstanceContext.getContentManager().getScreenContent("welcome", oInstanceContext);
+			return (ScreenInterface)oInstanceContext.getContentManager().getScreenContent("welcome", oInstanceContext);
 			
 		}
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	targetNamespace="http://dscsim.sourcefore.net/xml/ns/dscsim"
+	xmlns:dscsim="http://dscsim.sourcefore.net/xml/ns/dscsim"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	jxb:version="1.0">
+
+
+	<!-- <xsd:import namespace="http://java.sun.com/xml/ns/jaxb" schemaLocation="./bindingschema_2_0.xsd"></xsd:import>
+	-->
+
+	<xsd:complexType name="MenuType">
+		<xsd:sequence>
+			<xsd:element name="choice" minOccurs="0"
+				maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:string">
+							<xsd:attribute name="link" type="xsd:string" use="required" />
+							<xsd:attribute name="code" type="xsd:string" use="optional" />
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attributeGroup ref="dscsim:SpacialAttributes"></xsd:attributeGroup>
+		<xsd:attribute name="name" use="required"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="EditBoxType">
+		<xsd:simpleContent>
+			<xsd:extension base="dscsim:BaseBoxType">
+				<xsd:attribute name="name" use="required"></xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="TextBoxType">
+		<xsd:simpleContent>
+			<xsd:extension base="dscsim:BaseBoxType">
+				<xsd:attribute name="name" use="optional"></xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="BaseBoxType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attributeGroup ref="dscsim:SpacialAttributes" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:attributeGroup name="SpacialAttributes">
+		<xsd:attribute name="column" type="xsd:int" use="required"></xsd:attribute>
+		<xsd:attribute name="row" type="xsd:int" use="required"></xsd:attribute>
+		<xsd:attribute name="height" type="xsd:int" use="required"></xsd:attribute>
+		<xsd:attribute name="width" type="xsd:int" use="required"></xsd:attribute>
+	</xsd:attributeGroup>
+
+
+</xsd:schema>

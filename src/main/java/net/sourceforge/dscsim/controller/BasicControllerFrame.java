@@ -199,4 +199,8 @@ public class BasicControllerFrame extends AppFrame implements  ItemListener, Act
 	public InstanceContext getInstanceContext(){
 		return _oAppPanel;
 	}
+	
+	public void paint(java.awt.Graphics g){
+		super.paint(g);
+	}
 }

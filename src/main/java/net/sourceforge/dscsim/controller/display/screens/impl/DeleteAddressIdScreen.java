@@ -20,21 +20,17 @@
  * where applicable.
  */
  
-package net.sourceforge.dscsim.controller.screen.impl;
+package net.sourceforge.dscsim.controller.display.screens.impl;
 
-import java.awt.Component;
-import java.util.List;
-
-import org.jdom.Element;
+import java.util.ArrayList;
 
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
+import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
+import net.sourceforge.dscsim.controller.panels.Screen;
 import net.sourceforge.dscsim.controller.screen.BeanList;
-import net.sourceforge.dscsim.controller.screen.EditBox;
-import net.sourceforge.dscsim.controller.screen.EditBoxInputScreen;
-import net.sourceforge.dscsim.controller.screen.ScreenComponent;
-import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 
 /**
  * @author katharina
@@ -42,13 +38,13 @@ import net.sourceforge.dscsim.controller.screen.ScreenInterface;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class DeleteAddressIdScreen extends EditBoxInputScreen {
+public class DeleteAddressIdScreen extends JEditBoxInputScreen {
 
-	private EditBox ebMmsi = null;
-	private EditBox ebAddress = null;
+	private JEditBox ebMmsi = null;
+	private JEditBox ebAddress = null;
 	
-	public DeleteAddressIdScreen(Element oScreenElement, MultiContentManager oCMngr) {
-		super(oScreenElement, oCMngr);
+	public DeleteAddressIdScreen(JDisplay display, Screen screen) {
+		super(display, screen);
 	}
 
 
@@ -58,15 +54,15 @@ public class DeleteAddressIdScreen extends EditBoxInputScreen {
 	public void enter(Object msg) {
 		super.enter(msg);
 		
-		AddressIdEntry addr = this.getInstanceContext().getContentManager().getSelectedAddressEntryId();	
+		AddressIdEntry addr = this.getInstanceContext().getContentManager().getSelectedAddressId();	
 		if(addr == null)
 			return;
 		
-		ebMmsi = (EditBox) this.getComponentByName("mmsi",0);
+		ebMmsi = (JEditBox) this.getComponentByName("mmsi",0);
 		ebMmsi.setValue(addr.getId());
 		ebMmsi.setEditMode(false);
 		
-		ebAddress = (EditBox) this.getComponentByName("addressid",0);
+		ebAddress = (JEditBox) this.getComponentByName("addressid",0);
 		ebAddress.setValue(addr.getName());
 		ebAddress.setEditMode(false);
 
@@ -79,25 +75,20 @@ public class DeleteAddressIdScreen extends EditBoxInputScreen {
 		
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			BeanList beanList = oMCmgr.getBeanList("mmsi_addressbook");
+			ArrayList<AddressIdEntry>beanList = oMCmgr.getAddressIdList();
 			
 			String entMmsi = this.ebMmsi.getValue();
 			String entAddr = this.ebAddress.getValue();
-			List list = beanList.getList();	
-			AddressIdEntry address = null; 
-			for(int i=0; i<list.size();i++){
-				address = (AddressIdEntry)list.get(i);		
+
+			for(AddressIdEntry address:beanList){	
 				if(entMmsi.equals(address.getId()) && entAddr.equals(address.getName())){
+					beanList.remove(address);
+					oMCmgr.storeListAddressIdList();
 					break;
 				} else {
 					address = null;
 				}
 			}	
-			
-			if(address != null){
-				beanList.removeItem(address);
-				oMCmgr.storeBeanList(beanList);
-			}
 		}
 	
 	}
@@ -107,9 +98,6 @@ public class DeleteAddressIdScreen extends EditBoxInputScreen {
 	 */
 	public boolean isScreenComplete(){		
 		return true;
-	}
-	public ScreenInterface signal(BusMessage msg){		
-		return super.signal(msg);
 	}
 
 	

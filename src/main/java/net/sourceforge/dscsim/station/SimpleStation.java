@@ -281,6 +281,23 @@ public class SimpleStation implements Constants, ApplicationContext {
 		return strParam;
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.sourceforge.dscsim.controller.ApplicationContext#getStationScreens()
+	 */
+	public String getDeviceXmlName() {		
+		String strParam = getParameter(KEY_DEVICE_FILE);		
+		if(strParam == null || strParam.length()==0){						
+			MMSI mmsi = new MMSI(getIndividualMmsi());			
+			if(mmsi.isCoastal()){
+				strParam = DEVICE_SHORE_XML;
+			}else{
+				strParam = DEVICE_SHIP_XML;
+			}			
+		}
+				
+		return strParam;
+	}
+	
 	public String getUdpAirWave() {
 		
 		String strParam = getParameter(KEY_UDP_AIRWAVE);
