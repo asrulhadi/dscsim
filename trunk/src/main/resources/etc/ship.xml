@@ -918,7 +918,7 @@
 
 	  	<screen name="add_group" class="net.sourceforge.dscsim.controller.screen.BeanMenuScreenItem" mode="add" storage="group_addressbook" >
 	  		<line subtype="header" column="45">
-	  			<bean>Add an address ID</bean>
+	  			<bean>Add a Group ID</bean>
 	  		</line>	
 			<line>
 				<bean></bean>

@@ -83,7 +83,7 @@ public class SingleMenuScreen extends StateScreen  {
 		if(keyAction.equals(PRESSED) && keyID.equals(super.FK_ENT)){			
     			String chosen = getMenu().getSelectedData();
     			net.sourceforge.dscsim.controller.utils.AppLogger.debug2("SingleMenuScreen.signal - chosen = " + chosen);
-    			ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(chosen, getInstanceContext());		
+    			ScreenInterface oScreen = (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(chosen, getInstanceContext());		
     			return oScreen;
 		}	
 		
@@ -91,7 +91,7 @@ public class SingleMenuScreen extends StateScreen  {
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();
 			String action = this.getAction(keyID);
 			if(action != null)
-				return oMCmgr.getScreenContent(action, getInstanceContext());
+				return (ScreenInterface)oMCmgr.getScreenContent(action, getInstanceContext());
 			else
 				return null;
 	}		

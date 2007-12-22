@@ -20,34 +20,29 @@
  * where applicable.
  */
  
-package net.sourceforge.dscsim.controller.screen.impl;
+package net.sourceforge.dscsim.controller.display.screens.impl;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.jdom.Element;
 
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.screen.BeanList;
-import net.sourceforge.dscsim.controller.screen.Menu;
-import net.sourceforge.dscsim.controller.screen.Screen;
-import net.sourceforge.dscsim.controller.screen.ScreenContent;
-import net.sourceforge.dscsim.controller.screen.SingleMenuScreen;
-
+import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
+import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
+import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 /**
  * @author katharina
  *
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class DisplayAddressIdsScreen extends SingleMenuScreen {
+public class DisplayGroupIdsScreen extends MenuScreen {
 
-	public DisplayAddressIdsScreen(Element oScreenElement, MultiContentManager oCMngr) {
-		super(oScreenElement, oCMngr);	
+	public DisplayGroupIdsScreen(JDisplay display,
+			net.sourceforge.dscsim.controller.panels.Screen screen) {
+		super(display, screen);
 	}
-
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#enter()
@@ -55,18 +50,16 @@ public class DisplayAddressIdsScreen extends SingleMenuScreen {
 	public void enter(Object msg) {
 		super.enter(msg);
 		
-		Menu menu = (Menu)this.getComponentByName("the_menu", 0);			
+		JMenu menu = (JMenu)this.getComponentByName("menu", 0);			
 		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-		BeanList beanList = oMCmgr.getBeanList("mmsi_addressbook");
+		ArrayList<AddressIdEntry>beanList = oMCmgr.getGroupIdList();	
 		
-		if(beanList == null)
+		if(beanList.size()<1){
+			this.remove(menu);
 			return;
-		
-		List list = beanList.getList();	
-		AddressIdEntry address = null; 
-		for(int i=0; i<list.size();i++){
-			address = (AddressIdEntry)list.get(i);		
-			menu.addItem(address.getName(), "delete_address");
+		}
+		for(AddressIdEntry address: beanList){	
+			menu.addItem(address.getName(), "delete_group", "");
 		}	
 	}
 
@@ -75,22 +68,23 @@ public class DisplayAddressIdsScreen extends SingleMenuScreen {
 	 */
 	public void exit(BusMessage msg) throws Exception {
 
-		Menu menu = (Menu)this.getComponentByName("the_menu", 0);	
+		JMenu menu = (JMenu)this.getComponentByName("menu", 0);	
+		
+		if(menu == null)
+			return;
+		
 		String selectedKey = menu.getSelectedKey();
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT) && selectedKey != null){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			BeanList beanList = oMCmgr.getBeanList("mmsi_addressbook");
-			List list = beanList.getList();	
-			AddressIdEntry address = null; 
-			for(int i=0; i<list.size();i++){
-				address = (AddressIdEntry)list.get(i);			
+			ArrayList<AddressIdEntry>beanList = oMCmgr.getGroupIdList();
+			for(AddressIdEntry address: beanList){		
 				if(selectedKey.equals(address.getName())){
-					oMCmgr.setSelectedAddressEntryId(address);
+					oMCmgr.setSelectedGroupId(address);
 					break;
 				}
 			}	
 		}else{
-			getInstanceContext().getContentManager().setSelectedAddressEntryId(null);
+			getInstanceContext().getContentManager().setSelectedGroupId(null);
 		}
 	}
 

@@ -44,6 +44,7 @@ import net.sourceforge.dscsim.controller.network.MulticastReceiver;
 import net.sourceforge.dscsim.controller.network.SyncListenerDispatcher;
 import net.sourceforge.dscsim.controller.network.SyncListenerSubscriber;
 import net.sourceforge.dscsim.controller.network.SyncMessage;
+import net.sourceforge.dscsim.controller.screen.types.MMSI;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 
@@ -281,6 +282,22 @@ public class MultiDscApplet extends JApplet implements Constants, ApplicationCon
 		return strParam;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sourceforge.dscsim.controller.ApplicationContext#getStationScreens()
+	 */
+	public String getDeviceXmlName() {		
+		String strParam = getParameter(KEY_DEVICE_FILE);		
+		if(strParam == null || strParam.length()==0){						
+			MMSI mmsi = new MMSI(getIndividualMmsi());			
+			if(mmsi.isCoastal()){
+				strParam = DEVICE_SHORE_XML;
+			}else{
+				strParam = DEVICE_SHIP_XML;
+			}			
+		}
+				
+		return strParam;
+	}
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.controller.ApplicationContext#getStationScreens()
 	 */

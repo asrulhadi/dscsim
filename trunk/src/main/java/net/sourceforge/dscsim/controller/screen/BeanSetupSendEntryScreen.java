@@ -106,7 +106,7 @@ public class BeanSetupSendEntryScreen extends BeanBaseScreen implements
 				
 				String nextScreen = _oScreenElement.getAttributeValue("next");
 				
-				ScreenInterface oScreenNext = _oContentManager.getScreenContent(nextScreen, getInstanceContext());
+				ScreenInterface oScreenNext = (ScreenInterface)_oContentManager.getScreenContent(nextScreen, getInstanceContext());
 				
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());

@@ -149,15 +149,15 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			AppLogger.debug("applet.DscAppPanel init finished");
 
 
+			oComponent.add(this);
     }
 	
  	/**
 	 * call back for awt.
 	 */
-    public void paint(Graphics g) {   
-    	   	
-       getController().paint(g, this);     
- 
+    public void paint(Graphics g) {       	
+    	getController().paint(g, this); 
+    	//super.paint(g);
     }
 
 

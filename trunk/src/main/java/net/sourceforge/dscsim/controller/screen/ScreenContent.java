@@ -740,7 +740,7 @@ class DataListScreen extends ScreenContent implements Constants {
 				
 				String screenName = _oScreenElement.getAttributeValue("link");
 				
-				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 				
 				//getInstanceContext().setProperty(screenName, oData);
 				
@@ -1137,7 +1137,7 @@ class EntryScreen extends ScreenContent implements Constants {
 		
 		if(FK_ENT.equals(oMessage.getButtonEvent().getKeyId())
 				&& this.isComplete()){
-			return getInstanceContext().getContentManager().getScreenContent(getNextScreen(), getInstanceContext());
+			return (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(getNextScreen(), getInstanceContext());
 		}
 		
 		if(_activeEntryLine != null){

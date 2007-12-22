@@ -97,6 +97,11 @@ public interface ApplicationContext {
 	String getScreenFileName();
 	
 	/**
+	 * Get the xml file's name containing the screen information.
+	 * @return String.
+	 */
+	String getDeviceXmlName();
+	/**
 	 * Get the IP address for AIRWAVE.
 	 * @return String.
 	 */

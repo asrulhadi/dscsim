@@ -200,7 +200,7 @@ public class BeanPropertyScreenItem extends BeanScreen implements Constants {
 
 				storePageProperties();
 				
-				return oMCmgr.getScreenContent(this.getAttributeValue("next"), getInstanceContext());
+				return (ScreenInterface)oMCmgr.getScreenContent(this.getAttributeValue("next"), getInstanceContext());
 
 			} 
 		}

@@ -164,7 +164,7 @@ public class EditBoxInputScreen extends StateScreen {
 						.getContentManager();
 				String action = getAction(keyID);
 				if (action != null)
-					return oMCmgr
+					return (ScreenInterface)oMCmgr
 							.getScreenContent(action, getInstanceContext());
 				else
 					return null;
@@ -176,7 +176,7 @@ public class EditBoxInputScreen extends StateScreen {
 							.getContentManager();
 					String action = getAction(keyID);
 					if (action != null)
-						return oMCmgr.getScreenContent(action,
+						return (ScreenInterface)oMCmgr.getScreenContent(action,
 								getInstanceContext());
 					else
 						return outer;
@@ -231,7 +231,7 @@ public class EditBoxInputScreen extends StateScreen {
 						.getContentManager();
 				String action = getAction(keyID);
 				if (action != null)
-					return oMCmgr
+					return (ScreenInterface)oMCmgr
 							.getScreenContent(action, getInstanceContext());
 				else
 					return null;
@@ -243,7 +243,7 @@ public class EditBoxInputScreen extends StateScreen {
 							.getContentManager();
 					String action = getAction(keyID);
 					if (action != null)
-						return oMCmgr.getScreenContent(action,
+						return (ScreenInterface)oMCmgr.getScreenContent(action,
 								getInstanceContext());
 					else
 						return outer;

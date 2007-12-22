@@ -49,6 +49,7 @@ import net.sourceforge.dscsim.controller.screen.ScreenLine;
 import net.sourceforge.dscsim.controller.screen.ScreenLineList;
 import net.sourceforge.dscsim.controller.screen.StateScreen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
+import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
 
 
 public class MultiController extends Thread implements MouseListener, Constants, BusListener, KeyListener {
@@ -78,7 +79,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	
 	/*lcd screen*/
 	private Object screenGuard = new Object();
-	private StateScreen lcd = null;
+	private java.awt.Component lcd = null;
 	private Container container = null;
 
 	
@@ -111,15 +112,7 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		{440,316},  //left
 		{555,316}   //right
 	};
-	
-	//Area where text is displayed.
-	//top rh and bottom lh corners
-	private int [][] _screenSize = {{110, 83},{372, 243}};	
-	private final int DISPLAY_X = _screenSize[0][0]-5;
-	private final int DISPLAY_Y = _screenSize[0][1];
-	private final int DISPLAY_W = _screenSize[1][0] - _screenSize[0][0]+10;		
-	private final int DISPLAY_H = _screenSize[1][1] - _screenSize[0][1];
-	
+		
 	private Container _oContainer = null;
 	private boolean _initialized = false;
   	
@@ -192,25 +185,13 @@ public class MultiController extends Thread implements MouseListener, Constants,
 	private synchronized ScreenContent getScreenContent(){
 		return _oContent;
 	}
-	public  void setScreenContent(ScreenInterface oScreen) {
-		
-		/* a possibility in run to save CPU
-		if(_oContent != null && _oContent.forceRefresh()==false){
-			
-			try{
-				synchronized(_oContent){
-					_oContent.notify();
-				}
-			}catch(Exception oEx){
-				AppLogger.error(oEx);
-			}
-		}
-		*/
+	public  void setScreenContent(Object oScreen) {
 		
 		synchronized (screenGuard){
-			if(oScreen instanceof StateScreen){
+			if(oScreen instanceof JScreen
+					|| oScreen instanceof net.sourceforge.dscsim.controller.screen.Screen){
 				this.setLcdOff();
-				StateScreen nxtlcd = (StateScreen)oScreen;
+				java.awt.Component nxtlcd = (java.awt.Component)oScreen;
 				this.setLcdOn(nxtlcd);
 			} else {	
 				this.setLcdOff();
@@ -241,17 +222,18 @@ public class MultiController extends Thread implements MouseListener, Constants,
     
         Graphics2D g2 = (Graphics2D) g; 
         
-               
+        
         /*draw the dsc image*/
-    		//int x = (_oContainer.getSize().width - _imageDsc.getWidth(_oContainer))/2;
-    		//int y = (_oContainer.getSize().height - _imageDsc.getHeight(_oContainer))/2;
+    	//int x = (_oContainer.getSize().width - _imageDsc.getWidth(_oContainer))/2;
+    	//int y = (_oContainer.getSize().height - _imageDsc.getHeight(_oContainer))/2;
     
-    		g2.drawImage(_imageDsc, _x_offset, _y_offset, _oContainer);
-	
-    		if(_powerOn)
-    			paintScreen(g2, container);
-    		else
-    			paintBlank(g2);	
+    	g2.drawImage(_imageDsc, _x_offset, _y_offset, _oContainer);
+			
+
+    	if(_powerOn)
+    		paintScreen(g2, container);
+    	else
+    		paintBlank(g2);	
 		
 		paintButtons(g2);				
 		_paintElapsedTime = System.currentTimeMillis();				
@@ -314,8 +296,11 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		    
 		//AppLogger.debug("Controller.paint - started");
                         
+		if(this.lcd != null){
+			//lcd.paint(g2);
+			return;
+		}
         ScreenContent oContent = getScreenContent();
-        
         if(oContent != null) {
     		//AppLogger.debug("Controller.paint - adding ScreenContent lines=" + oContent.getLines());      
 	    	
@@ -617,14 +602,14 @@ public class MultiController extends Thread implements MouseListener, Constants,
 			long timeDiff = System.currentTimeMillis() - _paintElapsedTime;			
 			//AppLogger.info("MultiController.run - timeDiff =" + timeDiff);
 			ScreenContent oScreen = getScreenContent();
-			if((oScreen != null && oScreen.forceRefresh())
-					 || (lcd != null && lcd.forceRefresh())){				
+			if((this.lcd != null && ((JScreen)lcd).forceRefresh())
+					 || (lcd != null && ((ScreenInterface)lcd).forceRefresh())){				
 				if(timeDiff >= PAINT_EXPIRE_TIME){
 					//screen has expired repaint the children and not the grid;		
 					
 					synchronized (this.screenGuard){
-						if(lcd != null)					
-							lcd.repaintChildren();
+						if(lcd != null)				
+							lcd.repaint();
 						
 						if(oScreen != null)
 							_oContainer.repaint();
@@ -722,27 +707,27 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		}		
 	}
 	
-	private void setLcdOn(StateScreen lcd){
-		
+	private void setLcdOn(java.awt.Component lcd){	
 		this.lcd = lcd;
-		this.setScreenContent(null);		
-		JFrame o = (JFrame)_oContainer;		
-		o.getContentPane().add(lcd,0);
+		this._oContent = null;		
+		JFrame o = (JFrame)_oContainer;
+		o.getContentPane().add(lcd, 0);
 		/*if container is already visible then validate must be called 
 		 * on the container - java api doc.*/
 		o.getContentPane().validate();
 		o.getContentPane().repaint();	
-		
 	}
 	
 	private void setLcdOff(){		
 		//this.setScreenContent(null);	
-		if(lcd != null){
+		if(this.lcd != null){
 			JFrame o = (JFrame)_oContainer;		
 			o.getContentPane().remove(lcd);
 			o.getContentPane().validate();		
 			o.getContentPane().repaint();				
 		}
+		
+		this.lcd = null;
 
 	}
 	

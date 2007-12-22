@@ -228,6 +228,10 @@ public abstract class AppFrame extends JFrame implements Constants {
   		}		        						
 	}				    	
   }
+  
+	public void paint(java.awt.Graphics g){
+		super.paint(g);
+	}
 
 }
 

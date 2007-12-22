@@ -241,7 +241,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 				
 				String nextScreen = _oScreenElement.getAttributeValue("next");
 				
-				ScreenInterface oScreenNext = _oContentManager.getScreenContent(nextScreen, getInstanceContext());
+				ScreenInterface oScreenNext = (ScreenInterface)_oContentManager.getScreenContent(nextScreen, getInstanceContext());
 				
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
@@ -484,7 +484,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 				
 				//getInstanceContext().setProperty(oCurrLine.getAttributeValue("storage"), oData);				
 				
-				ScreenInterface oScreenNext = getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
+				ScreenInterface oScreenNext = (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(screenName, getInstanceContext());
 							
 				oScreenNext.setParent(this);
 				oScreenNext.setOutGoingDscMessage(getOutGoingDscMessage());
@@ -505,7 +505,7 @@ public class SetupOutgoingDscMessageScreen extends BeanMenuScreen implements
 				
 				if(event.equals(keyID) || (event.length()==0 && event.equals(keyID))) {
 					
-					ScreenInterface oScreen = getInstanceContext().getContentManager().getScreenContent(oLine.getAttributeValue("link"), getInstanceContext());
+					ScreenInterface oScreen = (ScreenInterface)getInstanceContext().getContentManager().getScreenContent(oLine.getAttributeValue("link"), getInstanceContext());
 					
 					//oScreen.enter(_enterArg0);
 					
