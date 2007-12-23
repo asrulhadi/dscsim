@@ -232,8 +232,8 @@ public class MultiController extends Thread implements MouseListener, Constants,
 
     	if(_powerOn)
     		paintScreen(g2, container);
-    	else
-    		paintBlank(g2);	
+    	//else
+    	//	paintBlank(g2);	
 		
 		paintButtons(g2);				
 		_paintElapsedTime = System.currentTimeMillis();				
@@ -582,8 +582,10 @@ public class MultiController extends Thread implements MouseListener, Constants,
 			String keyId = oMessage.getButtonEvent().getKeyId();
 			if(DSC_POWERED_OFF.equals(keyId)){
 				_powerOn = false;
+				this.setLcdHidden();
 			}else if(DSC_POWERED_ON.equals(keyId)){
 				_powerOn = true;
+				this.setLcdOn(this.lcd);
 			}
 		
 			_oLastPressed = oMessage.getButtonEvent();			
@@ -711,11 +713,15 @@ public class MultiController extends Thread implements MouseListener, Constants,
 		this.lcd = lcd;
 		this._oContent = null;		
 		JFrame o = (JFrame)_oContainer;
-		o.getContentPane().add(lcd, 0);
-		/*if container is already visible then validate must be called 
-		 * on the container - java api doc.*/
-		o.getContentPane().validate();
-		o.getContentPane().repaint();	
+		
+		if(this._powerOn == true){
+			o.getContentPane().add(lcd, 0);
+			/*if container is already visible then validate must be called 
+			 * on the container - java api doc.*/
+			o.getContentPane().validate();
+			o.getContentPane().repaint();				
+		}
+
 	}
 	
 	private void setLcdOff(){		
@@ -731,6 +737,16 @@ public class MultiController extends Thread implements MouseListener, Constants,
 
 	}
 	
+	private void setLcdHidden(){		
+		//this.setScreenContent(null);	
+		if(this.lcd != null){
+			JFrame o = (JFrame)_oContainer;		
+			o.getContentPane().remove(lcd);
+			o.getContentPane().validate();		
+			o.getContentPane().repaint();				
+		}
+
+	}
 	public int getScreenX(){
 		return this.DISPLAY_X;
 	}	

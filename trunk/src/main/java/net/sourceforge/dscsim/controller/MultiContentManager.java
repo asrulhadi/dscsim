@@ -112,8 +112,8 @@ public class MultiContentManager implements BusListener, Constants {
 			
 			String xmlName = oInstanceContext.getApplicationContext().getDeviceXmlName();
 			DataInputStream dataInput = new DataInputStream(getResourceStream(xmlName, this.getClass()));
-			this.screenFactory = new JScreenFactory(new JDisplay(DISPLAY_X,
-					DISPLAY_Y, 210, 160, 8, 21), dataInput);
+			this.screenFactory = new JScreenFactory(new JDisplay(DISPLAY_X-11,
+					DISPLAY_Y+1, 273, 160, 8, 21), dataInput);
 			
 			dataInput = new DataInputStream(getResourceStream(INFO_STORE_XML, this.getClass()));
 			this.infostoreFactory = new InfoStoreFactory(dataInput, INFO_STORE_XML);

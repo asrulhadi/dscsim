@@ -29,18 +29,12 @@ import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
 import net.sourceforge.dscsim.controller.InstanceContext;
-import net.sourceforge.dscsim.controller.screen.ScreenComponent;
-import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Device;
 import net.sourceforge.dscsim.controller.panels.Editbox;
@@ -49,8 +43,7 @@ import net.sourceforge.dscsim.controller.panels.Menubox;
 import net.sourceforge.dscsim.controller.panels.Screen;
 import net.sourceforge.dscsim.controller.panels.Textbox;
 import net.sourceforge.dscsim.controller.panels.impl.FieldsImpl;
-
-import javax.swing.JComponent;
+import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
  * @author katharina
@@ -111,7 +104,7 @@ public class JScreen extends Container
 				
 		//this.setBounds(display.getX(), display.getY(), display.getWidth()+1, display.getHeight()+1);		
 		//AppLogger.debug2("Screen count=" + (++count) + ";width="+ width + "; height="+ height);
-		perim = new RoundRectangle2D.Float(display.getX(), display.getY(), display.getWidth(), display.getHeight(), 1, 1);	
+		perim = new RoundRectangle2D.Float(display.getX(), display.getY(), display.getWidth(), display.getHeight(), 20, 20);	
 		Font theFont = new Font("Courier", Font.PLAIN, 14);
 	 	this.setFont(theFont);
 	 	//AppLogger.debug2("Screen.Screen parent=" + this.getParent());
@@ -202,11 +195,11 @@ public class JScreen extends Container
 		g2d.draw(perim);
 
 		/*draw horizontal lines*/
-		for(int r=1; r<=display.getRows();r++){
+		for(int r=1; r<display.getRows();r++){
 			g2d.drawLine(display.getX(),  display.getY()+display.getYScale()*r, display.getX()+display.getWidth(),  display.getY()+display.getYScale()*r);
 		}
 		/*draw vertical lines*/
-		for(int c=1; c<=display.getCols();c++){
+		for(int c=1; c<display.getCols();c++){
 			g2d.drawLine(display.getX()+display.getXScale()*c, display.getY(), display.getX()+display.getXScale()*c, display.getY()+display.getHeight());
 		}
 	
