@@ -385,7 +385,7 @@
 		
 		<dscsim:screen name="incoming_individual_message_ack"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingAckAlertScreen">
 			<dscsim:fields>
-				<dscsim:textbox row="0" column="0" width="21" height="1">+RCV Individual ACK-</dscsim:textbox>				
+				<dscsim:textbox row="0" column="0" width="21" height="1">-RCV Individual ACK-</dscsim:textbox>				
 				<dscsim:textbox row="2" column="0" width="5" height="1">From:</dscsim:textbox>
 				<dscsim:textbox row="2" column="5" width="9" height="1" name="mmsi"/>
 				<dscsim:textbox row="3" column="0" width="21" height="1" name="compl"/>
@@ -398,6 +398,34 @@
 			</dscsim:actions>		
 		</dscsim:screen>	
 	
+	
+		<dscsim:screen name="distress_call_send" implementation="net.sourceforge.dscsim.controller.display.screens.impl.SendDistressScreen">
+			
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="0" width="21" height="1">Push and hold</dscsim:textbox>				
+				<dscsim:textbox row="1" column="0" width="21" height="1">[DISTRESS] for 5 sec</dscsim:textbox>				
+				<dscsim:textbox row="2" column="3" width="21" height="1">Nature of distress</dscsim:textbox>				
+				<dscsim:textbox row="3" column="3" width="21" height="1" name="nature"/>
+				<dscsim:textbox row="4" column="3" width="21" height="1" name="source"/>			
+				<dscsim:textbox row="4" column="7" width="21" height="1" name="time"/>				
+				<dscsim:textbox row="5" column="7" width="21" height="1" name="latitude"/>				
+				<dscsim:textbox row="6" column="7" width="21" height="1" name="longitude"/>				
+			</dscsim:fields>
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_SOS" forward="distress_call_sent"/>
+			</dscsim:actions>				
+						
+		</dscsim:screen>
+		
+		<dscsim:screen name="distress_call_sent">
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="0" width="21" height="1">Distress alert</dscsim:textbox>				
+				<dscsim:textbox row="1" column="5" width="21" height="1">Completed</dscsim:textbox>	
+				<dscsim:textbox row="3" column="0" width="21" height="1" blink="1000">Now waiting for</dscsim:textbox>					
+				<dscsim:textbox row="4" column="5" width="21" height="1" blink="1000">acknowledgement</dscsim:textbox>						
+				<dscsim:textbox row="7" column="5" width="21" height="1">[CLR]->Exit</dscsim:textbox>
+			</dscsim:fields>													
+		</dscsim:screen>
 	</dscsim:screens>
 	
 	<dscsim:actions>

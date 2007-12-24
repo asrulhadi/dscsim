@@ -610,8 +610,10 @@ public class MultiController extends Thread implements MouseListener, Constants,
 					//screen has expired repaint the children and not the grid;		
 					
 					synchronized (this.screenGuard){
-						if(lcd != null)				
+						if(lcd != null)	{		
+							lcd.invalidate();
 							lcd.repaint();
+						}
 						
 						if(oScreen != null)
 							_oContainer.repaint();

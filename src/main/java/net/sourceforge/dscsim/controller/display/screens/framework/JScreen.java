@@ -122,6 +122,7 @@ public class JScreen extends Container
 					JTextBox item = new JTextBox(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
 					item.setText(b.getValue());
 					item.setName(b.getName());
+					item.setBlink(b.getBlink());
 					this.add(item);
 				}else if(kid instanceof Editbox){
 					Editbox b = (Editbox)kid;
