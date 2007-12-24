@@ -51,6 +51,10 @@ public class JTextBox extends JScreenComponent {
 	 */
 	private String value = "";
 	
+	private long lastChanged = 0;
+	private long blinkPeriod = 0;
+	private int changedCount = 0;
+	
 	/**
 	 * TextBox constructor.
 	 * @param row
@@ -80,11 +84,27 @@ public class JTextBox extends JScreenComponent {
 		int yscale = this.getScreen().getYScale();
      	g2d.setFont(this.getParent().getFont());	
      	
-     	for(int p=0; value != null && p<value.length();p++){     		
-     		g2d.drawString(Character.toString(value.charAt(p)),p*xscale,height-5);
- 			//g2d.drawString(Character.toString(value.charAt(p)),p*xscale, yscale);
+     	
+    	long currTime = 0;
+     	long elapsed = 0;
+     	if(this.blinkPeriod > 0){
+        	currTime = System.currentTimeMillis();
+         	elapsed = currTime- this.lastChanged;	
      	}
-		//g2d.drawString(value, 0, height);   	   	 
+     	
+     	if(elapsed > this.blinkPeriod){
+     		changedCount++;
+     		this.lastChanged = currTime;
+     	}
+     		
+     	if(this.blinkPeriod < 0 || changedCount % 2 == 0){
+         	for(int p=0; value != null && p<value.length();p++){     		
+         		g2d.drawString(Character.toString(value.charAt(p)),p*xscale,height-5);
+     			//g2d.drawString(Character.toString(value.charAt(p)),p*xscale, yscale);
+         	}
+     		
+     	}
+     		   	 
 		
     }
     
@@ -130,6 +150,14 @@ public class JTextBox extends JScreenComponent {
 	public void signal(BusMessage oMessage) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public long getBlinkPeriond(long period) {
+		return blinkPeriod;
+	}
+
+	public void setBlink(long blink) {
+		this.blinkPeriod = blink;
 	}
 	
 

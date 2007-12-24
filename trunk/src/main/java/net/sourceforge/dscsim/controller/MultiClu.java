@@ -27,7 +27,7 @@ import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.network.SyncPublisher;
 import net.sourceforge.dscsim.controller.screen.ScreenContent;
 import net.sourceforge.dscsim.controller.screen.ScreenInterface;
-import net.sourceforge.dscsim.controller.screen.SendDistressScreen;
+import net.sourceforge.dscsim.controller.display.screens.impl.SendDistressScreen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 
@@ -85,7 +85,7 @@ public class MultiClu implements BusListener, Constants {
 	private void popStackDistress(BusMessage oMessage) throws Exception {
 		int idxLast = _oScreenStack.size() - 1;
 		if (idxLast > 0) {
-			ScreenContent oScreen = (ScreenContent) _oScreenStack
+			ScreenInterface oScreen = (ScreenInterface) _oScreenStack
 					.remove(idxLast);
 			if (oScreen instanceof SendDistressScreen) {
 				oScreen.exit(oMessage);
@@ -241,16 +241,17 @@ public class MultiClu implements BusListener, Constants {
 			if (_powerOn && BusMessage.MSGTYPE_KEY.equals(oMessage.getType())
 					&& FK_SOS.equals(oMessage.getButtonEvent().getKeyId())) {
 
-				oScreen = (ScreenInterface) _oScreenStack.get(_oScreenStack
+				ActionScreen screen = (ActionScreen)_oScreenStack.get(_oScreenStack
 						.size() - 1);
 
-				if ((oScreen instanceof SendDistressScreen) == false) {
-					oScreen = (ScreenInterface) _oContext.getContentManager()
+				if ((screen instanceof SendDistressScreen) == false) {
+					screen = (ActionScreen) _oContext.getContentManager()
 							.getScreenContent("distress_call_send", _oContext);
-					_oScreenStack.add(oScreen);
-					_oContext.getController().setScreenContent(oScreen);
+					screen.enter(null);
+					_oScreenStack.add(screen);
+					_oContext.getController().setScreenContent(screen);
 				} else {
-					if (oScreen.signal(oMessage) == null)
+					if (screen.notify(oMessage) == null)
 						resetScreenStack(oMessage);
 				}
 				return;

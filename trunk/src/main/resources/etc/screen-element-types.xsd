@@ -41,6 +41,7 @@
 		<xsd:simpleContent>
 			<xsd:extension base="dscsim:BaseBoxType">
 				<xsd:attribute name="name" use="optional"></xsd:attribute>
+				<xsd:attribute name="blink" type="xsd:long" default="0" use="optional"></xsd:attribute>
 			</xsd:extension>
 		</xsd:simpleContent>
 	</xsd:complexType>

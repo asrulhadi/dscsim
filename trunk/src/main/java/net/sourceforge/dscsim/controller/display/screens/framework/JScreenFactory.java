@@ -69,7 +69,7 @@ public class JScreenFactory {
 			java.lang.reflect.Constructor<?> ctor = clazz.getConstructor(new Class[]{net.sourceforge.dscsim.controller.display.screens.framework.JDisplay.class, net.sourceforge.dscsim.controller.panels.Screen.class});
 			screen = (JScreen)ctor.newInstance(this.display, jaxb);
 		}else{
-			screen = new JScreen(this.display, jaxb);			
+			screen = new ActionScreen(this.display, jaxb);			
 		}
 
 		screen.setInstanceContext(instanceContext);
