@@ -5,7 +5,13 @@
 	<artifactId>dscsim</artifactId>
 	<version>1-SNAPSHOT</version>
 	<description>The DSCSIM GMDSS simulator</description>
-	<repositories>
+	<scm>
+    	<connection>scm:cvs:pserver:anonymous:@dscsim.cvs.sourceforge.net:/cvsroot/dscsim:dscsim</connection>
+    	<developerConnection>scm:cvs:pserver:anonymous:@dscsim.cvs.sourceforge.net:/cvsroot/dscsim:dscsim</developerConnection>
+    	<tag>HEAD</tag>
+    	<url>http://dscsim.cvs.sourceforge.net/dscsim/</url>
+  	</scm>	
+  	<repositories>
 		<repository>
 			<releases>
 				<enabled>true</enabled>
@@ -243,7 +249,7 @@
 					<entities>
 						<entity>
 							<name>version</name>
-							<value>${version}</value>
+							<value>${project.version}</value>
 						</entity>
 					</entities>
 					<paperType>A4</paperType>
