@@ -100,7 +100,10 @@ public class MultiContentManager implements BusListener, Constants {
 
 	private AddressIdEntry selectedGroupId = null;
 	private ArrayList<AddressIdEntry> groupIdList = null;
-
+	
+	private ArrayList<DscMessage>incomingOtherCalls = null;
+	private DscMessage selectedIncomingOtherCall = null;
+	
 	public static MultiContentManager getInstance(InstanceContext oCtx) {
 		return new MultiContentManager(oCtx);
 	}
@@ -475,15 +478,9 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 
 	public void addIncomingOtherCalls(DscMessage oMessage) {
-
-		Element elemStorage = getStorageElement("incoming_other_calls");
-
-		BeanList oStorage = getBeanList(elemStorage);
-
-		oStorage.addItem(oMessage);
-
-		storeBeanList(oStorage);
-
+		ArrayList<DscMessage>calls = this.getIncomingOtherCalls();
+		calls.add(0, oMessage);
+		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
 
 	public void addIncomingDistressCall(DscMessage oMessage) {
@@ -532,15 +529,17 @@ public class MultiContentManager implements BusListener, Constants {
 		return oFound;
 	}
 
-	public List getIncomingOtherCalls() {
+	public ArrayList<DscMessage> getIncomingOtherCalls() {
 
-		try {
-			return getStorageList("incoming_other_calls");
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
+		if (this.incomingOtherCalls == null) {
+			this.incomingOtherCalls = readList(this.getStoreExtension(),
+					getStorePrefix() + INCOMING_OTHER_CALLS);
+
+			if (this.incomingOtherCalls == null) {
+				this.incomingOtherCalls = new ArrayList<DscMessage>();
+			}
 		}
-
-		return null;
+		return incomingOtherCalls;
 
 	}
 
@@ -1392,5 +1391,13 @@ public class MultiContentManager implements BusListener, Constants {
 		}
 
 		return list;
+	}
+
+	public DscMessage getSelectedIncomingOtherCall() {
+		return selectedIncomingOtherCall;
+	}
+
+	public void setSelectedIncomingOtherCall(DscMessage selectedIncomingOtherCall) {
+		this.selectedIncomingOtherCall = selectedIncomingOtherCall;
 	}
 }
