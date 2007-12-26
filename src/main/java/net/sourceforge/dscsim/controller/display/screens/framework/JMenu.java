@@ -156,6 +156,9 @@ public class JMenu extends JScreenComponent {
     		this.list.remove(item);
     }
     
+    public void removeAll(){
+    	list.clear();
+    }
     /**
      * 
      * @author katharina

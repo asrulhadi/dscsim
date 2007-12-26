@@ -444,5 +444,7 @@ public interface Constants {
 	
 	public static final String ADDRESS_BOOK_FNAME = "mmsi_addressbook";
 	public static final String GROUP_BOOK_FNAME = "group_addressbook";
+	public static final String INCOMING_OTHER_CALLS = "incoming_other_calls";
+	
 
 }
