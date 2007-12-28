@@ -14,11 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
-import java.util.Iterator;
-import java.util.List;
 
-import org.jdom.Element;
-import org.jdom.xpath.XPath;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.DscUtils;
@@ -527,7 +523,7 @@ public class JEditBox  extends JScreenComponent {
 	
 	public static class ChannelValidator implements Validator{
 
-		@Override
+		
 		public boolean isComplete(String strChannel) {			
 			if(strChannel.length() == strChannel.length()){
 				return true;
@@ -536,7 +532,7 @@ public class JEditBox  extends JScreenComponent {
 			}
 		}
 
-		@Override
+		
 		public boolean validate(String strChannel) {
 			boolean result = false;
 			
