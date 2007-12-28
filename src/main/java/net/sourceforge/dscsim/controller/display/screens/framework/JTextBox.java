@@ -21,24 +21,12 @@ package net.sourceforge.dscsim.controller.display.screens.framework;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-
+import java.awt.Rectangle;
 
 import net.sourceforge.dscsim.controller.BusMessage;
-import net.sourceforge.dscsim.controller.utils.AppLogger;
-
-import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
-import java.util.Iterator;
-import java.util.List;
-
-import org.jdom.Element;
-import org.jdom.xpath.XPath;
 /**
  * Provided a simple Component that display text in a small windows.
  * 

@@ -1,21 +1,13 @@
 package net.sourceforge.dscsim.controller.display.screens.framework;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.util.List;
+
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.jdom.input.SAXBuilder;
-
 import net.sourceforge.dscsim.controller.InstanceContext;
-import net.sourceforge.dscsim.controller.panels.impl.FieldsImpl;
 import net.sourceforge.dscsim.controller.panels.Device;
-import net.sourceforge.dscsim.controller.panels.Editbox;
-import net.sourceforge.dscsim.controller.panels.MenuType;
-import net.sourceforge.dscsim.controller.panels.Textbox;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 

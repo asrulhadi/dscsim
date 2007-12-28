@@ -2,105 +2,67 @@
 
 <project name="dscsim" default="jaxb-gen-src" basedir=".">
 
-    <!-- ****************** Project Standard Properties ******************* -->
-    <property environment="env" />
+	<!-- ****************** Project Standard Properties ******************* -->
+	<property environment="env" />
+	
+	<property name="jaxb.home" value="${basedir}/jaxb-ri-20071219"/>
 
-    <!-- =================================================================== -->
-    <!-- Building some pathes                                                -->
-    <!-- =================================================================== -->
-    <path id="ant.classpath">
-        <pathelement location="${ant.home}/lib/ant.jar" />
-    </path>
+	<!-- =================================================================== -->
+	<!-- Building some pathes                                                -->
+	<!-- =================================================================== -->
+	<path id="ant.classpath">
+		<pathelement location="${ant.home}/lib/ant.jar" />
+	</path>
 
 	<path id="jaxb.classpath">
-        <pathelement location="${basedir}/lib/jaxb-api.jar" />
-        <pathelement location="${basedir}/lib/jaxb-impl.jar" />
-        <pathelement location="${basedir}/lib/jaxb-libs.jar" />
-        <pathelement location="${basedir}/lib/xsdlib.jar" />
-        <pathelement location="${basedir}/lib/relaxngDatatype.jar" />
-        <pathelement location="${basedir}/lib/jax-qname.jar" />
-        <pathelement location="${basedir}/lib/namespace.jar" />
-    </path>
+		<pathelement location="${jaxb.home}/lib/jaxb-api.jar"/>
+		<pathelement location="${jaxb.home}/lib/jaxb-impl.jar"/>
+		<pathelement location="${jaxb.home}/lib/jaxb1-impl.jar"/>
+		<pathelement location="${jaxb.home}/lib/jaxb-xjc.jar"/>
+	</path>
 
 	<path id="build.classpath">
-        <path refid="jaxb.classpath" />
-        <pathelement location="${basedir}/tools/jaxb-xjc.jar" />
-        <pathelement location="${basedir}/tools/xercesImpl.jar" />
-    </path>
+		<path refid="jaxb.classpath" />
+		<pathelement location="${basedir}/jaxb-ri-20071219/lib/jaxb-xjc.jar" />
+		<pathelement location="${basedir}/tools/xercesImpl.jar" />
+	</path>
 
-    <path id="run.classpath">
-        <path refid="jaxb.classpath" />
-        <pathelement location="${basedir}/lib/jaxp-api.jar" />
-    </path>
+	<path id="run.classpath">
+		<path refid="jaxb.classpath" />
+		<pathelement location="${basedir}/jaxb-ri-200712197/lib/jaxp-api.jar" />
+	</path>
 
 	<target name="init">
-        <tstamp />
-    </target>
+		<tstamp />
+	</target>
 
-    <target name="dist" depends="realclean, compile-java" description="dist">
-    </target>
+	<target name="clean" depends="init">
+	</target>
 
-      <target name="clean" depends="init">
-      </target>
+	<target name="realclean" depends="init">
+		<delete dir="${basedir}/generated" />
+	</target>
 
-      <target name="realclean" depends="init">
-        <delete dir="${basedir}/generated" />
-      </target>
-
-    <!-- ================================================================== -->
-    <!-- Compile all corba idl interfaces sources                           -->
-    <!-- ================================================================== -->
+	<!-- ================================================================== -->
+	<!-- generate jaxbinding classes                                        -->
+	<!-- ================================================================== -->
 	<target name="jaxb-gen-src" depends="init"
 	             description="Generate Java source files from XSD.">
 
-		  <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
-		    <classpath refid="build.classpath" />
-		  </taskdef>
-	    <mkdir dir="generated" />
-	    <xjc schema="./src/main/resources/etc/device.xsd" package="net.sourceforge.dscsim.controller.panels" target="generated">
-	      <produces dir="" includes="**/*.java" />
-	    </xjc>
-		
-	    <xjc schema="./src/main/resources/etc/infostore.xsd" package="net.sourceforge.dscsim.controller.infostore" target="generated">
-	      <produces dir="" includes="**/*.java" />
-	    </xjc>
-<!--
-	    <xjc schema="PrepaidIF.xsd" package="de.danet" target="generated">
-	      <produces dir="generated/de.danet" includes="**/*.java" />
-	    </xjc>
--->
+		<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+			<classpath refid="build.classpath" />
+		</taskdef>
+
+		<mkdir dir="generated" />
+		<xjc source="1.0" schema="./src/main/resources/etc/device.xsd" package="net.sourceforge.dscsim.controller.panels" target="generated">
+			<produces dir="" includes="**/*.java" />
+		</xjc>
+
+		<xjc source="1.0" schema="./src/main/resources/etc/infostore.xsd" package="net.sourceforge.dscsim.controller.infostore" target="generated">
+			<produces dir="" includes="**/*.java" />
+		</xjc>
+
 	</target>
-	
-	
-    <!-- ================================================================== -->
-    <!-- Compile all java sources                                           -->
-    <!-- ================================================================== -->
-    <target name="compile-java" depends="jaxb-gen-src" description="compiles Sources">
-        <delete dir="${basedir}/build/classes" />
-        <mkdir dir="${basedir}/build/classes"/>
 
-        <javac srcdir="${basedir}/generated"
-                 destdir="${basedir}/build/classes"
-                 deprecation ="${java.deprecation}"
-                 debug ="${java.debug}"
-                 failonerror = "${java.failonerror}"
-                 optimize = "${java.optimize}">
-            <classpath>
-                <path refid="build.classpath"/>
-            </classpath>
-        </javac>
-
-    	<javac srcdir="${basedir}/src"
-                 destdir="${basedir}/build/classes"
-                 deprecation ="${java.deprecation}"
-                 debug ="${java.debug}"
-                 failonerror = "${java.failonerror}"
-                 optimize = "${java.optimize}">
-            <classpath>
-                <path refid="build.classpath"/>
-            </classpath>
-        </javac>
-
-    </target>
 
 </project>

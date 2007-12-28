@@ -24,11 +24,7 @@ package net.sourceforge.dscsim.controller.display.screens.framework;
 
 import java.awt.Component;
 
-import org.jdom.Element;
-
 import net.sourceforge.dscsim.controller.BusMessage;
-import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.MultiController;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Screen;
 

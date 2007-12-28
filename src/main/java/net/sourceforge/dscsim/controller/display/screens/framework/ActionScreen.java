@@ -19,11 +19,7 @@
 
 package net.sourceforge.dscsim.controller.display.screens.framework;
 
-import java.util.List;
-
-
 import net.sourceforge.dscsim.controller.BusMessage;
-import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Screen;
@@ -93,12 +89,12 @@ public class ActionScreen extends JScreen
 	}
 
 	//delete as many as you can after cleaning up.
-	@Override
+
 	public void enter(Object arg0) {
 			
 	}
 
-	@Override
+	
 	public void exit(BusMessage message) throws Exception {
 		
 	}
@@ -106,7 +102,7 @@ public class ActionScreen extends JScreen
 	/**
 	 * for backwards comp.
 	 */
-	@Override
+	
 	public String getAttributeValue(String attrName) {
 		if(attrName != null && attrName.equals("name")){
 			return this.getScreenBindings().getName();
@@ -114,44 +110,44 @@ public class ActionScreen extends JScreen
 		return null;
 	}
 
-	@Override
+	
 	public DscMessage getIncomingDscMessage() {
 		return this.incomingDscMessage;
 	}
 
 
 
-	@Override
+	
 	public DscMessage getOutGoingDscMessage() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public void init() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void setIncomingDscMessage(DscMessage dscMessage) {
 		this.incomingDscMessage = dscMessage;
 		
 	}
 	
-	@Override
+	
 	public void setOutGoingDscMessage(DscMessage dscMessage) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void setParent(ScreenInterface parent) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public ScreenInterface signal(BusMessage message) {
 		// TODO Auto-generated method stub
 		return null;
