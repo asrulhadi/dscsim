@@ -15,6 +15,9 @@
  
 package net.sourceforge.dscsim.common;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Window;
 import java.awt.Frame;
 import java.awt.Image;
@@ -25,6 +28,7 @@ import java.awt.Toolkit;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.net.URL;
 
 /**
@@ -106,12 +110,41 @@ public class SplashScreen extends Window {
      */
     public void paint(Graphics g) {
         g.drawImage(image, 0, 0, this);
+        String versionString = "version "+Version.getVersionString();
+        addVersionInfo(g, versionString);
 
         if (! paintCalled) {
             paintCalled = true;
             synchronized (this) { notifyAll(); }
         }
     }
+
+
+	/**
+	 * Inserts the version info into the splash screen graphics
+	 * @param g the graphics context
+	 * @param versionString the string containing the version info
+	 */
+	private void addVersionInfo(Graphics g, String versionString) {
+		final int leftMargin = 5;
+		final int distanceFromTop = 122;
+		final Font textFont = new Font("Dialog",Font.BOLD,16);
+		final Color textColor = new Color(0,105,207);  // some kind of blue
+
+		final Font oldFont = g.getFont();
+		final Color oldColor = g.getColor();
+		g.setFont( textFont );
+        g.setColor( textColor );
+
+        FontMetrics fm = g.getFontMetrics();
+        Rectangle2D r2d = fm.getStringBounds(versionString, g);
+        int stringWidth = (int) r2d.getWidth();
+        int imageWidth = image.getWidth(this);
+        g.drawString(versionString, imageWidth-stringWidth-leftMargin, distanceFromTop);
+        
+        g.setFont(oldFont);
+        g.setColor(oldColor);
+	}
     
     public static void splash(Image image) {
         if (instance == null && image != null) {
