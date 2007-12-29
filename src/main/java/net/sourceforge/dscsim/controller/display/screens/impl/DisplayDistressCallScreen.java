@@ -35,15 +35,18 @@ import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.network.DscPosition;
+import net.sourceforge.dscsim.controller.screen.types.Latitude;
+import net.sourceforge.dscsim.controller.screen.types.Longitude;
 /**
  * @author katharina
  *
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class DisplayOtherCallScreen extends MenuScreen {
+public class DisplayDistressCallScreen extends MenuScreen {
 
-	public DisplayOtherCallScreen(JDisplay display,
+	public DisplayDistressCallScreen(JDisplay display,
 			net.sourceforge.dscsim.controller.panels.Screen screen) {
 		super(display, screen);
 	}
@@ -53,28 +56,36 @@ public class DisplayOtherCallScreen extends MenuScreen {
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
-		
+
 		MultiContentManager oMngr = getInstanceContext().getContentManager();	
-		DscMessage selected = oMngr.getSelectedIncomingOtherCall();
+		DscMessage selected = oMngr.getSelectedIncomingDistressCall();
 		if(selected == null)
 			return;
-	
-		this.setTextBox("desc", selected.getCatagoryForTypeText());
+		
 		this.setTextBox("from", selected.getFromMMSI());
-		this.setTextBox("channel", selected.getChannel());
+		this.setTextBox("nature", selected.getNatureText());
 		
+		this.setTextBox("time", selected.getTime().toString());
 		
+		DscPosition pos = selected.getPosition();
+		Latitude lat = pos.getLatitude();
+		Longitude lon  = pos.getLongitude();
+		Properties props = oMngr.getProperties();
+		this.setTextBox("lat", lat.getAsFromattedString(props));
+		this.setTextBox("lon", lon.getAsFromattedString(props));			
+
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
 	public void exit(BusMessage msg) throws Exception {
+		
 		if(msg.getButtonEvent().getKeyId().equals(KP_Aa)){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			DscMessage call = oMCmgr.getSelectedIncomingOtherCall();			
-			if(call != null){				
-				oMCmgr.removeIncomingOtherCall(call);				
+			DscMessage distmsg = oMCmgr.getSelectedIncomingDistressCall();			
+			if(distmsg != null){				
+				oMCmgr.removeIncomingDistressCall(distmsg);				
 			}
 		}
 	}

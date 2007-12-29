@@ -25,6 +25,7 @@ package net.sourceforge.dscsim.controller.screen.types;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.DscUtils;
 import net.sourceforge.dscsim.controller.utils.Utilities;
+import java.util.Properties;
 
 import org.jdom.Element;
 
@@ -163,6 +164,13 @@ public class Latitude extends Coordinate {
 	public void reset() {
 		super.reset(new String[]{"", "", "NS"}, new int[]{2, 2, 1});
 		
+	}
+	
+	public String getAsFromattedString(Properties props){
+		if(this.isValid())
+			return super.getAsFromattedString(props.getProperty(LAT_FORMAT));
+		else
+			return props.getProperty(MS_LAT_NON);
 	}
 	
 		

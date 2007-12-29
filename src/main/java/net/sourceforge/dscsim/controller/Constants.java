@@ -445,6 +445,25 @@ public interface Constants {
 	public static final String ADDRESS_BOOK_FNAME = "mmsi_addressbook";
 	public static final String GROUP_BOOK_FNAME = "group_addressbook";
 	public static final String INCOMING_OTHER_CALLS = "incoming_other_calls";
+	public static final String INCOMING_DISTRESS_CALLS = "incoming_distress_calls";
 	
+	
+	//properties file constants
+	public static final String POS_GPS = "POS_GPS";
+	public static final String POS_MNL = "POS_MNL";
+	public static final String DEGREE_SYMBOL = "DEGREE_SYMBOL";
+	public static final String MINUTE_SYMBOL = "MINUTE_SYMBOL";
+	public static final String LAT_FORMAT = "LAT_FORMAT";
+	public static final String LON_FORMAT = "LON_FORMAT";
+
+	public static final String MS_SOURCE_MNL = "MS_SOURCE_MNL";
+	public static final String MS_SOURCE_GPS = "MS_SOURCE_GPS";
+	public static final String MS_TIME_NON = "MS_TIME_NON";
+	public static final String MS_POS_NON = "MS_POS_NON";
+	public static final String MS_LAT_NON = "MS_LAT_NON";
+	public static final String MS_LON_NON = "MS_LON_NON";
+	public static final String MS_TIME_PREF = "MS_TIME_PREF";
+	public static final String MS_LAT_PREF = "MS_LAT_PREF";
+	public static final String MS_LON_PREF = "MS_LON_PREF";
 
 }

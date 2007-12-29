@@ -22,6 +22,9 @@
  
 package net.sourceforge.dscsim.controller.screen.types;
 
+import java.text.MessageFormat;
+import java.util.Properties;
+
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.DscUtils;
 import net.sourceforge.dscsim.controller.utils.Utilities;
@@ -72,6 +75,10 @@ public abstract class Coordinate extends BaseType {
 	
 	public int getMinutes(){
 		return getPart(MIN_COORD);
+	}
+	
+	public char getHemisphere(){
+		return _strParts[HEM_COORD].charAt(_hem);
 	}
 	
 	protected boolean hasDegrees(){
@@ -321,5 +328,8 @@ public abstract class Coordinate extends BaseType {
 			_activePart = oOther._activePart;
 			
 		}
+	}
+	public String getAsFromattedString(String pattern){		
+		return MessageFormat.format(pattern, new Object[]{this.getDegrees(),this.getMinutes(), this.getHemisphere()});
 	}
 }

@@ -104,6 +104,10 @@ public class MultiContentManager implements BusListener, Constants {
 	private ArrayList<DscMessage>incomingOtherCalls = null;
 	private DscMessage selectedIncomingOtherCall = null;
 	
+	private ArrayList<DscMessage>incomingDistressCalls = null;
+	private DscMessage selectedIncomingDistressCall = null;
+
+	
 	public static MultiContentManager getInstance(InstanceContext oCtx) {
 		return new MultiContentManager(oCtx);
 	}
@@ -483,17 +487,24 @@ public class MultiContentManager implements BusListener, Constants {
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
 
-	public void addIncomingDistressCall(DscMessage oMessage) {
-
-		Element elemStorage = getStorageElement("incoming_distress_calls");
-
-		BeanList oStorage = getBeanList(elemStorage);
-
-		oStorage.addItem(oMessage);
-
-		storeBeanList(oStorage);
-
+	public void removeIncomingOtherCall(DscMessage oMessage) {
+		ArrayList<DscMessage>calls = this.getIncomingOtherCalls();
+		calls.remove(oMessage);
+		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
+	
+	public void addIncomingDistressCall(DscMessage oMessage) {
+		ArrayList<DscMessage>calls = this.getIncomingDistressCalls();
+		calls.add(0, oMessage);
+		this.storeList(INCOMING_DISTRESS_CALLS, calls);
+	}
+	
+	public void removeIncomingDistressCall(DscMessage oMessage) {
+		ArrayList<DscMessage>calls = this.getIncomingDistressCalls();
+		calls.remove(oMessage);
+		this.storeList(INCOMING_DISTRESS_CALLS, calls);
+	}
+	
 
 	public List getStorageList(String storageName) {
 
@@ -543,15 +554,17 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public List getIncomingDistressCalls() {
+	public ArrayList<DscMessage> getIncomingDistressCalls() {
 
-		try {
-			return getPersistantList("incoming_distress_calls");
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
+		if (this.incomingDistressCalls == null) {
+			this.incomingDistressCalls = readList(this.getStoreExtension(),
+					getStorePrefix() + INCOMING_DISTRESS_CALLS);
+
+			if (this.incomingDistressCalls == null) {
+				this.incomingDistressCalls = new ArrayList<DscMessage>();
+			}
 		}
-
-		return null;
+		return incomingDistressCalls;
 
 	}
 
@@ -1399,5 +1412,13 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public void setSelectedIncomingOtherCall(DscMessage selectedIncomingOtherCall) {
 		this.selectedIncomingOtherCall = selectedIncomingOtherCall;
+	}
+	
+	public DscMessage getSelectedIncomingDistressCall() {
+		return selectedIncomingDistressCall;
+	}
+
+	public void setSelectedIncomingDistressCall(DscMessage selectedIncomingDistressCall) {
+		this.selectedIncomingDistressCall = selectedIncomingDistressCall;
 	}
 }
