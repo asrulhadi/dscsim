@@ -318,5 +318,14 @@ public class JScreen extends Container
 	public InstanceContext getInstanceContext() {
 		return this.instanceContext;
 	}
+	
+	public void setTextBox(String name, String text){
+		
+		JTextBox tb = (JTextBox)this.getComponentByName(name, 0);
+		if(tb != null && text != null){
+			tb.setText(text);
+		}	
+		
+	}
 
 }

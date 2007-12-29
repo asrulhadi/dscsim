@@ -440,7 +440,7 @@ public class DscMessage implements java.io.Serializable, Cloneable, DscSendable,
     	String strTxt = "";
     	
     	if(_nature != null){
-    		strTxt = MultiContentManager.getProperties().getProperty(_nature).toString();
+    		strTxt = (String)MultiContentManager.getProperties().getProperty(_nature, "").toString();
     	}
     	
     	if(strTxt == null)

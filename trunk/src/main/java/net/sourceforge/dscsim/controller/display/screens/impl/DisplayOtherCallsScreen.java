@@ -108,7 +108,7 @@ public class DisplayOtherCallsScreen extends MenuScreen {
 			ArrayList<DscMessage>callList = oMCmgr.getIncomingOtherCalls();
 			oMCmgr.setSelectedIncomingOtherCall(callList.get(selected));
 		}else{
-			getInstanceContext().getContentManager().setSelectedGroupId(null);
+			getInstanceContext().getContentManager().setSelectedIncomingOtherCall(null);
 		}
 	}
 

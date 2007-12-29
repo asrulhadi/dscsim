@@ -181,19 +181,38 @@
 			</dscsim:actions>
 		</dscsim:screen>	
 	
-		<dscsim:screen name="show_distress_calls"  implementation="net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen">			
-			<dscsim:description>Show protocal of distress calls.</dscsim:description>
+		<dscsim:screen name="show_distress_calls"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.DisplayDistressCallsScreen">			
+			<dscsim:description>Show list of distress calls.</dscsim:description>
 			<dscsim:fields>
 				<dscsim:textbox row="0" column="4" width="16" height="1">Distress Calls</dscsim:textbox>		
 				<dscsim:textbox row="2" column="4" width="17" height="1" name="nothing">No message</dscsim:textbox>
-				<dscsim:menubox name="menu" row="2" column="0" width="19" height="6"/>
+				<dscsim:menubox name="menu" row="2" column="0" width="21" height="6"/>
 		   		<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>	    
 			</dscsim:fields>
 			<dscsim:actions>
 				<dscsim:action event="PRSD" source="FK_CLR" forward="select_received_calls"/>
 			</dscsim:actions>
 		</dscsim:screen>	
-		
+	
+		<dscsim:screen name="show_distress_call"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.DisplayDistressCallScreen">			
+			<dscsim:description>Show detail of distress</dscsim:description>			
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="5" width="16" height="1">Distress Call</dscsim:textbox>							
+				<dscsim:textbox row="1" column="0" width="12" height="1">Distress ID:</dscsim:textbox>	
+				<dscsim:textbox row="2" column="5" width="9" height="1" name="from"/>					
+				<dscsim:textbox row="3" column="0" width="21" height="1" name="nature"/>				
+				<dscsim:textbox row="4" column="0" width="21" height="1" name="time"/>	
+				<dscsim:textbox row="5" column="0" width="21" height="1" name="lat"/>	
+				<dscsim:textbox row="6" column="0" width="21" height="1" name="lon"/>	
+		   		<dscsim:textbox row="7" column="1" width="21" height="1">A/a -> Data clear</dscsim:textbox>	    
+			</dscsim:fields>
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="show_distress_calls"/>
+				<dscsim:action event="PRSD" source="FK_CALL" forward="show_distress_calls"/>
+				<dscsim:action event="PRSD" source="KP_Aa" forward="show_distress_calls"/>
+			</dscsim:actions>	
+		</dscsim:screen>
+
 		<dscsim:screen name="show_other_calls"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.DisplayOtherCallsScreen" scope="transient">
 
 			<dscsim:fields>
@@ -213,12 +232,13 @@
 				<dscsim:textbox row="3" column="6" width="9" height="1" name="from"/>	
 				<dscsim:textbox row="4" column="0" width="21" height="1">F3E/G3E simplex</dscsim:textbox>	
 				<dscsim:textbox row="5" column="0" width="3" height="1">CH:</dscsim:textbox>
-				<dscsim:textbox row="5" column="4" width="2" height="1" name="channel"/>	
-		   		<dscsim:textbox row="7" column="1" width="21" height="1">CLR->Exit / ENT->OK</dscsim:textbox>	    
+				<dscsim:textbox row="5" column="4" width="2" height="1" name="channel"/>	   
+		   		<dscsim:textbox row="7" column="1" width="21" height="1">A/a -> Data clear</dscsim:textbox>	    
 			</dscsim:fields>
 			<dscsim:actions>
 				<dscsim:action event="PRSD" source="FK_CLR" forward="show_other_calls"/>
-				<dscsim:action event="PRSD" source="FK_CALL" forward="main_entry_screen"/>
+				<dscsim:action event="PRSD" source="FK_CALL" forward="show_other_calls"/>
+				<dscsim:action event="PRSD" source="KP_Aa" forward="show_other_calls"/>
 			</dscsim:actions>	
 		</dscsim:screen>
 		
