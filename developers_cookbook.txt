@@ -22,6 +22,7 @@ All CVS activites are performed with Eclipse !
  4.1. pom.xml
  4.2. Readme.txt
  4.3. install.xml
+ 4.4. src/main/java/net/sourceforge/dscsim/common/Version.java
 5. make a test build on the branch (via command line "mvn verify")
 6. check in changes in the branch
 7. on the level of the project set label: "dscsim_1_2_0"
