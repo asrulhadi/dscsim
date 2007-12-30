@@ -452,12 +452,12 @@
 			<dscsim:fields>
 				<dscsim:textbox row="0" column="0" width="21" height="1">Push and hold</dscsim:textbox>				
 				<dscsim:textbox row="1" column="0" width="21" height="1">[DISTRESS] for 5 sec</dscsim:textbox>				
-				<dscsim:textbox row="2" column="3" width="21" height="1">Nature of distress</dscsim:textbox>				
-				<dscsim:textbox row="3" column="3" width="21" height="1" name="nature"/>
-				<dscsim:textbox row="4" column="3" width="21" height="1" name="source"/>			
-				<dscsim:textbox row="4" column="7" width="21" height="1" name="time"/>				
-				<dscsim:textbox row="5" column="7" width="21" height="1" name="latitude"/>				
-				<dscsim:textbox row="6" column="7" width="21" height="1" name="longitude"/>				
+				<dscsim:textbox row="2" column="1" width="21" height="1">Nature of distress</dscsim:textbox>				
+				<dscsim:textbox row="3" column="1" width="21" height="1" name="nature"/>
+				<dscsim:textbox row="4" column="1" width="21" height="1" name="source"/>			
+				<dscsim:textbox row="4" column="5" width="21" height="1" name="time"/>				
+				<dscsim:textbox row="5" column="5" width="21" height="1" name="latitude"/>				
+				<dscsim:textbox row="6" column="5" width="21" height="1" name="longitude"/>				
 			</dscsim:fields>
 			<dscsim:actions>
 				<dscsim:action event="PRSD" source="FK_SOS" forward="distress_call_sent"/>
@@ -474,6 +474,96 @@
 				<dscsim:textbox row="7" column="5" width="21" height="1">[CLR]->Exit</dscsim:textbox>
 			</dscsim:fields>													
 		</dscsim:screen>
+		
+		<dscsim:screen name="select_distress_nature" implementation="net.sourceforge.dscsim.controller.display.screens.impl.SelectDistressNatureScreen" scope="transient">
+					
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="0" width="21" height="1">Select nature of distress</dscsim:textbox>							
+				<dscsim:menubox name="menu" row="1" column="0" width="20" height="6">	
+						<dscsim:choice code="NATURE_DISTR_UNDESIG" link="distress_position_input">undesignated</dscsim:choice>				
+						<dscsim:choice code="NATURE_DISTR_FIRE" link="distress_position_input">fire, explosion</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_FLOOD" link="distress_position_input">flooding</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_COLLISION" link="distress_position_input">collision</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_GROUND" link="distress_position_input">grounding</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_CAPSIZE" link="distress_position_input">danger of capsizing</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_SINKING" link="distress_position_input">sinking</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_ADRIFT" link="distress_position_input">disabled and adrift</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_ABANDON" link="distress_position_input">abandoning ship</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_PIRACY" link="distress_position_input">piracy or robbery</dscsim:choice>
+						<dscsim:choice code="NATURE_DISTR_MOB" link="distress_position_input">person over board</dscsim:choice>
+				</dscsim:menubox>
+				<dscsim:textbox row="7" column="5" width="21" height="1">CLR->Exit / ENT->OK</dscsim:textbox>			
+			</dscsim:fields>					
+		</dscsim:screen>		
+		
+		<dscsim:screen name="distress_position_input" implementation="net.sourceforge.dscsim.controller.display.screens.impl.JPositionEntryScreen">
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="2" width="16" height="1">Input a position</dscsim:textbox>
+				<dscsim:textbox row="1" column="1" width="9" height="1">Lattitude</dscsim:textbox>
+				<dscsim:editbox row="2" column="3" width="2" height="1" name="latdeg"/>
+				<dscsim:textbox row="2" column="6" width="1" height="1">°</dscsim:textbox>
+				<dscsim:editbox row="2" column="8" width="2" height="1" name="latmin"/>
+				<dscsim:textbox row="2" column="11" width="1" height="1">'</dscsim:textbox>
+				<dscsim:textbox row="2" column="13" width="1" height="1" name="lathem"/>
+				<dscsim:textbox row="2" column="15" width="4" height="1" name="latnull">Null</dscsim:textbox>
+			
+				<dscsim:textbox row="4" column="1" width="9" height="1">Longitude</dscsim:textbox>
+				<dscsim:editbox row="5" column="2" width="3" height="1" name="londeg"/>
+				<dscsim:textbox row="5" column="6" width="1" height="1">°</dscsim:textbox>
+				<dscsim:editbox row="5" column="8" width="2" height="1" name="lonmin"/>
+				<dscsim:textbox row="5" column="11" width="1" height="1">'</dscsim:textbox>
+				<dscsim:textbox row="5" column="13" width="1" height="1" name="lonhem"/>
+				<dscsim:textbox row="5" column="15" width="4" height="1" name="lonnull">Null</dscsim:textbox>
+
+				<dscsim:textbox row="6" column="2" width="17" height="1">A/a->Null data</dscsim:textbox>
+				<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>
+			</dscsim:fields>	
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_ENT" forward="distress_time_input"/>
+			</dscsim:actions>
+		
+		</dscsim:screen>	
+		
+		<dscsim:screen name="distress_time_input" implementation="net.sourceforge.dscsim.controller.display.screens.impl.JTimeEntryScreen">
+
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="2" width="16" height="1">Input a Time</dscsim:textbox>				
+
+				<dscsim:textbox row="2" column="1" width="3" height="1">UTC</dscsim:textbox>
+				<dscsim:editbox row="2" column="5" width="2" height="1" name="hours"/>
+				<dscsim:textbox row="2" column="7" width="1" height="1">:</dscsim:textbox>
+				<dscsim:editbox row="2" column="8" width="2" height="1" name="minutes"/>
+				<dscsim:textbox row="2" column="11" width="4" height="1" name="timenull">Null</dscsim:textbox>
+			
+				<dscsim:textbox row="6" column="2" width="17" height="1">A/a->Null data</dscsim:textbox>
+				<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>
+			</dscsim:fields>	
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_ENT" forward="distress_send"/>
+			</dscsim:actions>
+		</dscsim:screen>	
+				
+		<dscsim:screen name="distress_send" implementation="net.sourceforge.dscsim.controller.display.screens.impl.SendDistressReviewScreen">
+			
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="0" width="21" height="1">Push and hold</dscsim:textbox>				
+				<dscsim:textbox row="1" column="0" width="21" height="1">[DISTRESS] for 5 sec</dscsim:textbox>				
+				<dscsim:textbox row="2" column="1" width="21" height="1">Nature of distress</dscsim:textbox>				
+				<dscsim:textbox row="3" column="1" width="21" height="1" name="nature"/>
+				<dscsim:textbox row="4" column="1" width="21" height="1" name="source"/>			
+				<dscsim:textbox row="4" column="5" width="21" height="1" name="time"/>				
+				<dscsim:textbox row="5" column="5" width="21" height="1" name="latitude"/>				
+				<dscsim:textbox row="6" column="5" width="21" height="1" name="longitude"/>				
+				<dscsim:textbox row="7" column="5" width="21" height="1">CLR->Cancel</dscsim:textbox>
+			</dscsim:fields>
+			<dscsim:actions>
+			
+			</dscsim:actions>				
+						
+		</dscsim:screen>
+		
+		
+		
 	</dscsim:screens>
 	
 	<dscsim:actions>

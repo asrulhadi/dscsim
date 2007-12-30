@@ -51,7 +51,7 @@ public interface Constants {
 	public static final String SCREEN_FILE_COAST = RESOURCE_BASE + "shore.xml";
 	public static final String DEVICE_SHORE_XML = RESOURCE_BASE + "shore-screens.xml";
 
-	public static final String INFO_STORE_XML = STORE_BASE + "infostore.xml";
+	public static final String INFO_STORE_XML = "infostore.xml";
 
 	/**
 	 * Full name of controller's background image.

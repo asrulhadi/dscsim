@@ -1,3 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<infostore xmlns="http://dscsim.sourcefore.net/xml/ns/dscsim"><position><latitude><degrees>11</degrees><minutes>11</minutes><hemisphere>N</hemisphere></latitude><longitude><degrees>111</degrees><minutes>49</minutes><hemisphere>W</hemisphere></longitude><time><hours>02</hours><minutes>05</minutes></time></position><nature>NATURE_DISTR_UNDESIG</nature></infostore>
-
+<infostore xmlns="http://dscsim.sourcefore.net/xml/ns/dscsim">
+	<position>
+		<latitude>
+			<degrees />
+			<minutes />
+			<hemisphere>N</hemisphere>
+		</latitude>
+		<longitude>
+			<degrees />
+			<minutes />
+			<hemisphere>W</hemisphere>
+		</longitude>
+		<time>
+			<hours></hours>
+			<minutes></minutes>
+		</time>
+	</position>
+	<nature>NATURE_DISTR_UNDESIG</nature>
+</infostore>

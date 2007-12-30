@@ -59,7 +59,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 			//AppLogger.info("DiscAppPanel.DscAppPanel - MMSI=" + strMMSI);
 			_oAppContext = oAppContext;
 			setName(strMMSI);
-			_oContentManager = new MultiContentManager(this);
+			_oContentManager = new MultiContentManager(strMMSI, this);
 			_oContentManager.setMMSI(strMMSI);
 			
 		}
