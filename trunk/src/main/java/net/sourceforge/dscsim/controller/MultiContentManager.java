@@ -109,10 +109,10 @@ public class MultiContentManager implements BusListener, Constants {
 
 	
 	public static MultiContentManager getInstance(InstanceContext oCtx) {
-		return new MultiContentManager(oCtx);
+		return new MultiContentManager(oCtx.getContentManager().getMMSI(), oCtx);
 	}
 
-	public MultiContentManager(InstanceContext oInstanceContext) {
+	public MultiContentManager(String mmsi, InstanceContext oInstanceContext) {
 		_oInstanceContext = oInstanceContext;
 			
 		try {
@@ -121,9 +121,8 @@ public class MultiContentManager implements BusListener, Constants {
 			DataInputStream dataInput = new DataInputStream(getResourceStream(xmlName, this.getClass()));
 			this.screenFactory = new JScreenFactory(new JDisplay(DISPLAY_X-11,
 					DISPLAY_Y+1, 273, 160, 8, 21), dataInput);
-			
-			dataInput = new DataInputStream(getResourceStream(INFO_STORE_XML, this.getClass()));
-			this.infostoreFactory = new InfoStoreFactory(dataInput, INFO_STORE_XML);
+					
+			this.infostoreFactory = new InfoStoreFactory(mmsi);
 
 			SAXBuilder oBuilder = new SAXBuilder();
 			xmlName = oInstanceContext.getApplicationContext()
