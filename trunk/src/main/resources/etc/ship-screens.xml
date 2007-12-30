@@ -21,16 +21,16 @@
 			</dscsim:actions>
 		</dscsim:screen>
 			
-		<dscsim:screen name="main_entry_screen"  implementation="net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen" scope="session" >
+		<dscsim:screen name="main_entry_screen"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.MainMenuScreen" scope="session" >
 			<dscsim:fields>
 				<dscsim:textbox row="0" column="2" width="16" height="1">Select a subject</dscsim:textbox>
 				<dscsim:menubox name="main_menu" row="1" column="0" width="19" height="6">				
 					<dscsim:choice  link="position_input">Entry position/time</dscsim:choice>
-					<dscsim:choice  link="select_call_id">Individual call</dscsim:choice>			
-					<dscsim:choice  link="select_ack_quick">Individual ACK</dscsim:choice>
-					<dscsim:choice  link="select_group_id">Group call</dscsim:choice>
-					<dscsim:choice  link="select_category">All ship calls</dscsim:choice>			
-					<dscsim:choice  link="posreq_select_call_id">Position request</dscsim:choice>
+					<dscsim:choice  link="select_call_id" code="TYPE_INDIVIDUAL">Individual call</dscsim:choice>			
+					<dscsim:choice  link="select_ack_quick" code="TYPE_INDIVIDUAL_ACK">Individual ACK</dscsim:choice>
+					<dscsim:choice  link="select_group_id" code="TYPE_GROUP">Group call</dscsim:choice>
+					<dscsim:choice  link="select_category" code="TYPE_ALL_SHIPS">All ship calls</dscsim:choice>			
+					<dscsim:choice  link="posreq_select_call_id" code="TYPE_POSITION_REQ">Position request</dscsim:choice>
 					<dscsim:choice  link="select_received_calls">Received calls</dscsim:choice>
 					<dscsim:choice  link="select_distress_nature">Distress setting</dscsim:choice>
 					<dscsim:choice  link="setup_menu">Set up</dscsim:choice>		
