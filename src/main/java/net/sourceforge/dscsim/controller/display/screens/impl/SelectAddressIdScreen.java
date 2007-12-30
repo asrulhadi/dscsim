@@ -87,21 +87,8 @@ public class SelectAddressIdScreen extends MenuScreen {
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
 	public void exit(BusMessage oMessage) {
-		DscMessage outGoing  = new DscMessage();
-		this.getInstanceContext().getContentManager().setOutGoingDscMessage(outGoing);
-		outGoing.setToMMSI(this.getMenu().getSelectedData().getCode());
-		
-		InfoStoreType store = this.getInstanceContext().getContentManager().getInfoStore();
-		Position pos = store.getPosition();
-		LatitudeType lat = pos.getLatitude();
-		LongitudeType lon = pos.getLongitude();
-		TimeType time = pos.getTime();
-		
-		outGoing.setDistressLatitude(new Latitude(lat.getDegrees(), lat.getMinutes(), lat.getHemisphere()));
-		outGoing.setDistressLongitude(new Longitude(lon.getDegrees(), lon.getMinutes(), lon.getHemisphere()));
-		outGoing.setTime(new Time(time.getHours(), time.getMinutes()));
-		outGoing.setCallType(this.CALL_TYPE_INDIVIDUAL);
-		
+		DscMessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscMessage();
+		outGoing.setToMMSI(this.getMenu().getSelectedData().getCode());		
 		AppLogger.debug2("-----------"+this.getMenu().getSelectedData().toString());
 	}
 
