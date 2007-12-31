@@ -39,16 +39,13 @@ public class SelectDistressNatureScreen extends MenuScreen{
 		super(display, screen);
 	}
 	
-	@Override
-	public void enter(Object msg) {
-		super.enter(msg);	
-	}
 	
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
 	@Override
-	public void exit(BusMessage msg) {
+	public void exit(BusMessage msg) throws Exception {
+		super.exit(msg);
 		
 		if (msg.getButtonEvent().getKeyId().equals(FK_ENT)) {
 			MultiContentManager oMCmgr = getInstanceContext()

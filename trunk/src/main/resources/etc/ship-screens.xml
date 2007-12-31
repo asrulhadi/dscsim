@@ -159,7 +159,7 @@
 
 			<dscsim:actions>
 				<dscsim:action event="PRSD" source="FK_ENT" forward="welcome"/>
-				<dscsim:action event="PRSD" source="FK_CLR" forward="welcome"/>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="main_entry_screen"/>
 			</dscsim:actions>					
 
 		</dscsim:screen>	
@@ -492,7 +492,7 @@
 						<dscsim:choice code="NATURE_DISTR_PIRACY" link="distress_position_input">piracy or robbery</dscsim:choice>
 						<dscsim:choice code="NATURE_DISTR_MOB" link="distress_position_input">person over board</dscsim:choice>
 				</dscsim:menubox>
-				<dscsim:textbox row="7" column="5" width="21" height="1">CLR->Exit / ENT->OK</dscsim:textbox>			
+				<dscsim:textbox row="7" column="1" width="21" height="1">CLR->Exit / ENT->OK</dscsim:textbox>			
 			</dscsim:fields>					
 		</dscsim:screen>		
 		

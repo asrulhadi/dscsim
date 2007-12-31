@@ -48,10 +48,14 @@ implements Constants {
 		
 		JMenu menu = this.getMenu();		
 		MultiContentManager mngr = getInstanceContext().getContentManager();
-		DscMessage dscmsg = mngr.getIncomingDscMessage();
-		super.setIncomingDscMessage(dscmsg);
-	
-		menu.addItem(dscmsg.getFromMMSI(), "ack_individual_compliance", "");
+		
+		ArrayList<DscMessage>calls = mngr.getIncomingDistressCalls();		
+		DscMessage dscmsg = calls.get(0);
+
+		if(dscmsg != null){
+			menu.addItem(dscmsg.getFromMMSI(), "ack_individual_compliance", "");			
+		}
+		
 		menu.addItem("Other", "select_ack_other_calls", "");
 	
 	}
