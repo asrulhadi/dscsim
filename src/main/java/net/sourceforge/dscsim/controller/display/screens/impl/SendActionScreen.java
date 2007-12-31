@@ -101,7 +101,7 @@ public class SendActionScreen extends ActionScreen{
 			
 		}
 
-		return null;
+		return  this.findActionMapping(keyAction, keyID);
 	}
 
 }

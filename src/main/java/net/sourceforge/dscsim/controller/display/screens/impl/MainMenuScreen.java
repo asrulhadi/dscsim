@@ -18,9 +18,12 @@
  */
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
+import java.util.List;
+
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
+import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
 import net.sourceforge.dscsim.controller.infostore.Position;
 import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
@@ -45,6 +48,13 @@ public class MainMenuScreen extends MenuScreen {
 	@Override
 	public void enter(Object msg) {
 		super.enter(msg);
+		
+		JMenu m = (JMenu)this.getComponentByName("main_menu", 0);
+		List l = this.getInstanceContext().getContentManager().getIncomingOtherCalls();	
+		if(l != null && l.size()>0)
+			m.setChoiceVisible(CALL_TYPE_INDIVIDUAL_ACK, true);
+		else
+			m.setChoiceVisible(CALL_TYPE_INDIVIDUAL_ACK, false);
 	}
 
 	@Override

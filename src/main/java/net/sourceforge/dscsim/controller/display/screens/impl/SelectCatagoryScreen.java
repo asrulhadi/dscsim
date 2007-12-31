@@ -18,6 +18,7 @@
  */
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
+import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 import net.sourceforge.dscsim.controller.network.DscMessage;
@@ -34,9 +35,14 @@ public class SelectCatagoryScreen extends MenuScreen{
 	}
 	
 	@Override
-	public void enter(Object msg) {
-		DscMessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscMessage();
-		outGoing.setCatagory(this.getMenu().getSelectedData().getCode());		
+	public void exit(BusMessage msg) throws Exception{
+		super.exit(msg);
+		
+		if (msg.getButtonEvent().getKeyId().equals(FK_ENT)) {
+			DscMessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscMessage();
+			outGoing.setCatagory(this.getMenu().getSelectedData().getCode());
+		}
+
 	}
 
 }

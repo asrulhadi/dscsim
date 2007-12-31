@@ -101,10 +101,26 @@ public class JMenu extends JScreenComponent {
      			from++;
      		}
      	}
-     	
+    	String item = null;
+     	int q = -1, d=0;   	    	
+     	for(JChoice c: list.values()){
+     		q++;
+     		if(q >= from && q <= to){
+     			
+     			if(!c.isVisible())
+     				continue;
+     			
+     			item = c.getText();
+     			
+     			for(int p=0; p<item.length();p++){     		
+     				//AppLogger.debug2("Menu.paint " + item + " at x=" + (p*xscale) + " y=" + (yscale*d + yscale));
+         			g2d.drawString(Character.toString(item.charAt(p)),(p+1)*xscale, (yscale*d+yscale)-5);
+          		}  
+     			d++;
+     		}    		
+     	}
+     	/*
      	Iterator itr = list.keySet().iterator();
-     	String item = null;
-     	int q = -1, d=0;   	
      	while(itr.hasNext()){
      		item= (String)itr.next();
      		q++;
@@ -116,7 +132,7 @@ public class JMenu extends JScreenComponent {
      			d++;
      		}
      	}
-     	
+     	*/
      	/*draw cursor*/     	
      	//AppLogger.debug2("Menu.paint cursor.getBound" + cursor.getBounds().toString());
 		/*create cursor*/
@@ -258,10 +274,23 @@ public class JMenu extends JScreenComponent {
 	
 	}
 	
+	public void setChoiceVisible(String code,  boolean value){
+		
+		String ccode = null;
+		for(JChoice c : this.list.values()){	
+			ccode = c.getCode();
+			if(ccode != null && ccode.equals(code)){
+				c.setVisible(value);
+				break;
+			}		
+		}
+	}
+	
 	public static class JChoice {
 		private String link;
 		private String code;
 		private String text;
+		private boolean visible = true;
 		
 		public JChoice(String text, String link, String code){
 			this.link = link;
@@ -291,6 +320,14 @@ public class JMenu extends JScreenComponent {
 
 		public void setText(String text) {
 			this.text = text;
+		}
+
+		public boolean isVisible() {
+			return visible;
+		}
+
+		public void setVisible(boolean visible) {
+			this.visible = visible;
 		}
 		
 	}
