@@ -27,7 +27,7 @@
 				<dscsim:menubox name="main_menu" row="1" column="0" width="19" height="6">				
 					<dscsim:choice  link="position_input">Entry position/time</dscsim:choice>
 					<dscsim:choice  link="select_call_id" code="TYPE_INDIVIDUAL">Individual call</dscsim:choice>			
-					<dscsim:choice  link="select_ack_quick" code="TYPE_INDIVIDUAL_ACK">Individual ACK</dscsim:choice>
+					<dscsim:choice  link="select_ack_individ" code="TYPE_INDIVIDUAL_ACK">Individual ACK</dscsim:choice>
 					<dscsim:choice  link="select_group_id" code="TYPE_GROUP">Group call</dscsim:choice>
 					<dscsim:choice  link="select_category" code="TYPE_ALL_SHIPS">All ship calls</dscsim:choice>			
 					<dscsim:choice  link="posreq_select_call_id" code="TYPE_POSITION_REQ">Position request</dscsim:choice>
@@ -49,7 +49,7 @@
 				<dscsim:textbox row="2" column="6" width="1" height="1">°</dscsim:textbox>
 				<dscsim:editbox row="2" column="8" width="2" height="1" name="latmin"/>
 				<dscsim:textbox row="2" column="11" width="1" height="1">'</dscsim:textbox>
-				<dscsim:textbox row="2" column="13" width="1" height="1" name="lathem"/>
+				<dscsim:editbox row="2" column="13" width="1" height="1" name="lathem"/>
 				<dscsim:textbox row="2" column="15" width="4" height="1" name="latnull">Null</dscsim:textbox>
 			
 				<dscsim:textbox row="4" column="1" width="9" height="1">Longitude</dscsim:textbox>
@@ -57,7 +57,7 @@
 				<dscsim:textbox row="5" column="6" width="1" height="1">°</dscsim:textbox>
 				<dscsim:editbox row="5" column="8" width="2" height="1" name="lonmin"/>
 				<dscsim:textbox row="5" column="11" width="1" height="1">'</dscsim:textbox>
-				<dscsim:textbox row="5" column="13" width="1" height="1" name="lonhem"/>
+				<dscsim:editbox row="5" column="13" width="1" height="1" name="lonhem"/>
 				<dscsim:textbox row="5" column="15" width="4" height="1" name="lonnull">Null</dscsim:textbox>
 
 				<dscsim:textbox row="6" column="2" width="17" height="1">A/a->Null data</dscsim:textbox>
@@ -186,7 +186,7 @@
 			<dscsim:fields>
 				<dscsim:textbox row="0" column="4" width="16" height="1">Distress Calls</dscsim:textbox>		
 				<dscsim:textbox row="2" column="4" width="17" height="1" name="nothing">No message</dscsim:textbox>
-				<dscsim:menubox name="menu" row="2" column="0" width="21" height="6"/>
+				<dscsim:menubox name="menu" row="1" column="0" width="21" height="6"/>
 		   		<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>	    
 			</dscsim:fields>
 			<dscsim:actions>
@@ -218,7 +218,7 @@
 			<dscsim:fields>
 				<dscsim:textbox row="0" column="5" width="16" height="1">Other Calls</dscsim:textbox>		
 				<dscsim:textbox row="2" column="4" width="17" height="1" name="nothing">No message</dscsim:textbox>
-				<dscsim:menubox name="menu" row="2" column="0" width="19" height="6"/>
+				<dscsim:menubox name="menu" row="1" column="0" width="19" height="6"/>
 		   		<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>	    
 			</dscsim:fields>
 
@@ -348,22 +348,8 @@
 				<dscsim:action event="PRSD" source="FK_ENT" forward="setup_address_info"/>
 			</dscsim:actions>			
 		</dscsim:screen>
-		
-		<!-- network responses -->
-		<dscsim:screen name="incoming_individual_message"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingAlertScreen" scope="transient">				
-			<dscsim:fields>
-				<dscsim:textbox row="0" column="0" width="21" height="1">-RCV Individual call-</dscsim:textbox>	
-				<dscsim:textbox row="2" column="0" width="5" height="1">From:</dscsim:textbox>	
-				<dscsim:textbox row="2" column="5" width="9" height="1" name="mmsi"></dscsim:textbox>	
-				<dscsim:textbox row="7" column="0" width="21" height="1">[CLR]->Exit/[ENT]->OK</dscsim:textbox>
-			</dscsim:fields>
-			<dscsim:actions>
-				<dscsim:action event="PRSD" source="FK_CLR" forward="welcome"/>
-				<dscsim:action event="PRSD" source="FK_ENT" forward="ack_individual_compliance"/>				
-			</dscsim:actions>		
-		</dscsim:screen>
-		
-		<dscsim:screen name="select_ack_quick" implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingSelectIdScreen">
+				
+		<dscsim:screen name="select_ack_individ" implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingSelectIdScreen">
 			<dscsim:fields>
 				<dscsim:textbox row="0" column="1" width="20" height="1">Select address ID</dscsim:textbox>
 				<dscsim:menubox name="menu" row="2" column="0" width="20" height="4">		
@@ -371,6 +357,17 @@
 				<dscsim:textbox row="7" column="0" width="21" height="1">[CLR]->Exit/[ENT]->OK</dscsim:textbox>
 			</dscsim:fields>	
 		</dscsim:screen>	
+		
+		
+		<dscsim:screen name="select_ack_other_calls" implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingSelectOtherIdScreen">
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="1" width="20" height="1">Select ACK</dscsim:textbox>
+				<dscsim:menubox name="menu" row="2" column="0" width="20" height="4">		
+				</dscsim:menubox>							
+				<dscsim:textbox row="7" column="0" width="21" height="1">[CLR]->Exit/[ENT]->OK</dscsim:textbox>
+			</dscsim:fields>	
+		</dscsim:screen>	
+		
 				
 		<dscsim:screen name="ack_individual_compliance" implementation="net.sourceforge.dscsim.controller.display.screens.impl.SelectComplianceCodeScreen">    			
 			<dscsim:fields>
@@ -504,7 +501,7 @@
 				<dscsim:textbox row="2" column="6" width="1" height="1">°</dscsim:textbox>
 				<dscsim:editbox row="2" column="8" width="2" height="1" name="latmin"/>
 				<dscsim:textbox row="2" column="11" width="1" height="1">'</dscsim:textbox>
-				<dscsim:textbox row="2" column="13" width="1" height="1" name="lathem"/>
+				<dscsim:editbox row="2" column="13" width="1" height="1" name="lathem"/>
 				<dscsim:textbox row="2" column="15" width="4" height="1" name="latnull">Null</dscsim:textbox>
 			
 				<dscsim:textbox row="4" column="1" width="9" height="1">Longitude</dscsim:textbox>
@@ -512,7 +509,7 @@
 				<dscsim:textbox row="5" column="6" width="1" height="1">°</dscsim:textbox>
 				<dscsim:editbox row="5" column="8" width="2" height="1" name="lonmin"/>
 				<dscsim:textbox row="5" column="11" width="1" height="1">'</dscsim:textbox>
-				<dscsim:textbox row="5" column="13" width="1" height="1" name="lonhem"/>
+				<dscsim:editbox row="5" column="13" width="1" height="1" name="lonhem"/>
 				<dscsim:textbox row="5" column="15" width="4" height="1" name="lonnull">Null</dscsim:textbox>
 
 				<dscsim:textbox row="6" column="2" width="17" height="1">A/a->Null data</dscsim:textbox>
@@ -556,19 +553,62 @@
 				<dscsim:textbox row="6" column="5" width="21" height="1" name="longitude"/>				
 				<dscsim:textbox row="7" column="5" width="21" height="1">CLR->Cancel</dscsim:textbox>
 			</dscsim:fields>
-			<dscsim:actions>
-			
-			</dscsim:actions>				
-						
+			<dscsim:actions>		
+			</dscsim:actions>									
 		</dscsim:screen>
 		
+		<!-- network responses -->
+		<dscsim:screen name="incoming_individual_message"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingAlertScreen" scope="transient">				
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="0" width="21" height="1">-RCV Individual call-</dscsim:textbox>	
+				<dscsim:textbox row="2" column="0" width="5" height="1">From:</dscsim:textbox>	
+				<dscsim:textbox row="2" column="5" width="9" height="1" name="mmsi"></dscsim:textbox>	
+				<dscsim:textbox row="7" column="0" width="21" height="1">[CLR]->Exit/[ENT]->OK</dscsim:textbox>
+			</dscsim:fields>
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="welcome"/>
+				<dscsim:action event="PRSD" source="FK_ENT" forward="ack_individual_compliance"/>				
+			</dscsim:actions>		
+		</dscsim:screen>
 		
+		<dscsim:screen name="incoming_distress_message_alarm"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingDistressAlertScreen"  scope="transient" >
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="5" width="16" height="1">-RCV Distress-</dscsim:textbox>							
+				<dscsim:textbox row="1" column="0" width="12" height="1">Distress ID:</dscsim:textbox>	
+				<dscsim:textbox row="2" column="5" width="9" height="1" name="from"/>					
+				<dscsim:textbox row="3" column="0" width="21" height="1" name="nature"/>				
+				<dscsim:textbox row="4" column="0" width="21" height="1" name="time"/>	
+				<dscsim:textbox row="5" column="0" width="21" height="1" name="lat"/>	
+				<dscsim:textbox row="6" column="0" width="21" height="1" name="lon"/>	
+		   		<dscsim:textbox row="7" column="1" width="21" height="1">[CLR] - Alarm stop</dscsim:textbox>    
+
+			</dscsim:fields>
+			<dscsim:actions>	
+				<dscsim:action event="PRSD" source="FK_ENT" forward="null"/>	
+				<dscsim:action event="PRSD" source="FK_CALL" forward="null"/>				
+			</dscsim:actions>		
+		</dscsim:screen>
+		
+		<dscsim:screen name="incoming_allships_message"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingAllShipsAlertScreen" scope="transient">				
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="0" width="21" height="1">-RCV All Ships call-</dscsim:textbox>	
+				<dscsim:textbox row="2" column="0" width="5" height="1">From:</dscsim:textbox>	
+				<dscsim:textbox row="2" column="5" width="9" height="1" name="mmsi"></dscsim:textbox>	
+				<dscsim:textbox row="7" column="0" width="21" height="1">[CLR]->Exit/[ENT]->OK</dscsim:textbox>
+			</dscsim:fields>
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="welcome"/>
+				<dscsim:action event="PRSD" source="FK_ENT" forward="null"/>				
+			</dscsim:actions>		
+		</dscsim:screen>
 		
 	</dscsim:screens>
 	
 	<dscsim:actions>
 			<dscsim:action event="PRSD" source="FK_CLR" forward="welcome"/>
 			<dscsim:action event="PRSD" source="FK_CALL" forward="welcome"/>
+
+			<dscsim:action event="PRSD" source="FK_SOS" forward="distress_call_send"/>
 
 			<dscsim:action event="TYPE_ALL_SHIPS" source="NETWORK_MSG" forward="incoming_allships_message"/>
 			<dscsim:action event="TYPE_DISTRESS" source="NETWORK_MSG" forward="incoming_distress_message_alarm"/>

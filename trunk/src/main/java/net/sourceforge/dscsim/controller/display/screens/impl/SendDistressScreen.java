@@ -32,6 +32,7 @@ import net.sourceforge.dscsim.controller.MultiBus;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
+import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreenComponent;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.infostore.Position;
@@ -142,7 +143,7 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 				if(lstChannel != null)
 					getInstanceContext().getRadioCoreController().setChannel(lstChannel);
 	
-				return null;
+				return this.findActionMapping("PRSD", "FK_CLR");
 				
 			} else if(FK_CLR.equals(keyId) && isContinue()){
 						
@@ -165,11 +166,13 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 				getInstanceContext().getBus().publish(new BusMessage(null, BTN_RESET));
 	
 				/*that was it.*/
-				return null;
+				return new ActionScreen.JActionMapping("", "", NULL);
 				
 			} else if(DSC_POWERED_OFF.equals(keyId)){			
 				stop();				
 				return null;
+			} else{
+				return new ActionScreen.JActionMapping("", "", NULL);
 			}
 			
 		}
@@ -210,10 +213,12 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 		} else {
 			this.tbLat.setText(props.getProperty("MS_LAT_PREF")
 					+ lat.getDegrees() + props.getProperty("DEGREE_SYMBOL")
-					+ lat.getMinutes() + props.getProperty("MINUTE_SYMBOL"));
+					+ lat.getMinutes() + props.getProperty("MINUTE_SYMBOL")
+					+ lat.getHemisphere());
 			this.tbLon.setText(props.getProperty("MS_LON_PREF")
 					+ lon.getDegrees() + props.getProperty("DEGREE_SYMBOL")
-					+ lon.getMinutes() + props.getProperty("MINUTE_SYMBOL"));
+					+ lon.getMinutes() + props.getProperty("MINUTE_SYMBOL")
+					+ lon.getHemisphere());
 
 		}
 		

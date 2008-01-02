@@ -240,7 +240,7 @@ public class JScreen extends Container
 	 * @param source
 	 * @return
 	 */
-	protected ActionMapping findGlobalActionMapping(String event, String source){	
+	public ActionMapping findGlobalActionMapping(String event, String source){	
 		if(this.deviceBindings.getActions()!= null)
 			return findActionMapping(this.deviceBindings.getActions().getAction(), event, source);
 		

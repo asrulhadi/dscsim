@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.util.ArrayList;
 
 
 import net.sourceforge.dscsim.controller.BusMessage;
@@ -40,6 +41,8 @@ public class JEditBox  extends JScreenComponent {
 	private int counter = 0;
 	private int insertAt = -1;
 	private boolean upperCase = true;
+	
+	private ArrayList<String> pickList = null;
 	
 	private static final String KEY2UPPER [][] ={
 		{"0000"},	
@@ -74,7 +77,10 @@ public class JEditBox  extends JScreenComponent {
 	/**
 	 * 
 	 */
-	private boolean digitMode = true;
+	
+	public enum Mode {Alpha, Digit, Pick}
+	private Mode mode = Mode.Digit;
+
 	/**
 	 * value of box content.
 	 */
@@ -108,10 +114,13 @@ public class JEditBox  extends JScreenComponent {
 		if(this.editable == false)
 			return;
 		
-		if(digitMode== true)
+		if(this.mode == Mode.Digit)
 			doDigitMode(oMessage);
+		else if(this.mode == Mode.Pick)
+			this.doPickMode(oMessage);
 		else
 			doAlphaMode(oMessage);
+		
 		
 	}
 	
@@ -191,6 +200,27 @@ public class JEditBox  extends JScreenComponent {
 			}
 		}
 		 					
+		return;
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
+	 */
+	public void doPickMode(BusMessage oMessage) {
+		
+		String keyAction = oMessage.getButtonEvent().getAction();
+		if(RELEASED.equals(keyAction))
+			return;
+		
+		String keyID = oMessage.getButtonEvent().getKeyId();
+		int idx = this.pickList.indexOf(value);	
+		if(MV_UP.equals(oMessage.getButtonEvent().getKeyId())){
+			value = this.pickList.get((idx+1)% this.pickList.size());	
+		} else if(MV_DOWN.equals(oMessage.getButtonEvent().getKeyId())){
+			value = this.pickList.get((idx-1)% this.pickList.size());				
+		}
+			 					
 		return;
 		
 	}
@@ -296,8 +326,8 @@ public class JEditBox  extends JScreenComponent {
     }
    
 	
-	public void setModeDigit(boolean tf){
-		this.digitMode = tf;
+	public void setMode(Mode mode){
+		this.mode = mode;
 	}
 	/**
 	 * set validator according to type of box.
@@ -541,12 +571,14 @@ public class JEditBox  extends JScreenComponent {
 				int intChannel = Integer.parseInt(strChannel);
 
 				if(strChannel.length()<2){
-					if(intChannel > 8)
-						result =  false;
-					else
+					if((intChannel >= 0 && intChannel < 3)
+							||(intChannel > 5 && intChannel < 9))
 						result =  true;
+					else
+						result =  false;
 				}else{			
-					if(intChannel > 0 && intChannel < 90)
+					if((intChannel > 0 && intChannel < 29)
+							|| (intChannel > 65 && intChannel < 91))
 						result = true;
 					else
 						result =  false;
@@ -559,6 +591,29 @@ public class JEditBox  extends JScreenComponent {
 			return result;
 		}
 		
+	}
+
+	public static class PickListValidator implements Validator{
+
+		/* (non-Javadoc)
+		 * @see net.sourceforge.dscsim.controller.screen.EditBox.Validator#validate(java.lang.String)
+		 */
+		public boolean validate(String value) {	
+			return true;
+		}
+		
+		public boolean isComplete(String value) {
+			return true;		
+		}
+		
+	}
+	
+	public ArrayList<String> getPickList() {
+		return pickList;
+	}
+	public void setPickList(ArrayList<String> pickList) {
+		this.pickList = pickList;
+		this.value = this.pickList.get(0);
 	}
 
 }

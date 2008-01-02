@@ -139,7 +139,7 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 			String keyId = oBut.getKeyId();
 			String action = oBut.getAction();
 			if(FK_CLR.equals(keyId) && action.equals(PRESSED)
-				|| FK_ENT.equals(keyId) && action.equals(PRESSED)) {
+				/*|| FK_ENT.equals(keyId) && action.equals(PRESSED)*/) {
 				clearBeeper();
 			} 
 			

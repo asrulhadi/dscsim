@@ -24,21 +24,22 @@ import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
+import net.sourceforge.dscsim.controller.RadioCoreController;
+import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.panels.Screen;
 import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.panels.Screen;
 
 /**
  * @author wnpr
  *
  */
-public class IncomingSelectIdScreen  extends MenuScreen
+public class IncomingAllShipsAlertScreen  extends ActionScreen
 implements Constants {
 
-	public IncomingSelectIdScreen(JDisplay display, Screen screen) {
+	public IncomingAllShipsAlertScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 	}
 
@@ -46,19 +47,17 @@ implements Constants {
 	public void enter(Object msg) {
 		super.enter(msg);
 		
-		JMenu menu = this.getMenu();		
-		MultiContentManager mngr = getInstanceContext().getContentManager();
+		JTextBox tb = (JTextBox)this.getComponentByName("mmsi", 0);			
+		MultiContentManager mngr = getInstanceContext().getContentManager();		
+		tb.setText(this.getIncomingDscMessage().getFromMMSI());
 		
-		ArrayList<DscMessage>calls = mngr.getIncomingOtherCalls();		
-		DscMessage dscmsg = calls.get(0);
-
-		if(dscmsg != null){
-			menu.addItem(dscmsg.getFromMMSI(), "ack_individual_compliance", "");
-			mngr.setIncomingDscMessage(dscmsg);
+		DscMessage inComing = this.getIncomingDscMessage();
+		if(inComing != null){
+			RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
+			oRadio.setChannel(inComing.getChannel());					
 		}
+
 		
-		menu.addItem("Other", "select_ack_other_calls", "OTHER");
-	
 	}
 	
 	@Override
@@ -69,9 +68,11 @@ implements Constants {
 		if (keyID.equals(FK_ENT) || keyID.equals(FK_CALL)) {
 			MultiContentManager mngr = getInstanceContext()
 					.getContentManager();
-			//set to default which is good if other is not chosen.
-			//mngr.setIncomingDscMessage();
-			
+			mngr.setIncomingDscMessage(this.getIncomingDscMessage());
+			DscMessage outGoing  = new DscMessage();
+			outGoing.setToMMSI(this.getIncomingDscMessage().getFromMMSI());
+			outGoing.setCallType(CALL_TYPE_INDIVIDUAL_ACK);
+			mngr.setOutGoingDscMessage(outGoing);
 		}
 	}
 

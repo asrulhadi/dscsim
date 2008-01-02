@@ -66,6 +66,8 @@ public class DscMessage implements java.io.Serializable, Cloneable, DscSendable,
     private String _complianceReasonCode = "";
     	
     private String _msgdata = "";
+    
+    private boolean _aknowledged = false;
   
     public String toString() {
     		return "[" + _uidts + "|" +
@@ -490,5 +492,13 @@ public class DscMessage implements java.io.Serializable, Cloneable, DscSendable,
     			return false;
     		}   	
     }
+
+	public boolean isAknowledged() {
+		return _aknowledged;
+	}
+
+	public void setAknowledged(boolean aknowledged) {
+		this._aknowledged = aknowledged;
+	}
  
 }
