@@ -42,7 +42,7 @@ public class MultiClu implements BusListener, Constants {
 
 	private MultiClu(InstanceContext oSessionContext) {
 		_oContext = oSessionContext;
-		//DscIACManager.initSyncPublisher(_oContext.getApplicationContext());
+		// DscIACManager.initSyncPublisher(_oContext.getApplicationContext());
 	}
 
 	public static MultiClu getInstance(InstanceContext oSessionContext) {
@@ -55,6 +55,7 @@ public class MultiClu implements BusListener, Constants {
 
 	/**
 	 * Return the index of the target screen.
+	 * 
 	 * @param oTarget.
 	 * @return index of screen on stack.
 	 */
@@ -76,9 +77,10 @@ public class MultiClu implements BusListener, Constants {
 	}
 
 	/**
-	 * remove screen from the top of the stack if the screen is  
-	 * SendDistressScreen screen. It could be that the user has closed
-	 * the screen and that it's no long on top.
+	 * remove screen from the top of the stack if the screen is
+	 * SendDistressScreen screen. It could be that the user has closed the
+	 * screen and that it's no long on top.
+	 * 
 	 * @param oMessage
 	 * @throws Exception
 	 */
@@ -97,11 +99,13 @@ public class MultiClu implements BusListener, Constants {
 
 	/**
 	 * remove the top entry from the Stack.
+	 * 
 	 * @param oMessage
 	 * @throws Exception
 	 */
 	/**
 	 * remove the top entry from the Stack.
+	 * 
 	 * @param oMessage
 	 * @throws Exception
 	 */
@@ -114,7 +118,7 @@ public class MultiClu implements BusListener, Constants {
 			ScreenInterface oScreen = (ScreenInterface) _oScreenStack
 					.remove(idxLast);
 
-			//oScreen.exit(oMessage);
+			// oScreen.exit(oMessage);
 
 			oScreen = (ScreenInterface) _oScreenStack.get(idxLast - 1);
 
@@ -125,8 +129,8 @@ public class MultiClu implements BusListener, Constants {
 	}
 
 	/**
-	 * if a SendDistressScreen is on top, then a distress call is
-	 * in progress.
+	 * if a SendDistressScreen is on top, then a distress call is in progress.
+	 * 
 	 * @return
 	 */
 	public synchronized boolean isDistressCallInprogress() {
@@ -141,20 +145,22 @@ public class MultiClu implements BusListener, Constants {
 	}
 
 	/**
-	 * reset the state stack and call exit for all states. Return
-	 * to the welcome screen.
+	 * reset the state stack and call exit for all states. Return to the welcome
+	 * screen.
+	 * 
 	 * @param oMessage
 	 * @throws Exception
 	 */
 	/**
-	 * reset the state stack and call exit for all states. Return
-	 * to the welcome screen.
+	 * reset the state stack and call exit for all states. Return to the welcome
+	 * screen.
+	 * 
 	 * @param oMessage
 	 * @throws Exception
 	 */
 	private void resetScreenStack(BusMessage oMessage) throws Exception {
 
-		//leave bottom 0 elment on stack.
+		// leave bottom 0 elment on stack.
 		Object oScreen = null;
 
 		for (int i = _oScreenStack.size() - 1; i >= 0; i--) {
@@ -181,7 +187,7 @@ public class MultiClu implements BusListener, Constants {
 	 */
 	public synchronized void signal(BusMessage oMessage) {
 
-		//AppLogger.debug("Clu.signal - BusMessage type="+ oMessage.getId());
+		// AppLogger.debug("Clu.signal - BusMessage type="+ oMessage.getId());
 
 		ScreenInterface oScreen = null;
 
@@ -190,12 +196,12 @@ public class MultiClu implements BusListener, Constants {
 
 		try {
 
-			/*if the power is off then ingnore all other type except keyboard.*/
+			/* if the power is off then ingnore all other type except keyboard. */
 			if (!_powerOn && !BusMessage.MSGTYPE_KEY.equals(oMessage.getType())) {
 				return;
 			}
 
-			/*the source of the message is another client.*/
+			/* the source of the message is another client. */
 			if (BusMessage.MSGTYPE_NETWORK.equals(oMessage.getType())) {
 
 				DscMessage oDscMessage = oMessage.getDscMessage();
@@ -204,17 +210,22 @@ public class MultiClu implements BusListener, Constants {
 				String myMMSI = _oContext.getApplicationContext()
 						.getIndividualMmsi();
 
-				/*first remove distress screen from stack if it's a distress ack and is for me.*/
+				/*
+				 * first remove distress screen from stack if it's a distress
+				 * ack and is for me.
+				 */
 				if (CALL_TYPE_DISTRESS_ACK.equals(callType)
 						&& myMMSI.equals(toMMSI)) {
 					popStackDistress(oMessage);
 				} else {
-					/*if waiting for a ack, then don't interrupt distress call*/
+					/* if waiting for a ack, then don't interrupt distress call */
 					if (isDistressCallInprogress()) {
 						return;
 					}
 				}
-				/*now show incoming ack*/
+				_oContext.getContentManager().setIncomingDscMessage(oDscMessage);
+
+				/* now show incoming ack */
 				String strScreenName = _oContext.getContentManager()
 						.getCallTypeMappingValue(oDscMessage.getCallType());
 				ScreenInterface oScreen1 = (ScreenInterface) _oContext
@@ -222,7 +233,7 @@ public class MultiClu implements BusListener, Constants {
 								_oContext);
 				oScreen1.setIncomingDscMessage(oDscMessage);
 
-				//copy the incoming to the outcoming just to have some defaults
+				// copy the incoming to the outcoming just to have some defaults
 				DscMessage oCopy = new DscMessage(oDscMessage);
 				oScreen1.setOutGoingDscMessage(oCopy);
 				oScreen1.enter(oCopy);
@@ -237,12 +248,13 @@ public class MultiClu implements BusListener, Constants {
 				return;
 			}
 
-			//SOS pushed. Start distress call process.
+			// SOS pushed. Start distress call process.
+			/* able to simplfy state machine. All states handle by following case.
 			if (_powerOn && BusMessage.MSGTYPE_KEY.equals(oMessage.getType())
 					&& FK_SOS.equals(oMessage.getButtonEvent().getKeyId())) {
 
-				ActionScreen screen = (ActionScreen)_oScreenStack.get(_oScreenStack
-						.size() - 1);
+				ActionScreen screen = (ActionScreen) _oScreenStack
+						.get(_oScreenStack.size() - 1);
 
 				if ((screen instanceof SendDistressScreen) == false) {
 					screen = (ActionScreen) _oContext.getContentManager()
@@ -256,31 +268,40 @@ public class MultiClu implements BusListener, Constants {
 				}
 				return;
 			}
-
-			//not handled default to screen actions
+			*/
+			// not handled default to screen actions
 			Object scr = _oScreenStack.get(_oScreenStack.size() - 1);
 			ScreenInterface oReturnScreen = null;
 			if (scr instanceof ActionScreen) {
 				ActionScreen active = (ActionScreen) scr;
 				ActionMapping mapping = active.notify(oMessage);
-	
+
+				/*check global mappings*/
+				if(mapping == null){
+					String source = oMessage.getButtonEvent().getKeyId();
+					String event = oMessage.getButtonEvent().getAction();
+					mapping = active.findGlobalActionMapping(event, source);
+				}
+				
 				ScreenInterface next = null;
-				if(mapping != null){
-					next = (ScreenInterface) _oContext.getContentManager().getScreenContent(mapping.getForward(),_oContext);
-	
+				if (mapping != null
+						&& !NULL.equalsIgnoreCase(mapping.getForward())) {
+					next = (ScreenInterface) _oContext.getContentManager()
+							.getScreenContent(mapping.getForward(), _oContext);
+
 					int idxOf = indexOf(next);
-					//instance of screen is already on stack backup to it.
-					//therefore backup stack. no cylces in state diagram.
+					// instance of screen is already on stack backup to it.
+					// therefore backup stack. no cylces in state diagram.
 					if (idxOf > -1) {
 						active.exit(oMessage);
 						ScreenInterface oTmp = null;
 						for (int i = _oScreenStack.size() - 1; i >= idxOf; i--) {
 							oTmp = (ScreenInterface) _oScreenStack.get(i);
-							//oTmp.exit(oMessage);
+							// oTmp.exit(oMessage);
 							_oScreenStack.remove(i);
 						}
 					} else {
-						//moving down deeper in state diagram
+						// moving down deeper in state diagram
 						active.exit(oMessage);
 						next.setIncomingDscMessage(active
 								.getIncomingDscMessage());
@@ -293,32 +314,31 @@ public class MultiClu implements BusListener, Constants {
 					_oContext.getController().setScreenContent(next);
 				}
 
-				
 			} else {
 				oScreen = (ScreenInterface) scr;
 				oReturnScreen = oScreen.signal(oMessage);
 				if (oReturnScreen == null) {
-					//send clr message and return
-					//Bus.getInstance().publish(new BusMessage(null, FK_CLR));
-					//resetScreenStack(oMessage);
+					// send clr message and return
+					// Bus.getInstance().publish(new BusMessage(null, FK_CLR));
+					// resetScreenStack(oMessage);
 					popStock(oMessage);
 					return;
 
 				} else if (oReturnScreen != oScreen) {
 
 					int idxOf = indexOf(oReturnScreen);
-					//instance of screen is already on stack backup to it.
-					//therefore backup stack. no cylces in state diagram.
+					// instance of screen is already on stack backup to it.
+					// therefore backup stack. no cylces in state diagram.
 					if (idxOf > -1) {
 						oScreen.exit(oMessage);
 						ScreenInterface oTmp = null;
 						for (int i = _oScreenStack.size() - 1; i >= idxOf; i--) {
 							oTmp = (ScreenInterface) _oScreenStack.get(i);
-							//oTmp.exit(oMessage);
+							// oTmp.exit(oMessage);
 							_oScreenStack.remove(i);
 						}
 					} else {
-						//moving down deeper in state diagram
+						// moving down deeper in state diagram
 						oScreen.exit(oMessage);
 						oReturnScreen.setIncomingDscMessage(oScreen
 								.getIncomingDscMessage());

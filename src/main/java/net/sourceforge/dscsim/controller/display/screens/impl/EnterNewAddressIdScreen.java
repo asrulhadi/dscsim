@@ -64,7 +64,7 @@ public class EnterNewAddressIdScreen extends JEditBoxInputScreen {
 			this.activeComponent.setCursor(true);
 		
 		ebAddress = (JEditBox) this.getComponentByName("addressid",0);
-		ebAddress.setModeDigit(false);
+		ebAddress.setMode(JEditBox.Mode.Alpha);
 		ebAddress.setValidator(new JEditBox.AddressIdValidator());
 	}
 

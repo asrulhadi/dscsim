@@ -22,12 +22,14 @@
 
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
+import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Screen;
@@ -48,12 +50,12 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 
 	private JEditBox ebLatDeg = null;
 	private JEditBox ebLatMin = null;
-	private JTextBox ebLatHem = null;
+	private JEditBox ebLatHem = null;
 	private JTextBox ebLatNull = null;
 
 	private JEditBox ebLonDeg = null;
 	private JEditBox ebLonMin = null;
-	private JTextBox ebLonHem = null;
+	private JEditBox ebLonHem = null;
 	private JTextBox ebLonNull = null;
 
 	public JPositionEntryScreen(JDisplay display, Screen screen) {
@@ -81,7 +83,14 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 		ebLatMin.setValidator(new JEditBox.PositionValidator()
 				.setMode(JEditBox.PositionValidator.MODE.MIN));
 		this.setForceRefresh(true);
-		ebLatHem = (JTextBox) this.getComponentByName("lathem", 0);
+		this.ebLatHem = (JEditBox) this.getComponentByName("lathem", 0);
+		this.ebLatHem.setMode(JEditBox.Mode.Pick);
+		ArrayList<String>p = new ArrayList<String>();
+		p.add("N");
+		p.add("S");
+		this.ebLatHem.setPickList(p);
+		this.ebLatHem.setValidator(new JEditBox.PickListValidator());
+		
 		ebLatNull = (JTextBox) this.getComponentByName("latnull", 0);
 
 		ebLonDeg = (JEditBox) this.getComponentByName("londeg", 0);
@@ -93,7 +102,16 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 		ebLonMin.setValidator(new JEditBox.PositionValidator()
 				.setMode(JEditBox.PositionValidator.MODE.MIN));
 		this.setForceRefresh(true);
-		ebLonHem = (JTextBox) this.getComponentByName("lonhem", 0);
+		
+		this.ebLonHem = (JEditBox) this.getComponentByName("lonhem", 0);
+		
+		this.ebLonHem.setMode(JEditBox.Mode.Pick);
+		p = new ArrayList<String>();
+		p.add("E");
+		p.add("W");
+		this.ebLonHem.setPickList(p);
+		this.ebLonHem.setValidator(new JEditBox.PickListValidator());
+
 		ebLonNull = (JTextBox) this.getComponentByName("lonnull", 0);
 
 		//retrieve existing values if they exist.
@@ -105,11 +123,11 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 
 		this.ebLatDeg.setValue(lat.getDegrees());
 		this.ebLatMin.setValue(lat.getMinutes());
-		this.ebLatHem.setText(lat.getHemisphere());
+		this.ebLatHem.setValue(lat.getHemisphere());
 
 		this.ebLonDeg.setValue(lon.getDegrees());
 		this.ebLonMin.setValue(lon.getMinutes());
-		this.ebLonHem.setText(lon.getHemisphere());
+		this.ebLonHem.setValue(lon.getHemisphere());
 
 		//position cursur.
 		this.activeComponent = ebLatDeg;
@@ -161,9 +179,11 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 
 			lat.setDegrees(this.ebLatDeg.getValue());
 			lat.setMinutes(this.ebLatMin.getValue());
+			lat.setHemisphere(this.ebLatHem.getValue());
 
 			lon.setDegrees(this.ebLonDeg.getValue());
 			lon.setMinutes(this.ebLonMin.getValue());
+			lon.setHemisphere(this.ebLonHem.getValue());
 
 			oMCmgr.persistInfoStore();
 		}
@@ -214,7 +234,7 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 			}
 		}
 
-		return null;
+		return findActionMapping(keyAction, keyID);
 
 	}
 

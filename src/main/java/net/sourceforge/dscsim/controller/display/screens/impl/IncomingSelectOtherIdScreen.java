@@ -35,10 +35,10 @@ import net.sourceforge.dscsim.controller.network.DscMessage;
  * @author wnpr
  *
  */
-public class IncomingSelectIdScreen  extends MenuScreen
+public class IncomingSelectOtherIdScreen  extends MenuScreen
 implements Constants {
 
-	public IncomingSelectIdScreen(JDisplay display, Screen screen) {
+	public IncomingSelectOtherIdScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 	}
 
@@ -47,18 +47,12 @@ implements Constants {
 		super.enter(msg);
 		
 		JMenu menu = this.getMenu();		
-		MultiContentManager mngr = getInstanceContext().getContentManager();
-		
+		MultiContentManager mngr = getInstanceContext().getContentManager();		
 		ArrayList<DscMessage>calls = mngr.getIncomingOtherCalls();		
-		DscMessage dscmsg = calls.get(0);
-
-		if(dscmsg != null){
-			menu.addItem(dscmsg.getFromMMSI(), "ack_individual_compliance", "");
-			mngr.setIncomingDscMessage(dscmsg);
+		for(DscMessage call: calls){		
+			menu.addItem(call.getFromMMSI(), "ack_individual_compliance", "");		
 		}
 		
-		menu.addItem("Other", "select_ack_other_calls", "OTHER");
-	
 	}
 	
 	@Override
@@ -69,8 +63,9 @@ implements Constants {
 		if (keyID.equals(FK_ENT) || keyID.equals(FK_CALL)) {
 			MultiContentManager mngr = getInstanceContext()
 					.getContentManager();
-			//set to default which is good if other is not chosen.
-			//mngr.setIncomingDscMessage();
+			ArrayList<DscMessage>calls = mngr.getIncomingOtherCalls();		
+			int selected = this.getMenu().getSelected();
+			mngr.setIncomingDscMessage(calls.get(selected));
 			
 		}
 	}

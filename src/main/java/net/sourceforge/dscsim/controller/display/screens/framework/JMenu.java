@@ -29,6 +29,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -46,6 +47,8 @@ public class JMenu extends JScreenComponent {
 	 * 
 	 */
 	private int selected = 0;
+	private int hidden = 0;
+	private boolean cursonVisible = true;
 	
 	/**
 	 * index of items in range to display.
@@ -56,7 +59,7 @@ public class JMenu extends JScreenComponent {
 	/**
 	 * 
 	 */
-	private LinkedHashMap<String, JChoice> list = new LinkedHashMap<String, JChoice>();
+	private ArrayList<JChoice> list = new ArrayList<JChoice>();
 	/**
 	 * @param x position in rows
 	 * @param y position in col
@@ -103,7 +106,7 @@ public class JMenu extends JScreenComponent {
      	}
     	String item = null;
      	int q = -1, d=0;   	    	
-     	for(JChoice c: list.values()){
+     	for(JChoice c: list){
      		q++;
      		if(q >= from && q <= to){
      			
@@ -133,6 +136,8 @@ public class JMenu extends JScreenComponent {
      		}
      	}
      	*/
+     	if(!this.isCursonVisible())
+     		return;
      	/*draw cursor*/     	
      	//AppLogger.debug2("Menu.paint cursor.getBound" + cursor.getBounds().toString());
 		/*create cursor*/
@@ -160,7 +165,7 @@ public class JMenu extends JScreenComponent {
      * @param data
      */
     public void addItem(String text, String link, String code){    	
-    		this.list.put(text, new JChoice(text, link, code));
+    		this.list.add(new JChoice(text, link, code));
     }
     
     /**
@@ -200,20 +205,28 @@ public class JMenu extends JScreenComponent {
     		if(list.size()<1){
     			return null;
     		}
-    		return list.keySet().toArray()[selected].toString();
+    		return list.get(selected).getText();
     }
     
+    
+    private int getHiddenCount(int until){
+  	   	
+		int hidden = 0;
+		for(int i=0;i< until; i++){
+			if(!this.list.get(i).isVisible())
+				hidden++;	
+		}
+		
+		return hidden;
+    	
+    }
     
     /**
      * 
      * @returns data stored with text.
      */
     public JChoice getSelectedData(){  	
-    		if(this.list.size()>0){
-        		String key = list.keySet().toArray()[selected].toString();
-        		return list.get(key);
-    		}
-    		return null;
+    	return this.list.get(selected + hidden);
     }
     /**
      * 
@@ -260,13 +273,20 @@ public class JMenu extends JScreenComponent {
 			return;
 		
 		if(list.size()>0){	
-			if(MV_DOWN.equals(keyID)){						
-				if(selected < list.size()-1){
+			if(MV_DOWN.equals(keyID)){		
+				if(selected < list.size()-1 -hidden){
 					selected++;		
+					if(!this.list.get(selected).isVisible()){
+						hidden++;
+					}
 				}			
 			}else if(MV_UP.equals(keyID)){
 				if(selected > 0){
-					selected--;		
+						
+					if(!this.list.get(selected).isVisible()){
+						hidden--;
+					}
+					selected--;	
 				}				
 			}
 			
@@ -277,13 +297,15 @@ public class JMenu extends JScreenComponent {
 	public void setChoiceVisible(String code,  boolean value){
 		
 		String ccode = null;
-		for(JChoice c : this.list.values()){	
+		for(JChoice c : this.list){	
 			ccode = c.getCode();
 			if(ccode != null && ccode.equals(code)){
 				c.setVisible(value);
 				break;
 			}		
 		}
+		
+		this.hidden = this.getHiddenCount(selected);
 	}
 	
 	public static class JChoice {
@@ -326,9 +348,16 @@ public class JMenu extends JScreenComponent {
 			return visible;
 		}
 
-		public void setVisible(boolean visible) {
+		private void setVisible(boolean visible) {
 			this.visible = visible;
 		}
 		
+	}
+
+	public boolean isCursonVisible() {
+		return cursonVisible;
+	}
+	public void setCursonVisible(boolean cursonVisible) {
+		this.cursonVisible = cursonVisible;
 	}
 }

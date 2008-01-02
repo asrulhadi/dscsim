@@ -31,6 +31,7 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
+import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreenComponent;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Screen;
@@ -71,12 +72,20 @@ public class JEditBoxInputScreen extends ActionScreen {
 		for (int i = 0; i < arr.length; i++) {
 			curr = (JScreenComponent) arr[i];
 			curr.setCursor(false);
-			if (curr instanceof JEditBox) {
+			if (isTabable(curr)) {
 				if (activeComponent == null) {
 					activeComponent = curr;
 				}
 			}
 		}
+	}
+	
+	private boolean isTabable(JScreenComponent c){
+		if(c instanceof JEditBox
+				|| c instanceof JMenu)
+			return true;
+		else
+			return false;
 	}
 
 	public void setSignalHandler(Signalhander handler){
@@ -111,7 +120,7 @@ public class JEditBoxInputScreen extends ActionScreen {
 					passed = true;
 					continue;
 				}
-				if (passed && curr instanceof JEditBox) {
+				if (passed && isTabable(curr)) {
 					ret = curr;
 					break;
 				}
@@ -123,7 +132,7 @@ public class JEditBoxInputScreen extends ActionScreen {
 					passed = true;
 					continue;
 				}
-				if (passed && curr instanceof JEditBox) {
+				if (passed && isTabable(curr)) {
 					ret = curr;
 					break;
 				}

@@ -485,6 +485,11 @@ public class MultiContentManager implements BusListener, Constants {
 		calls.add(0, oMessage);
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
+	
+	public void storeIncomingOtherCalls() {
+		ArrayList<DscMessage>calls = this.getIncomingOtherCalls();
+		this.storeList(INCOMING_OTHER_CALLS, calls);
+	}
 
 	public void removeIncomingOtherCall(DscMessage oMessage) {
 		ArrayList<DscMessage>calls = this.getIncomingOtherCalls();

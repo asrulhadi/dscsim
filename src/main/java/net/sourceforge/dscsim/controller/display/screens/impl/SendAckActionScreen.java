@@ -25,6 +25,7 @@ package net.sourceforge.dscsim.controller.display.screens.impl;
 import net.sourceforge.dscsim.controller.MultiBeeper;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.InstanceContext;
+import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
 import net.sourceforge.dscsim.controller.network.DscMessage;
@@ -68,11 +69,11 @@ public class SendAckActionScreen extends ActionScreen {
 
 		if (FK_ENT.equals(keyID)) {
 
-			DscMessage outGoing = (DscMessage) getInstanceContext()
-					.getContentManager().getOutGoingDscMessage();
+			MultiContentManager mngr = getInstanceContext().getContentManager();
+			DscMessage outGoing = mngr.getOutGoingDscMessage();
 
 			if (outGoing.getToMMSI().length() < 1) {
-				outGoing.setToMMSI(getIncomingDscMessage().getFromMMSI());
+				outGoing.setToMMSI(mngr.getIncomingDscMessage().getFromMMSI());
 			}
 
 			/* if individual call, then wait for ack before changing channel */
@@ -111,6 +112,9 @@ public class SendAckActionScreen extends ActionScreen {
 			AppLogger.debug("BeanSendScreen.signal =" + outGoing.toString());
 			DscIACManager.getTransmitter().transmit(outGoing);
 
+			inComing.setAknowledged(true);
+			mngr.storeIncomingOtherCalls();
+			
 			// for affect and as well a yield to Transmitter.
 			try {
 				Thread.sleep(SLEEP_AFTER_SEND);
