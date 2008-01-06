@@ -49,7 +49,7 @@
 
 <!-- <menu ref="modules" /> -->
 
-<!--    <menu ref="reports" /> --> 
+    <menu ref="reports" />
   
   </body>
 </project>
