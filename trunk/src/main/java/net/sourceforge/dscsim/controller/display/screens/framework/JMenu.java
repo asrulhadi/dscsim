@@ -360,4 +360,24 @@ public class JMenu extends JScreenComponent {
 	public void setCursonVisible(boolean cursonVisible) {
 		this.cursonVisible = cursonVisible;
 	}
+	public void onFocusGain() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void onFocusLose() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void onHide() {
+		// TODO Auto-generated method stub
+		
+	}
+	public void onShow() {
+		// TODO Auto-generated method stub
+		
+	}
+	public boolean tab(BusMessage msg) {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

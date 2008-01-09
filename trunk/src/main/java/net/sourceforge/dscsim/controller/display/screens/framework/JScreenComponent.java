@@ -34,7 +34,8 @@ import net.sourceforge.dscsim.controller.Constants;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public abstract class JScreenComponent extends Component implements BusListener, Constants {
+public abstract class JScreenComponent extends Component 
+	implements BusListener, Constants, FieldEventListener {
 	/**
 	 * name of item as specified by the xml attribute name.
 	 */
@@ -49,7 +50,7 @@ public abstract class JScreenComponent extends Component implements BusListener,
 	 * width and height in terms of row and columns.
 	 */
 	protected int col_width, row_height;
-	
+		
 	protected JDisplay screen = null;
 	/**
 	 * abstract class for all object that are to be contained on a screen.
@@ -158,4 +159,6 @@ public abstract class JScreenComponent extends Component implements BusListener,
 	public void setName(String name) {
 		this.name = name;
 	}
+
+
 }

@@ -61,7 +61,7 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 	public JPositionEntryScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 
-		this.setSignalHandler(new MoveWhenComplete());
+		this.setSignalHandler(new MoveOnTabCtrl());
 
 	}
 
@@ -133,12 +133,14 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 		this.activeComponent = ebLatDeg;
 
 		if (ebLatMin.isComplete())
-			this.activeComponent = ebLatMin;
+			this.activeComponent = ebLatHem;
+		
 		if (ebLonDeg.isComplete())
 			this.activeComponent = ebLonDeg;
+		
 		if (ebLonMin.isComplete())
-			this.activeComponent = ebLonMin;
-
+			this.activeComponent = ebLonHem;
+		
 		this.activeComponent.setCursor(true);
 
 		setNullFields();
@@ -234,7 +236,7 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 			}
 		}
 
-		return findActionMapping(keyAction, keyID);
+		return null;
 
 	}
 

@@ -1339,6 +1339,14 @@ public class MultiContentManager implements BusListener, Constants {
 		this.incomingDscMessage = incomingDscMessage;
 	}
 
+	public String findAddressId(String mmsi) {		
+		for(AddressIdEntry a: this.getAddressIdList()){		
+			if(a.getId().equals(mmsi)){
+				return a.getName();
+			}
+		}	
+		return null;	
+	}
 	public ArrayList<AddressIdEntry> getAddressIdList() {
 
 		if (this.addressIdList == null) {
