@@ -50,7 +50,7 @@ public class JEditBoxInputScreen extends ActionScreen {
 
 	protected JEditBoxInputScreen outer = null;
 	
-	protected Signalhander handler= new MoveOnEnter();
+	protected Signalhander handler= new MoveOnTabCtrl();
 
 	/**
 	 * @param oScreenElement
@@ -65,6 +65,7 @@ public class JEditBoxInputScreen extends ActionScreen {
 	 * 
 	 */
 	public void enter(Object msg) {
+		super.enter(msg);
 
 		/* set first screen element to active one and turn of all other cursors */
 		Component arr[] = this.getComponents();
@@ -280,5 +281,72 @@ public class JEditBoxInputScreen extends ActionScreen {
 		}
 	}
 
+	public class MoveOnTabCtrl extends Signalhander {
+		public ActionMapping notify(BusMessage oMessage) {
+
+			String keyID = oMessage.getButtonEvent().getKeyId();
+			String keyAction = oMessage.getButtonEvent().getAction();
+
+			if (keyAction.equals(RELEASED))
+				return null;
+
+			if (FK_CLR.equals(keyID)) {
+				return outer.findActionMapping(keyAction, keyID);
+			}
+
+			if (FK_ENT.equals(keyID)) {
+				if (isScreenComplete()) {
+					return outer.findActionMapping(keyAction, keyID);
+				}
+			}
+
+			if (MV_LEFT.equals(keyID) && activeComponent != null) {
+				if (activeComponent.getCursorPos() == 0) {
+					JScreenComponent prev = getNieghborEditBox(activeComponent,
+							false);
+					if (prev != null) {
+						activeComponent.onFocusLose();
+						prev.onFocusGain();
+						activeComponent = prev;
+						return null;
+					}
+				}
+
+			} else if ((MV_RIGHT.equals(keyID))
+					&& activeComponent != null) {
+				if (activeComponent.isComplete()
+						&& activeComponent.tab(oMessage)) {
+					JScreenComponent next = getNieghborEditBox(activeComponent,
+							true);
+					
+					if (next != null) {
+						activeComponent.onFocusLose();
+						next.onFocusGain();
+						activeComponent = next;
+						return null;
+					}
+				}
+			}
+
+			if (activeComponent != null) {
+				activeComponent.signal(oMessage);
+				
+				if(activeComponent.isComplete()
+						&& activeComponent.tab(oMessage)){
+					JScreenComponent next = getNieghborEditBox(activeComponent,
+							true);
+					if (next != null) {
+						activeComponent.onFocusLose();
+						next.onFocusGain();
+						activeComponent = next;
+						return null;
+					}
+					
+				}
+			}
+
+			return null;
+		}
+	}
 
 }

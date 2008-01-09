@@ -2,20 +2,19 @@
 <infostore xmlns="http://dscsim.sourcefore.net/xml/ns/dscsim">
 	<position>
 		<latitude>
-			<degrees>11</degrees>
-			<minutes>11</minutes>
+			<degrees />
+			<minutes />
 			<hemisphere>N</hemisphere>
 		</latitude>
 		<longitude>
-			<degrees>111</degrees>
-			<minutes>49</minutes>
+			<degrees />
+			<minutes />
 			<hemisphere>W</hemisphere>
 		</longitude>
 		<time>
-			<hours>22</hours>
-			<minutes>22</minutes>
+			<hours></hours>
+			<minutes></minutes>
 		</time>
 	</position>
 	<nature>NATURE_DISTR_UNDESIG</nature>
 </infostore>
-

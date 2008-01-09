@@ -108,10 +108,12 @@ public class SendDistressReviewScreen extends ActionScreen {
 		} else {
 			this.tbLat.setText(props.getProperty("MS_LAT_PREF")
 					+ lat.getDegrees() + props.getProperty("DEGREE_SYMBOL")
-					+ lat.getMinutes() + props.getProperty("MINUTE_SYMBOL"));
+					+ lat.getMinutes() + props.getProperty("MINUTE_SYMBOL")
+					+ lat.getHemisphere());
 			this.tbLon.setText(props.getProperty("MS_LON_PREF")
 					+ lon.getDegrees() + props.getProperty("DEGREE_SYMBOL")
-					+ lon.getMinutes() + props.getProperty("MINUTE_SYMBOL"));
+					+ lon.getMinutes() + props.getProperty("MINUTE_SYMBOL")
+					+ lon.getHemisphere());
 
 		}
 		

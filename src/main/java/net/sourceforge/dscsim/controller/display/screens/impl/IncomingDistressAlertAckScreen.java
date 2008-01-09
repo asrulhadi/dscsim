@@ -29,21 +29,28 @@ import java.util.Properties;
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
+import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.network.DscPosition;
+import net.sourceforge.dscsim.controller.panels.ActionMapping;
+import net.sourceforge.dscsim.controller.screen.types.Latitude;
+import net.sourceforge.dscsim.controller.screen.types.Longitude;
 /**
  * @author katharina
  *
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class DisplayOtherCallScreen extends MenuScreen {
+public class IncomingDistressAlertAckScreen extends ActionScreen {
 
-	public DisplayOtherCallScreen(JDisplay display,
+	private int pressCount = 0;
+	
+	public IncomingDistressAlertAckScreen(JDisplay display,
 			net.sourceforge.dscsim.controller.panels.Screen screen) {
 		super(display, screen);
 	}
@@ -53,32 +60,53 @@ public class DisplayOtherCallScreen extends MenuScreen {
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
+
+		pressCount=0;
 		
 		MultiContentManager oMngr = getInstanceContext().getContentManager();	
-		DscMessage selected = oMngr.getSelectedIncomingOtherCall();
-		if(selected == null)
+		DscMessage incoming = oMngr.getIncomingDscMessage();
+		if(incoming == null)
 			return;
+		
+		this.setTextBox("mmsi", incoming.getFromMMSI());
+		this.setTextBox("callerid", oMngr.findAddressId(incoming.getFromMMSI()));
 	
-		this.setTextBox("descr", selected.getCatagoryForTypeText());
-		this.setTextBox("from", selected.getFromMMSI());
-		this.setTextBox("channel", selected.getChannel());
-		
-		
+		DscMessage inComing = this.getIncomingDscMessage();
+		if(inComing != null){
+			RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
+			oRadio.setChannel(inComing.getChannel());					
+		}
+
+
 	}
 
 	/* (non-Javadoc)
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
 	public void exit(BusMessage msg) throws Exception {
-		if(msg.getButtonEvent().getKeyId().equals(KP_Aa)){
-			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			DscMessage call = oMCmgr.getSelectedIncomingOtherCall();			
-			if(call != null){				
-				oMCmgr.removeIncomingOtherCall(call);				
-			}
-		}
+		super.exit(msg);
 	}
 
+	@Override
+	public ActionMapping notify(BusMessage oMessage) {
+		
+		String keyID = oMessage.getButtonEvent().getKeyId();
+		String keyAction = oMessage.getButtonEvent().getAction();
 
+		if(FK_CLR.equals(keyID)){
+			
+			if(pressCount > 0){
+				return this.findActionMapping(keyAction, keyID);
+			}
+			
+			if(PRESSED.equals(keyAction)){
+				this.pressCount++;
+			}
+			
+			return new ActionScreen.JActionMapping("", "", NULL);
+		}
+		
+		return super.notify(oMessage);
+	}
 	
 }

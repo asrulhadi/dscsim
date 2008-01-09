@@ -129,6 +129,7 @@ public class JScreen extends Container
 					JEditBox item = new JEditBox(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
 					item.setValue(b.getValue());
 					item.setName(b.getName());
+					item.setTabOn(JEditBox.TAB_EVENT.asEnum(b.getTabon()));
 					this.add(item);				
 				}else if(kid instanceof Menubox){					
 					Menubox b = (Menubox)kid;

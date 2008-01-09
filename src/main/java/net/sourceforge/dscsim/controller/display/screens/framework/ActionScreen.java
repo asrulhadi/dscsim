@@ -19,6 +19,8 @@
 
 package net.sourceforge.dscsim.controller.display.screens.framework;
 
+import java.awt.Component;
+
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
@@ -91,12 +93,19 @@ public class ActionScreen extends JScreen
 	//delete as many as you can after cleaning up.
 
 	public void enter(Object arg0) {
-			
+		for(Component c : this.getComponents()) {
+			if(c instanceof JScreenComponent){
+				((JScreenComponent)c).onShow();
+			}
+		}
 	}
-
 	
 	public void exit(BusMessage message) throws Exception {
-		
+		for(Component c : this.getComponents()) {
+			if(c instanceof JScreenComponent){
+				((JScreenComponent)c).onHide();
+			}
+		}		
 	}
 
 	/**

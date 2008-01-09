@@ -33,6 +33,14 @@
 		<xsd:simpleContent>
 			<xsd:extension base="dscsim:BaseBoxType">
 				<xsd:attribute name="name" use="required"></xsd:attribute>
+				<xsd:attribute name="tabon" default="ANY">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="ENT"></xsd:enumeration>
+							<xsd:enumeration value="ANY"></xsd:enumeration>						
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
 			</xsd:extension>
 		</xsd:simpleContent>
 	</xsd:complexType>

@@ -147,6 +147,30 @@ public class JTextBox extends JScreenComponent {
 	public void setBlink(long blink) {
 		this.blinkPeriod = blink;
 	}
+
+	public void onFocusGain() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onFocusLose() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onHide() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean tab(BusMessage msg) {
+		return true;
+	}
 	
 
 }
