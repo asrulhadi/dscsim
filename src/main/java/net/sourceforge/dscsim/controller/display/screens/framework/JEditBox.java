@@ -223,7 +223,7 @@ public class JEditBox extends JScreenComponent {
 		if (MV_UP.equals(oMessage.getButtonEvent().getKeyId())) {
 			value = this.pickList.get((idx + 1) % this.pickList.size());
 		} else if (MV_DOWN.equals(oMessage.getButtonEvent().getKeyId())) {
-			value = this.pickList.get((idx - 1) % this.pickList.size());
+			value = this.pickList.get((idx-1+this.pickList.size()) % this.pickList.size());
 		}
 
 		return;

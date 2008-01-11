@@ -30,7 +30,7 @@
 					<dscsim:choice  link="select_ack_individ" code="TYPE_INDIVIDUAL_ACK">Individual ACK</dscsim:choice>
 					<dscsim:choice  link="select_group_id" code="TYPE_GROUP">Group call</dscsim:choice>
 					<dscsim:choice  link="select_category" code="TYPE_ALL_SHIPS">All ship calls</dscsim:choice>			
-					<dscsim:choice  link="posreq_select_call_id" code="TYPE_POSITION_REQ">Position request</dscsim:choice>
+					<dscsim:choice  link="system_not_implemented" code="TYPE_POSITION_REQ">Position request</dscsim:choice>
 					<dscsim:choice  link="select_received_calls">Received calls</dscsim:choice>
 					<dscsim:choice  link="select_distress_nature">Distress setting</dscsim:choice>
 					<dscsim:choice  link="setup_menu">Set up</dscsim:choice>		
@@ -248,9 +248,9 @@
 				<dscsim:textbox row="0" column="2" width="16" height="1">Select a subject</dscsim:textbox>				
 				<dscsim:menubox name="page_menu" row="2" column="0" width="19" height="4">				
 					<dscsim:choice  link="setup_address_info">Add an address ID</dscsim:choice>	
-					<dscsim:choice  link="todo">Offset time</dscsim:choice>		
-					<dscsim:choice  link="todo">Brightness</dscsim:choice>		
-					<dscsim:choice  link="todo">Contrast</dscsim:choice>				
+					<dscsim:choice  link="system_not_implemented">Offset time</dscsim:choice>		
+					<dscsim:choice  link="system_not_implemented">Brightness</dscsim:choice>		
+					<dscsim:choice  link="system_not_implemented">Contrast</dscsim:choice>				
 				</dscsim:menubox>	
 				<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>	
 				<dscsim:actions>
@@ -556,6 +556,23 @@
 			<dscsim:actions>		
 			</dscsim:actions>									
 		</dscsim:screen>
+				
+		<dscsim:screen name="system_not_implemented" implementation="net.sourceforge.dscsim.controller.display.screens.impl.SendActionScreen">
+
+			<dscsim:fields>
+				<dscsim:textbox row="1" column="0" width="21" height="1">Implementation not</dscsim:textbox>
+				<dscsim:textbox row="2" column="0" width="21" height="1">complete. Please,</dscsim:textbox>
+				<dscsim:textbox row="3" column="0" width="21" height="1">visit our website for</dscsim:textbox>
+				<dscsim:textbox row="4" column="0" width="21" height="1">more information.</dscsim:textbox>				
+				<dscsim:textbox row="7" column="2" width="19" height="1">[CLR] -> Return</dscsim:textbox>					
+			</dscsim:fields>
+
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="main_entry_screen"/>
+			</dscsim:actions>					
+
+		</dscsim:screen>	
+		
 		
 		<!-- network responses -->
 		<dscsim:screen name="incoming_individual_message"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingAlertScreen" scope="transient">				
