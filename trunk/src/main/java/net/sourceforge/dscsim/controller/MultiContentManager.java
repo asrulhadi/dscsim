@@ -42,6 +42,7 @@ import net.sourceforge.dscsim.controller.screen.ScreenContent;
 import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.types.ActiveField;
 import net.sourceforge.dscsim.controller.screen.types.DscBoolean;
+import net.sourceforge.dscsim.controller.screen.types.MMSI;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
@@ -64,7 +65,7 @@ public class MultiContentManager implements BusListener, Constants {
 
 	private static String cDISTRESS_CALL_PERSISTANCE = STORE_BASE
 			+ "distresscalls";
-	private String _strMMSI = "";
+	private MMSI mmsi = null;
 
 	private InstanceContext _oInstanceContext = null;
 	private Document m_oDocument = null;
@@ -164,17 +165,21 @@ public class MultiContentManager implements BusListener, Constants {
 		return strActionName;
 	}
 
+	public MMSI getAsMMSI(){
+		return mmsi;
+	}
+	
 	public void setMMSI(String strMMSI) {
 		if (strMMSI != null)
-			_strMMSI = strMMSI;
+			mmsi = new MMSI(strMMSI);
 		else
-			_strMMSI = "";
+			mmsi = null;
 	}
 
 	public String getMMSI() {
 
-		if (_strMMSI != null)
-			return _strMMSI;
+		if (mmsi != null)
+			return mmsi.toString();
 		else
 			return "";
 	}

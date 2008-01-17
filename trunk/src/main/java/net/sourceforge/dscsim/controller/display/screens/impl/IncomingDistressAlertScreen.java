@@ -19,7 +19,7 @@
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  */
- 
+
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ import net.sourceforge.dscsim.controller.network.DscPosition;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.screen.types.Latitude;
 import net.sourceforge.dscsim.controller.screen.types.Longitude;
+
 /**
  * @author katharina
  *
@@ -49,7 +50,7 @@ import net.sourceforge.dscsim.controller.screen.types.Longitude;
 public class IncomingDistressAlertScreen extends ActionScreen {
 
 	private int pressCount = 0;
-	
+
 	public IncomingDistressAlertScreen(JDisplay display,
 			net.sourceforge.dscsim.controller.panels.Screen screen) {
 		super(display, screen);
@@ -61,31 +62,31 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 	public void enter(Object msg) {
 		super.enter(msg);
 
-		pressCount=0;
-		
-		MultiContentManager oMngr = getInstanceContext().getContentManager();	
+		pressCount = 0;
+
+		MultiContentManager oMngr = getInstanceContext().getContentManager();
 		DscMessage incoming = oMngr.getIncomingDscMessage();
-		if(incoming == null)
+		if (incoming == null)
 			return;
-		
+
 		this.setTextBox("from", incoming.getFromMMSI());
 		this.setTextBox("nature", incoming.getNatureText());
-		
+
 		this.setTextBox("time", incoming.getTime().toString());
-		
+
 		DscPosition pos = incoming.getPosition();
 		Latitude lat = pos.getLatitude();
-		Longitude lon  = pos.getLongitude();
+		Longitude lon = pos.getLongitude();
 		Properties props = oMngr.getProperties();
 		this.setTextBox("lat", lat.getAsFromattedString(props));
-		this.setTextBox("lon", lon.getAsFromattedString(props));			
-		
-		DscMessage inComing = this.getIncomingDscMessage();
-		if(inComing != null){
-			RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
-			oRadio.setChannel(inComing.getChannel());					
-		}
+		this.setTextBox("lon", lon.getAsFromattedString(props));
 
+		DscMessage inComing = this.getIncomingDscMessage();
+		if (inComing != null) {
+			RadioCoreController oRadio = getInstanceContext()
+					.getRadioCoreController();
+			oRadio.setChannel(inComing.getChannel());
+		}
 
 	}
 
@@ -94,28 +95,40 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 	 */
 	public void exit(BusMessage msg) throws Exception {
 		super.exit(msg);
+		MultiContentManager mngr = getInstanceContext().getContentManager();
+		String keyID = msg.getButtonEvent().getKeyId();
+
+		/*only for shore mode*/
+		if (mngr.getAsMMSI().isCoastal() && keyID.equals(FK_ENT)
+				|| keyID.equals(FK_CALL)) {
+				mngr.setIncomingDscMessage(this.getIncomingDscMessage());
+			DscMessage outGoing = new DscMessage();
+			outGoing.setToMMSI(this.getIncomingDscMessage().getFromMMSI());
+			outGoing.setCallType(CALL_TYPE_DISTRESS_ACK);
+			mngr.setOutGoingDscMessage(outGoing);
+		}
 	}
 
 	@Override
 	public ActionMapping notify(BusMessage oMessage) {
-		
+
 		String keyID = oMessage.getButtonEvent().getKeyId();
 		String keyAction = oMessage.getButtonEvent().getAction();
 
-		if(FK_CLR.equals(keyID)){
-			
-			if(pressCount > 0){
+		if (FK_CLR.equals(keyID)) {
+
+			if (pressCount > 0) {
 				return this.findActionMapping(keyAction, keyID);
 			}
-			
-			if(PRESSED.equals(keyAction)){
+
+			if (PRESSED.equals(keyAction)) {
 				this.pressCount++;
 			}
-			
+
 			return new ActionScreen.JActionMapping("", "", NULL);
 		}
-		
+
 		return super.notify(oMessage);
 	}
-	
+
 }

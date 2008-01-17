@@ -91,7 +91,7 @@ public class MultiClu implements BusListener, Constants {
 					.remove(idxLast);
 			if (oScreen instanceof SendDistressScreen) {
 				oScreen.exit(oMessage);
-				oScreen = (ScreenContent) _oScreenStack.get(idxLast - 1);
+				oScreen = (ScreenInterface) _oScreenStack.get(idxLast - 1);
 				_oContext.getController().setScreenContent(oScreen);
 			}
 		}
