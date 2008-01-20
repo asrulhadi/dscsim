@@ -321,11 +321,16 @@ public class JScreen extends Container
 	}
 	
 	public void setTextBox(String name, String text){
+		setTextBox(name, text, null);
+	}
+	public void setTextBox(String name, String text, String alt){
 		
 		JTextBox tb = (JTextBox)this.getComponentByName(name, 0);
 		if(tb != null && text != null){
 			tb.setText(text);
-		}	
+		}else if(alt != null){
+			tb.setText(alt);
+		}
 		
 	}
 
