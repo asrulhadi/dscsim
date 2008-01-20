@@ -557,6 +557,19 @@
 			<dscsim:actions>		
 			</dscsim:actions>									
 		</dscsim:screen>
+		
+		<dscsim:screen name="select_group_id"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.SelectGroupIdScreen" >
+			<dscsim:fields>
+				<dscsim:textbox row="0" column="2" width="16" height="1">Select group ID</dscsim:textbox>							
+		 		<dscsim:menubox name="group_ids_list" row="1" column="0" width="19" height="6">				
+					<dscsim:choice  link="enter_mmsi">Manual entry</dscsim:choice>		 		
+		 		</dscsim:menubox>		 		
+		 		<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>	 		
+			</dscsim:fields>			
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="main_entry_screen"/>
+			</dscsim:actions>			
+		</dscsim:screen>
 				
 		<dscsim:screen name="system_not_implemented" implementation="net.sourceforge.dscsim.controller.display.screens.impl.SendActionScreen">
 
@@ -636,7 +649,7 @@
 			</dscsim:actions>		
 			
 		</dscsim:screen>
-				
+						
 		<!-- special shore screens -->
 		
 	    <!-- shore specific -->
