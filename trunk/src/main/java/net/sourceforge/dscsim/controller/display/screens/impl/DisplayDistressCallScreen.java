@@ -67,13 +67,17 @@ public class DisplayDistressCallScreen extends MenuScreen {
 		
 		this.setTextBox("time", selected.getTime().toString());
 		
+		Properties props = oMngr.getProperties();
 		DscPosition pos = selected.getPosition();
+		if(pos != null){
 		Latitude lat = pos.getLatitude();
 		Longitude lon  = pos.getLongitude();
-		Properties props = oMngr.getProperties();
 		this.setTextBox("lat", lat.getAsFromattedString(props));
-		this.setTextBox("lon", lon.getAsFromattedString(props));			
-
+		this.setTextBox("lon", lon.getAsFromattedString(props));	
+		}else{
+			setTextBox("lat", props.getProperty("MS_POS_NON"));
+		}
+		
 	}
 
 	/* (non-Javadoc)
