@@ -36,9 +36,9 @@ public class JScreenFactory {
 
 	}
 	
-	public JScreen getScreen(String name, InstanceContext instanceContext) throws Exception{
+	public ActionScreen getScreen(String name, InstanceContext instanceContext) throws Exception{
 		
-		JScreen screen = null;
+		ActionScreen screen = null;
 		
 		if(device == null)
 			throw new Exception("Factory is not properly initialized.");
@@ -59,7 +59,7 @@ public class JScreenFactory {
 		if(impl != null){
 			Class<?> clazz = Class.forName(impl);		
 			java.lang.reflect.Constructor<?> ctor = clazz.getConstructor(new Class[]{net.sourceforge.dscsim.controller.display.screens.framework.JDisplay.class, net.sourceforge.dscsim.controller.panels.Screen.class});
-			screen = (JScreen)ctor.newInstance(this.display, jaxb);
+			screen = (ActionScreen)ctor.newInstance(this.display, jaxb);
 		}else{
 			screen = new ActionScreen(this.display, jaxb);			
 		}

@@ -297,7 +297,7 @@ public class JEditBox extends JScreenComponent {
 		g2d.setFont(this.getParent().getFont());
 
 		for (int p = 0; p < value.length(); p++) {
-			g2d.drawString(Character.toString(value.charAt(p)), p * xscale,
+			g2d.drawString(Character.toString(value.charAt(p)), (p*xscale)+4,
 					yscale - 5);
 		}
 

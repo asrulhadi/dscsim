@@ -117,7 +117,7 @@ public class JMenu extends JScreenComponent {
      			
      			for(int p=0; p<item.length();p++){     		
      				//AppLogger.debug2("Menu.paint " + item + " at x=" + (p*xscale) + " y=" + (yscale*d + yscale));
-         			g2d.drawString(Character.toString(item.charAt(p)),(p+1)*xscale, (yscale*d+yscale)-5);
+         			g2d.drawString(Character.toString(item.charAt(p)),((p+1)*xscale)+4, (yscale*d+yscale)-5);
           		}  
      			d++;
      		}    		

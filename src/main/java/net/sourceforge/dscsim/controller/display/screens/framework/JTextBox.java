@@ -62,7 +62,6 @@ public class JTextBox extends JScreenComponent {
 		super.paint(g);	 		
 		Graphics2D g2d = (Graphics2D)g;    	   	       
 		FontMetrics fontMetrics = g2d.getFontMetrics();
-		
 		BasicStroke stroke = new BasicStroke(2.0f);
 		 
         Color fg3D = Color.BLACK;
@@ -87,7 +86,7 @@ public class JTextBox extends JScreenComponent {
      		
      	if(this.blinkPeriod < 0 || changedCount % 2 == 0){
          	for(int p=0; value != null && p<value.length();p++){     		
-         		g2d.drawString(Character.toString(value.charAt(p)),p*xscale,height-5);
+         		g2d.drawString(Character.toString(value.charAt(p)),(p*xscale)+4,height-5);
      			//g2d.drawString(Character.toString(value.charAt(p)),p*xscale, yscale);
          	}
      		

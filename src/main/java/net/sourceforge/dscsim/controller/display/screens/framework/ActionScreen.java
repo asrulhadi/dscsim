@@ -25,11 +25,9 @@ import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 
 
-public class ActionScreen extends JScreen 
-	implements ScreenInterface{
+public class ActionScreen extends JScreen {
 	
 	/*
 	 * 
@@ -151,13 +149,13 @@ public class ActionScreen extends JScreen
 	}
 
 	
-	public void setParent(ScreenInterface parent) {
+	public void setParent(ActionScreen parent) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	
-	public ScreenInterface signal(BusMessage message) {
+	public ActionScreen signal(BusMessage message) {
 		// TODO Auto-generated method stub
 		return null;
 	}

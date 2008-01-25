@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
+import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
 import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.SyncPublisher;
-import net.sourceforge.dscsim.controller.screen.ScreenContent;
-import net.sourceforge.dscsim.controller.screen.ScreenInterface;
+
 import net.sourceforge.dscsim.controller.display.screens.impl.SendDistressScreen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
@@ -36,7 +35,7 @@ import net.sourceforge.dscsim.controller.panels.ActionMapping;
  */
 public class MultiClu implements BusListener, Constants {
 
-	private ArrayList _oScreenStack = new ArrayList();
+	private ArrayList<ActionScreen> _oScreenStack = new ArrayList<ActionScreen>();
 	private InstanceContext _oContext = null;
 	private volatile boolean _powerOn = false;
 
@@ -59,15 +58,15 @@ public class MultiClu implements BusListener, Constants {
 	 * @param oTarget.
 	 * @return index of screen on stack.
 	 */
-	private int indexOf(ScreenInterface oTarget) {
+	private int indexOf(ActionScreen oTarget) {
 		if (oTarget == null)
 			return -1;
 
 		int idxLast = _oScreenStack.size() - 1;
-		ScreenInterface oCurr = null;
+		ActionScreen oCurr = null;
 		for (int idxCurr = idxLast; idxCurr >= 0; idxCurr--) {
 
-			oCurr = (ScreenInterface) _oScreenStack.get(idxCurr);
+			oCurr = (ActionScreen) _oScreenStack.get(idxCurr);
 
 			if (oTarget.getAttributeValue("name").equals(
 					oCurr.getAttributeValue("name")))
@@ -87,11 +86,11 @@ public class MultiClu implements BusListener, Constants {
 	private void popStackDistress(BusMessage oMessage) throws Exception {
 		int idxLast = _oScreenStack.size() - 1;
 		if (idxLast > 0) {
-			ScreenInterface oScreen = (ScreenInterface) _oScreenStack
+			ActionScreen oScreen = (ActionScreen) _oScreenStack
 					.remove(idxLast);
 			if (oScreen instanceof SendDistressScreen) {
 				oScreen.exit(oMessage);
-				oScreen = (ScreenInterface) _oScreenStack.get(idxLast - 1);
+				oScreen = (ActionScreen) _oScreenStack.get(idxLast - 1);
 				_oContext.getController().setScreenContent(oScreen);
 			}
 		}
@@ -115,12 +114,12 @@ public class MultiClu implements BusListener, Constants {
 
 		if (idxLast > 0) {
 
-			ScreenInterface oScreen = (ScreenInterface) _oScreenStack
+			ActionScreen oScreen = (ActionScreen) _oScreenStack
 					.remove(idxLast);
 
 			// oScreen.exit(oMessage);
 
-			oScreen = (ScreenInterface) _oScreenStack.get(idxLast - 1);
+			oScreen = (ActionScreen) _oScreenStack.get(idxLast - 1);
 
 			_oContext.getController().setScreenContent(oScreen);
 
@@ -135,7 +134,7 @@ public class MultiClu implements BusListener, Constants {
 	 */
 	public synchronized boolean isDistressCallInprogress() {
 		if (_oScreenStack.size() > -1) {
-			ScreenInterface oScreen = (ScreenInterface) _oScreenStack
+			ActionScreen oScreen = (ActionScreen) _oScreenStack
 					.get(_oScreenStack.size() - 1);
 			if (oScreen instanceof SendDistressScreen) {
 				return true;
@@ -161,13 +160,13 @@ public class MultiClu implements BusListener, Constants {
 	private void resetScreenStack(BusMessage oMessage) throws Exception {
 
 		// leave bottom 0 elment on stack.
-		Object oScreen = null;
+		ActionScreen oScreen = null;
 
 		for (int i = _oScreenStack.size() - 1; i >= 0; i--) {
 
-			if (oScreen instanceof ScreenInterface) {
-				ScreenInterface si = (ScreenInterface) oScreen;
-				oScreen = (ScreenInterface) _oScreenStack.remove(i);
+			if (oScreen instanceof ActionScreen) {
+				ActionScreen si = (ActionScreen) oScreen;
+				oScreen = _oScreenStack.remove(i);
 				si.exit(oMessage);
 				_oContext.getContentManager().putCache(si);
 				_oContext.getController().setScreenContent(oScreen);
@@ -177,7 +176,7 @@ public class MultiClu implements BusListener, Constants {
 		oScreen = _oContext.getContentManager().getScreenContent("welcome",
 				_oContext);
 		_oScreenStack.add(oScreen);
-		((ScreenInterface) oScreen).enter(oMessage);
+		((ActionScreen)oScreen).enter(oMessage);
 		_oContext.getController().setScreenContent(oScreen);
 
 	}
@@ -189,7 +188,7 @@ public class MultiClu implements BusListener, Constants {
 
 		// AppLogger.debug("Clu.signal - BusMessage type="+ oMessage.getId());
 
-		ScreenInterface oScreen = null;
+		ActionScreen oScreen = null;
 
 		DscIACManager.getSyncPublisher().sendSync(
 				_oContext.getContentManager().getMMSI(), oMessage);
@@ -228,7 +227,7 @@ public class MultiClu implements BusListener, Constants {
 				/* now show incoming ack */
 				String strScreenName = _oContext.getContentManager()
 						.getCallTypeMappingValue(oDscMessage.getCallType());
-				ScreenInterface oScreen1 = (ScreenInterface) _oContext
+				ActionScreen oScreen1 = (ActionScreen) _oContext
 						.getContentManager().getScreenContent(strScreenName,
 								_oContext);
 				oScreen1.setIncomingDscMessage(oDscMessage);
@@ -271,7 +270,7 @@ public class MultiClu implements BusListener, Constants {
 			*/
 			// not handled default to screen actions
 			Object scr = _oScreenStack.get(_oScreenStack.size() - 1);
-			ScreenInterface oReturnScreen = null;
+			ActionScreen oReturnScreen = null;
 			if (scr instanceof ActionScreen) {
 				ActionScreen active = (ActionScreen) scr;
 				ActionMapping mapping = active.notify(oMessage);
@@ -283,10 +282,10 @@ public class MultiClu implements BusListener, Constants {
 					mapping = active.findGlobalActionMapping(event, source);
 				}
 				
-				ScreenInterface next = null;
+				ActionScreen next = null;
 				if (mapping != null
 						&& !NULL.equalsIgnoreCase(mapping.getForward())) {
-					next = (ScreenInterface) _oContext.getContentManager()
+					next = (ActionScreen) _oContext.getContentManager()
 							.getScreenContent(mapping.getForward(), _oContext);
 
 					int idxOf = indexOf(next);
@@ -294,9 +293,9 @@ public class MultiClu implements BusListener, Constants {
 					// therefore backup stack. no cylces in state diagram.
 					if (idxOf > -1) {
 						active.exit(oMessage);
-						ScreenInterface oTmp = null;
+						ActionScreen oTmp = null;
 						for (int i = _oScreenStack.size() - 1; i >= idxOf; i--) {
-							oTmp = (ScreenInterface) _oScreenStack.get(i);
+							oTmp = (ActionScreen) _oScreenStack.get(i);
 							// oTmp.exit(oMessage);
 							_oScreenStack.remove(i);
 						}
@@ -315,7 +314,7 @@ public class MultiClu implements BusListener, Constants {
 				}
 
 			} else {
-				oScreen = (ScreenInterface) scr;
+				oScreen = (ActionScreen) scr;
 				oReturnScreen = oScreen.signal(oMessage);
 				if (oReturnScreen == null) {
 					// send clr message and return
@@ -331,9 +330,9 @@ public class MultiClu implements BusListener, Constants {
 					// therefore backup stack. no cylces in state diagram.
 					if (idxOf > -1) {
 						oScreen.exit(oMessage);
-						ScreenInterface oTmp = null;
+						ActionScreen oTmp = null;
 						for (int i = _oScreenStack.size() - 1; i >= idxOf; i--) {
-							oTmp = (ScreenInterface) _oScreenStack.get(i);
+							oTmp = (ActionScreen) _oScreenStack.get(i);
 							// oTmp.exit(oMessage);
 							_oScreenStack.remove(i);
 						}
