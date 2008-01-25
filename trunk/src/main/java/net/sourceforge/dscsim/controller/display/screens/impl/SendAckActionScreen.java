@@ -22,6 +22,7 @@
 
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
+import net.sourceforge.dscsim.controller.Button;
 import net.sourceforge.dscsim.controller.MultiBeeper;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.InstanceContext;
@@ -69,63 +70,76 @@ public class SendAckActionScreen extends ActionScreen {
 
 		if (FK_ENT.equals(keyID)) {
 
-			MultiContentManager mngr = getInstanceContext().getContentManager();
-			DscMessage outGoing = mngr.getOutGoingDscMessage();
+			Button btCall = this.getInstanceContext().getController()
+					.getButton(FK_CALL);
+			if (btCall.getAction().equals(PRESSED)) {
 
-			if (outGoing.getToMMSI().length() < 1) {
-				outGoing.setToMMSI(mngr.getIncomingDscMessage().getFromMMSI());
-			}
+				MultiContentManager mngr = getInstanceContext()
+						.getContentManager();
+				DscMessage outGoing = mngr.getOutGoingDscMessage();
 
-			/* if individual call, then wait for ack before changing channel */
-			DscMessage inComing = (DscMessage) getInstanceContext()
-					.getContentManager().getIncomingDscMessage();
-			if (inComing != null
-					&& inComing.getCallType().equals(CALL_TYPE_INDIVIDUAL)) {
-				if (inComing.getChannel().equals(outGoing.getChannel()) == false
-						&& COMPL_ABLE.equals(outGoing.getComplianceCode())){
-					outGoing.setCallType(CALL_TYPE_INDIVIDUAL);
-				} else {
-					/* set radio to agree upon channel */
+				if (outGoing.getToMMSI().length() < 1) {
+					outGoing.setToMMSI(mngr.getIncomingDscMessage()
+							.getFromMMSI());
+				}
+
+				/* if individual call, then wait for ack before changing channel */
+				DscMessage inComing = (DscMessage) getInstanceContext()
+						.getContentManager().getIncomingDscMessage();
+				if (inComing != null
+						&& inComing.getCallType().equals(CALL_TYPE_INDIVIDUAL)) {
+					if (inComing.getChannel().equals(outGoing.getChannel()) == false
+							&& COMPL_ABLE.equals(outGoing.getComplianceCode())) {
+						outGoing.setCallType(CALL_TYPE_INDIVIDUAL);
+					} else {
+						/* set radio to agree upon channel */
+						RadioCoreController oRadio = getInstanceContext()
+								.getRadioCoreController();
+						oRadio.setChannel(outGoing.getChannel());
+						outGoing.setCallType(CALL_TYPE_INDIVIDUAL_ACK);
+					}
+
+				}
+				/*
+				 * if outgoing is one of the following, then switch the channel
+				 * immediately as there will be no acks.
+				 */
+				if (CALL_TYPE_ALL_SHIPS.equals(outGoing.getCallType())
+						|| CALL_TYPE_GROUP.equals(outGoing.getCallType())) {
 					RadioCoreController oRadio = getInstanceContext()
 							.getRadioCoreController();
 					oRadio.setChannel(outGoing.getChannel());
-					outGoing.setCallType(CALL_TYPE_INDIVIDUAL_ACK);
 				}
 
+				/* make sure outgoing message has my mmsi */
+				outGoing.setFromMMSI(getInstanceContext().getContentManager()
+						.getMMSI());
+				getInstanceContext().getBeeper().beepSync(
+						MultiBeeper.BEEP_TRANSMITTING);
+				AppLogger
+						.debug("BeanSendScreen.signal =" + outGoing.toString());
+				DscIACManager.getTransmitter().transmit(outGoing);
+
+				inComing.setAknowledged(true);
+				mngr.storeIncomingOtherCalls();
+
+				// for affect and as well a yield to Transmitter.
+				try {
+					Thread.sleep(SLEEP_AFTER_SEND);
+				} catch (Exception oEx) {
+					AppLogger.error(oEx);
+				}
+				InstanceContext oInstanceContext = getInstanceContext();
+
+				oInstanceContext.removeProperties();
+
+				btCall.setRelease();
+
+				return this.findActionMapping(keyAction, keyID);
+
+			} else {
+				return null;
 			}
-			/*
-			 * if outgoing is one of the following, then switch the channel
-			 * immediately as there will be no acks.
-			 */
-			if (CALL_TYPE_ALL_SHIPS.equals(outGoing.getCallType())
-					|| CALL_TYPE_GROUP.equals(outGoing.getCallType())) {
-				RadioCoreController oRadio = getInstanceContext()
-						.getRadioCoreController();
-				oRadio.setChannel(outGoing.getChannel());
-			}
-
-			/* make sure outgoing message has my mmsi */
-			outGoing.setFromMMSI(getInstanceContext().getContentManager()
-					.getMMSI());
-			getInstanceContext().getBeeper().beepSync(
-					MultiBeeper.BEEP_TRANSMITTING);
-			AppLogger.debug("BeanSendScreen.signal =" + outGoing.toString());
-			DscIACManager.getTransmitter().transmit(outGoing);
-
-			inComing.setAknowledged(true);
-			mngr.storeIncomingOtherCalls();
-			
-			// for affect and as well a yield to Transmitter.
-			try {
-				Thread.sleep(SLEEP_AFTER_SEND);
-			} catch (Exception oEx) {
-				AppLogger.error(oEx);
-			}
-			InstanceContext oInstanceContext = getInstanceContext();
-
-			oInstanceContext.removeProperties();
-
-			return this.findActionMapping(keyAction, keyID);
 
 		}
 
