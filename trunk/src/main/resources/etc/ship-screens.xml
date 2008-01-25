@@ -153,6 +153,8 @@
 			<dscsim:fields>
 				<dscsim:textbox row="0" column="0" width="21" height="1">Push [CALL] and [ENT]</dscsim:textbox>
 				<dscsim:textbox row="1" column="7" width="14" height="1">simultaneously</dscsim:textbox>
+				<dscsim:textbox row="3" column="0" width="21" height="1">{right click [CALL],</dscsim:textbox>
+				<dscsim:textbox row="4" column="3" width="21" height="1">then click [ENT]}</dscsim:textbox>	
 				<dscsim:textbox row="6" column="1" width="19" height="1">To stop the call,</dscsim:textbox>	
 				<dscsim:textbox row="7" column="1" width="19" height="1">push [CLR]</dscsim:textbox>					
 			</dscsim:fields>

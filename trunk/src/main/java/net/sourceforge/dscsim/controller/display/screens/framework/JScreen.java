@@ -193,7 +193,7 @@ public class JScreen extends Container
 		/*draw the grid perimeter*/
 		g2d.setComposite(original);
 		g2d.setStroke(stroke);
-		g2d.setColor(Color.gray);
+		g2d.setColor(Color.yellow);
 		g2d.draw(perim);
 
 		/*draw horizontal lines*/

@@ -23,31 +23,15 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
-import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
+import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
+import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.screen.BeanList;
-import net.sourceforge.dscsim.controller.screen.EditBoxInputScreen;
-import net.sourceforge.dscsim.controller.screen.ScreenInterface;
-
-import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
-import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
-import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
-
 import net.sourceforge.dscsim.controller.utils.AppLogger;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
-import net.sourceforge.dscsim.controller.screen.types.Time;
-
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.TimeType;
 
 /**
  * @author katharina

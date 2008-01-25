@@ -27,39 +27,31 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
+import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreenFactory;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
 import net.sourceforge.dscsim.controller.infostore.InfoStoreFactory;
+import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
 import net.sourceforge.dscsim.controller.network.DscMessage;
 import net.sourceforge.dscsim.controller.panels.ActionMapping;
 import net.sourceforge.dscsim.controller.panels.Device;
-import net.sourceforge.dscsim.controller.screen.BeanList;
-import net.sourceforge.dscsim.controller.screen.MenuScreen;
-import net.sourceforge.dscsim.controller.screen.ScreenContent;
-import net.sourceforge.dscsim.controller.screen.ScreenInterface;
 import net.sourceforge.dscsim.controller.screen.types.ActiveField;
 import net.sourceforge.dscsim.controller.screen.types.DscBoolean;
 import net.sourceforge.dscsim.controller.screen.types.MMSI;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
-
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.Attribute;
 import org.jdom.input.SAXBuilder;
-
-import java.io.FileInputStream;
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Properties;
 
 public class MultiContentManager implements BusListener, Constants {
 
@@ -70,20 +62,20 @@ public class MultiContentManager implements BusListener, Constants {
 	private InstanceContext _oInstanceContext = null;
 	private Document m_oDocument = null;
 
-	//cache for lists
+	// cache for lists
 	private ArrayList _oSessionCache = new ArrayList();
 
-	//session distress calls
+	// session distress calls
 	private ArrayList _oIncomingDistressCalls = new ArrayList();
 	private ArrayList _oIncomingDistressAcks = new ArrayList();
 
 	private HashMap _oBeanListSession = new HashMap();
 	private HashMap _oBeanListPersist = new HashMap();
 
-	//persistant list
+	// persistant list
 	private HashMap _oSessionLists = new HashMap();
 
-	//persistant properties
+	// persistant properties
 	private HashMap _oSessionProperties = null;
 	private String _sessionPropFilename = "settings";
 
@@ -101,28 +93,29 @@ public class MultiContentManager implements BusListener, Constants {
 
 	private AddressIdEntry selectedGroupId = null;
 	private ArrayList<AddressIdEntry> groupIdList = null;
-	
-	private ArrayList<DscMessage>incomingOtherCalls = null;
+
+	private ArrayList<DscMessage> incomingOtherCalls = null;
 	private DscMessage selectedIncomingOtherCall = null;
-	
-	private ArrayList<DscMessage>incomingDistressCalls = null;
+
+	private ArrayList<DscMessage> incomingDistressCalls = null;
 	private DscMessage selectedIncomingDistressCall = null;
 
-	
 	public static MultiContentManager getInstance(InstanceContext oCtx) {
 		return new MultiContentManager(oCtx.getContentManager().getMMSI(), oCtx);
 	}
 
 	public MultiContentManager(String mmsi, InstanceContext oInstanceContext) {
 		_oInstanceContext = oInstanceContext;
-			
+
 		try {
-			
-			String xmlName = oInstanceContext.getApplicationContext().getDeviceXmlName();
-			DataInputStream dataInput = new DataInputStream(getResourceStream(xmlName, this.getClass()));
-			this.screenFactory = new JScreenFactory(new JDisplay(DISPLAY_X-11,
-					DISPLAY_Y+1, 273, 160, 8, 21), dataInput);
-					
+
+			String xmlName = oInstanceContext.getApplicationContext()
+					.getDeviceXmlName();
+			DataInputStream dataInput = new DataInputStream(getResourceStream(
+					xmlName, this.getClass()));
+			this.screenFactory = new JScreenFactory(new JDisplay(
+					DISPLAY_X - 11, DISPLAY_Y + 1, 273, 160, 8, 21), dataInput);
+
 			this.infostoreFactory = new InfoStoreFactory(mmsi);
 
 			SAXBuilder oBuilder = new SAXBuilder();
@@ -140,7 +133,7 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public String getActionFromEventName(String eventId) {
 
-		//TODO cache the events
+		// TODO cache the events
 		String strActionName = null;
 
 		Element oRoot = m_oDocument.getRootElement();
@@ -165,10 +158,10 @@ public class MultiContentManager implements BusListener, Constants {
 		return strActionName;
 	}
 
-	public MMSI getAsMMSI(){
+	public MMSI getAsMMSI() {
 		return mmsi;
 	}
-	
+
 	public void setMMSI(String strMMSI) {
 		if (strMMSI != null)
 			mmsi = new MMSI(strMMSI);
@@ -184,13 +177,12 @@ public class MultiContentManager implements BusListener, Constants {
 			return "";
 	}
 
-	public void putCache(ScreenInterface oScreen) {
+	public void putCache(ActionScreen oScreen) {
 
 		/*
-		String scope = oScreen.getAttributeValue("scope");
-		
-		if(scope.equals("session"))
-			_oSessionCache.add(oScreen);
+		 * String scope = oScreen.getAttributeValue("scope");
+		 * 
+		 * if(scope.equals("session")) _oSessionCache.add(oScreen);
 		 */
 	}
 
@@ -238,22 +230,16 @@ public class MultiContentManager implements BusListener, Constants {
 		return oStorage;
 	}
 
-	private ScreenInterface getCache(String srchName) {
+	private ActionScreen getCache(String srchName) {
 
 		String name = null;
-		ScreenInterface oScreen = null;
+		ActionScreen oScreen = null;
 		for (int i = 0; i < this._oSessionCache.size(); i++) {
-
-			oScreen = (ScreenInterface) _oSessionCache.get(i);
-
-			if (oScreen instanceof JScreen)
-				name = ((JScreen) oScreen).getName();
-			else
-				name = oScreen.getAttributeValue("name");
+			oScreen = (ActionScreen) _oSessionCache.get(i);
+			name = ((ActionScreen)oScreen).getName();
 
 			if (name.equals(srchName))
 				return oScreen;
-
 		}
 
 		return null;
@@ -267,14 +253,14 @@ public class MultiContentManager implements BusListener, Constants {
 		return this.infostoreFactory.persistInfoStore();
 	}
 
-	public Object getScreenContent(String strScreenName, InstanceContext oCtx) {
-		ScreenInterface oRet = getCache(strScreenName);
+	public ActionScreen getScreenContent(String strScreenName, InstanceContext oCtx) {
+		ActionScreen oRet = getCache(strScreenName);
 
 		if (oRet != null)
 			return oRet;
 
 		try {
-			JScreen screen = this.screenFactory.getScreen(strScreenName, oCtx);
+			ActionScreen screen = this.screenFactory.getScreen(strScreenName, oCtx);
 
 			String scope = screen.getScreenBindings().getScope();
 
@@ -289,44 +275,13 @@ public class MultiContentManager implements BusListener, Constants {
 			e.printStackTrace();
 		}
 
-		//TODO delete after conversion is complete.
-		try {
-
-			oRet = getCache(strScreenName);
-
-			if (oRet != null)
-				return oRet;
-
-			Element oScreenRoot = getScreenElement(strScreenName);
-
-			if (oScreenRoot != null) {
-				oRet = ScreenContent.createFromXml(
-						m_oDocument.getRootElement(), oScreenRoot, this);
-
-				oRet.setInstanceContext(oCtx);
-
-				String scope = oRet.getAttributeValue("scope");
-
-				if (scope != null && scope.equals("session"))
-					_oSessionCache.add(oRet);
-
-			} else {
-				oRet = ScreenContent.createFromXml(
-						m_oDocument.getRootElement(),
-						getScreenElement("system_not_implemented"), this);
-			}
-
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-			oRet = new MenuScreen(null);
-		}
-
 		return oRet;
 
 	}
 
 	/**
 	 * search utility for mappings.
+	 * 
 	 * @param actions
 	 * @param event
 	 * @param source
@@ -391,33 +346,27 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 
 	/*
-	public Element getCodeString(String strId){
-		
-		Element oRoot = m_oDocument.getRootElement();
-		
-		Element oScreens = oRoot.getChild("strings");
-		
-		Iterator oIter = oScreens.getChildren().iterator();
-		
-	   	Element oTarget = null; 
-	   	Attribute oAttr = null;
-	   	
-		while(oIter.hasNext()) {
-			oTarget =(Element)oIter.next();
-			
-			oAttr = oTarget.getAttribute("code");
-			String strValue = oAttr != null ? oAttr.getValue() : null;
-			
-			if(strValue != null && strValue.equals(strId))
-				return oTarget;
-			else
-				oTarget = null;
-			
-		}
-		
-		return oTarget;
-		
-	}
+	 * public Element getCodeString(String strId){
+	 * 
+	 * Element oRoot = m_oDocument.getRootElement();
+	 * 
+	 * Element oScreens = oRoot.getChild("strings");
+	 * 
+	 * Iterator oIter = oScreens.getChildren().iterator();
+	 * 
+	 * Element oTarget = null; Attribute oAttr = null;
+	 * 
+	 * while(oIter.hasNext()) { oTarget =(Element)oIter.next();
+	 * 
+	 * oAttr = oTarget.getAttribute("code"); String strValue = oAttr != null ?
+	 * oAttr.getValue() : null;
+	 * 
+	 * if(strValue != null && strValue.equals(strId)) return oTarget; else
+	 * oTarget = null;
+	 *  }
+	 * 
+	 * return oTarget;
+	 *  }
 	 */
 
 	public String getCodeString(String strId) {
@@ -486,42 +435,35 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 
 	public void addIncomingOtherCalls(DscMessage oMessage) {
-		ArrayList<DscMessage>calls = this.getIncomingOtherCalls();
+		ArrayList<DscMessage> calls = this.getIncomingOtherCalls();
 		calls.add(0, oMessage);
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
-	
+
 	public void storeIncomingOtherCalls() {
-		ArrayList<DscMessage>calls = this.getIncomingOtherCalls();
+		ArrayList<DscMessage> calls = this.getIncomingOtherCalls();
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
 
 	public void removeIncomingOtherCall(DscMessage oMessage) {
-		ArrayList<DscMessage>calls = this.getIncomingOtherCalls();
+		ArrayList<DscMessage> calls = this.getIncomingOtherCalls();
 		calls.remove(oMessage);
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
-	
+
 	public void addIncomingDistressCall(DscMessage oMessage) {
-		ArrayList<DscMessage>calls = this.getIncomingDistressCalls();
+		ArrayList<DscMessage> calls = this.getIncomingDistressCalls();
 		calls.add(0, oMessage);
 		this.storeList(INCOMING_DISTRESS_CALLS, calls);
 	}
-	
+
 	public void removeIncomingDistressCall(DscMessage oMessage) {
-		ArrayList<DscMessage>calls = this.getIncomingDistressCalls();
+		ArrayList<DscMessage> calls = this.getIncomingDistressCalls();
 		calls.remove(oMessage);
 		this.storeList(INCOMING_DISTRESS_CALLS, calls);
 	}
-	
 
 	public List getStorageList(String storageName) {
-
-		try {
-			return getBeanList(storageName).getList();
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
 
 		return null;
 
@@ -589,14 +531,14 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public ArrayList getPersistantList(String name) {
 
-		//is list already in cache.
+		// is list already in cache.
 		ArrayList oList = (ArrayList) _oSessionLists.get(name);
 
-		//yes, return it.
+		// yes, return it.
 		if (oList != null)
 			return oList;
 
-		//find xml definition of the list
+		// find xml definition of the list
 		Element elemStorage = m_oDocument.getRootElement().getChild("storage");
 
 		Iterator oItr = elemStorage.getChildren("list").iterator();
@@ -628,10 +570,10 @@ public class MultiContentManager implements BusListener, Constants {
 		}
 
 		/*
-		if(true)
-			throw new RuntimeException("permant list persistance not yet implemented.");
-		
-		return null;
+		 * if(true) throw new RuntimeException("permant list persistance not yet
+		 * implemented.");
+		 * 
+		 * return null;
 		 */
 		return oList;
 	}
@@ -644,7 +586,8 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public ArrayList fetchDistressCalls() {
 
-		//AppLogger.debug("fetching store called for"+ cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
+		// AppLogger.debug("fetching store called for"+
+		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
 
 		ArrayList oRetList = null;
 
@@ -668,7 +611,8 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public void storeIncomingCall(DscMessage oDscMessage) {
 
-		//AppLogger.debug("storeIncomingCall called for"+ cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
+		// AppLogger.debug("storeIncomingCall called for"+
+		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
 
 		if (CALL_CAT_DISTRESS.equals(oDscMessage.getClass())) {
 
@@ -680,7 +624,8 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public void storeLastDistressCalls(DscMessage oDscMsg) {
 
-		//AppLogger.debug("storeLastDistressCalls called for"+ cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
+		// AppLogger.debug("storeLastDistressCalls called for"+
+		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
 
 		ArrayList oLastCalls = fetchDistressCalls();
 
@@ -709,7 +654,8 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public void storeDistressCalls(ArrayList oCalls) {
 
-		//	AppLogger.debug("storeDistressCalls called for"+ cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
+		// AppLogger.debug("storeDistressCalls called for"+
+		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
 
 		try {
 
@@ -726,30 +672,14 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public BeanList getBeanList(String name) {
-
-		//AppLogger.debug("MultiContentManager.storeCalls " + name + getStoreExtension());
-
-		BeanList oBeanList = null;
-		try {
-			FileInputStream fis = new FileInputStream(getStorePrefix() + name
-					+ getStoreExtension());
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			oBeanList = (BeanList) ois.readObject();
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-		return oBeanList;
-
-	}
-
-	/**-----------------------------------------------------------------------------
-	@method {
-	@name
-	@description   method from Paulo Soares  psoares@consiste.pt
-	}
-	------------------------------------------------------------------------------*/
+	/**
+	 * -----------------------------------------------------------------------------
+	 * 
+	 * @method {
+	 * @name
+	 * @description method from Paulo Soares psoares@consiste.pt }
+	 *              ------------------------------------------------------------------------------
+	 */
 	public static InputStream getResourceStream(String key, Class oTarget) {
 		AppLogger.debug2("ContentManager.getResourceStream - called key=" + key
 				+ " target=" + oTarget.getName());
@@ -797,13 +727,15 @@ public class MultiContentManager implements BusListener, Constants {
 		return is;
 	}
 
-	/**-----------------------------------------------------------------------------
-	 @method {
-	 @name
-	 @description
-	 @signature
-	 }
-	------------------------------------------------------------------------------*/
+	/**
+	 * -----------------------------------------------------------------------------
+	 * 
+	 * @method {
+	 * @name
+	 * @description
+	 * @signature }
+	 *            ------------------------------------------------------------------------------
+	 */
 	public static byte[] getResource(String sKey, Class oClass) {
 
 		AppLogger.debug("ContentManager.getResource - called.");
@@ -829,120 +761,6 @@ public class MultiContentManager implements BusListener, Constants {
 		}
 
 		return oByteArray.toByteArray();
-	}
-
-	public void storeBeanList(BeanList oList) {
-
-		String listName = oList.getListName();
-		String storeExt = getStoreExtension();
-
-		try {
-			FileOutputStream fos = new FileOutputStream(getStorePrefix()
-					+ listName + storeExt);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(oList);
-			//refreshBeanListCache(oList);        	
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-	}
-
-	/*
-	 * if the storage is permanent, first look for already
-	 * deserialized instance of the list in the cache
-	 * and if nothing is found then look on disk.
-	 */
-	public void refreshBeanListCache(BeanList oBeanList) {
-
-		String strListName = oBeanList.getListName();
-		Element elemStore = getStorageElement(strListName);
-
-		BeanList oldBeanList = getBeanList(elemStore);
-
-		if (_oBeanListPersist.containsValue(oldBeanList)) {
-			_oBeanListPersist.remove(oldBeanList);
-			_oBeanListPersist.put(strListName, oBeanList);
-
-		}
-
-		if (_oBeanListSession.containsValue(oldBeanList)) {
-			_oBeanListSession.remove(oldBeanList);
-			_oBeanListSession.put(strListName, oBeanList);
-
-		}
-
-	}
-
-	public BeanList getBeanList(Element oElement) {
-
-		BeanList oBeanList = null;
-
-		String name = oElement.getAttributeValue("name");
-		String scope = oElement.getAttributeValue("scope");
-
-		if (scope.equals("persistant")) {
-
-			//is list in cache
-			if (_oBeanListPersist.containsKey(name)) {
-
-				oBeanList = (BeanList) _oBeanListPersist.get(name);
-
-			} else {
-				oBeanList = loadList(this.getStoreExtension(), getStorePrefix()
-						+ name);
-
-				if (oBeanList == null) {
-					String type = oElement.getAttributeValue("type");
-					String key = oElement.getAttributeValue("key");
-					oBeanList = new BeanList(name, type, key);
-				}
-
-				_oBeanListPersist.put(name, oBeanList);
-
-			}
-
-			return oBeanList;
-
-		} else if (scope.equals("session")) {
-
-			oBeanList = (BeanList) _oBeanListSession.get(name);
-
-			if (oBeanList == null) {
-
-				String type = oElement.getAttributeValue("type");
-				String key = oElement.getAttributeValue("key");
-				oBeanList = new BeanList(name, type, key);
-
-				_oBeanListSession.put(name, oBeanList);
-			}
-
-		}
-
-		return oBeanList;
-	}
-
-	public static BeanList loadList(String listContext, String listName) {
-
-		AppLogger.debug("BeanList.loadList:" + listName + listContext);
-
-		BeanList oBeanList = null;
-
-		try {
-
-			FileInputStream fis = new FileInputStream(listName + listContext);
-
-			ObjectInputStream ois = new ObjectInputStream(fis);
-
-			oBeanList = (BeanList) ois.readObject();
-
-		} catch (java.io.FileNotFoundException oNoFileEx) {
-			AppLogger.debug(oNoFileEx.toString());
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-		return oBeanList;
 	}
 
 	public InstanceContext getInstanceContext() {
@@ -973,7 +791,7 @@ public class MultiContentManager implements BusListener, Constants {
 
 		if (oInfo == null) {
 
-			//try{
+			// try{
 
 			Element oStorage = oInstance.getContentManager().getContextElement(
 					strContextKey);
@@ -981,9 +799,9 @@ public class MultiContentManager implements BusListener, Constants {
 			Class clazz = Class.forName(strClass);
 			oInfo = clazz.newInstance();
 
-			//}catch(Exception oEx){
-			//	AppLogger.error(oEx);
-			//}
+			// }catch(Exception oEx){
+			// AppLogger.error(oEx);
+			// }
 
 			oInstance.setProperty(strContextKey, oInfo);
 
@@ -1004,7 +822,7 @@ public class MultiContentManager implements BusListener, Constants {
 		String storeExt = getStoreExtension();
 		String storeName = getStorePrefix() + _sessionPropFilename + storeExt;
 
-		//AppLogger.debug("MulticontentManager.loadProperties:" + storeName);
+		// AppLogger.debug("MulticontentManager.loadProperties:" + storeName);
 
 		HashMap oProperties = null;
 
@@ -1040,7 +858,7 @@ public class MultiContentManager implements BusListener, Constants {
 
 			oos.writeObject(_oSessionProperties);
 
-			//refreshBeanListCache(oList);
+			// refreshBeanListCache(oList);
 
 		} catch (Exception oEx) {
 			AppLogger.error(oEx);
@@ -1180,7 +998,8 @@ public class MultiContentManager implements BusListener, Constants {
 						InputStream propInput = new DataInputStream(
 								getResourceStream(APPL_STRINGS,
 										MultiContentManager.class));
-						//FileInputStream oStream = new FileInputStream(m_inFile);  	     	    			
+						// FileInputStream oStream = new
+						// FileInputStream(m_inFile);
 						_appProperties.load(propInput);
 					}
 
@@ -1211,7 +1030,8 @@ public class MultiContentManager implements BusListener, Constants {
 						InputStream propInput = new DataInputStream(
 								getResourceStream(SETUP_STRINGS,
 										MultiContentManager.class));
-						//FileInputStream oStream = new FileInputStream(m_inFile);
+						// FileInputStream oStream = new
+						// FileInputStream(m_inFile);
 
 						_appSettings.load(propInput);
 
@@ -1253,7 +1073,7 @@ public class MultiContentManager implements BusListener, Constants {
 				FileOutputStream oFile = new FileOutputStream(SETUP_STRINGS);
 				OutputStream setupOutput = new DataOutputStream(oFile);
 				_appSettings.store(setupOutput, "");
-				//FileInputStream oStream = new FileInputStream(m_inFile);
+				// FileInputStream oStream = new FileInputStream(m_inFile);
 
 			} catch (Exception oEx) {
 				AppLogger.error(oEx);
@@ -1293,7 +1113,9 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
 	public void signal(BusMessage oMessage) {
@@ -1306,6 +1128,7 @@ public class MultiContentManager implements BusListener, Constants {
 
 	/**
 	 * set selected AddressEntryId into session info.
+	 * 
 	 * @param addr
 	 */
 	public void setSelectedAddressId(AddressIdEntry addr) {
@@ -1318,6 +1141,7 @@ public class MultiContentManager implements BusListener, Constants {
 
 	/**
 	 * get selected AddressEntryId from session info.
+	 * 
 	 * @param addr
 	 */
 	public AddressIdEntry getSelectedAddressId() {
@@ -1344,14 +1168,15 @@ public class MultiContentManager implements BusListener, Constants {
 		this.incomingDscMessage = incomingDscMessage;
 	}
 
-	public String findAddressId(String mmsi) {		
-		for(AddressIdEntry a: this.getAddressIdList()){		
-			if(a.getId().equals(mmsi)){
+	public String findAddressId(String mmsi) {
+		for (AddressIdEntry a : this.getAddressIdList()) {
+			if (a.getId().equals(mmsi)) {
 				return a.getName();
 			}
-		}	
-		return null;	
+		}
+		return null;
 	}
+
 	public ArrayList<AddressIdEntry> getAddressIdList() {
 
 		if (this.addressIdList == null) {
@@ -1427,15 +1252,17 @@ public class MultiContentManager implements BusListener, Constants {
 		return selectedIncomingOtherCall;
 	}
 
-	public void setSelectedIncomingOtherCall(DscMessage selectedIncomingOtherCall) {
+	public void setSelectedIncomingOtherCall(
+			DscMessage selectedIncomingOtherCall) {
 		this.selectedIncomingOtherCall = selectedIncomingOtherCall;
 	}
-	
+
 	public DscMessage getSelectedIncomingDistressCall() {
 		return selectedIncomingDistressCall;
 	}
 
-	public void setSelectedIncomingDistressCall(DscMessage selectedIncomingDistressCall) {
+	public void setSelectedIncomingDistressCall(
+			DscMessage selectedIncomingDistressCall) {
 		this.selectedIncomingDistressCall = selectedIncomingDistressCall;
 	}
 }
