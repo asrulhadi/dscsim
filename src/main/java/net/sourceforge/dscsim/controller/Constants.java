@@ -43,13 +43,15 @@ public interface Constants {
 	 * Full name of screen file for ship stations.
 	 */
 	public static final String SCREEN_FILE = RESOURCE_BASE + "ship.xml";
-	public static final String DEVICE_SHIP_XML = RESOURCE_BASE + "ship-screens.xml";
+	public static final String DEVICE_SHIP_XML = RESOURCE_BASE
+			+ "ship-screens.xml";
 
 	/**
 	 * Full name of screen file for coastal stations.
 	 */
 	public static final String SCREEN_FILE_COAST = RESOURCE_BASE + "shore.xml";
-	public static final String DEVICE_SHORE_XML = RESOURCE_BASE + "shore-screens.xml";
+	public static final String DEVICE_SHORE_XML = RESOURCE_BASE
+			+ "shore-screens.xml";
 
 	public static final String INFO_STORE_XML = "infostore.xml";
 
@@ -222,8 +224,9 @@ public interface Constants {
 			{ String.valueOf(KeyEvent.VK_LEFT), MV_LEFT },
 			{ String.valueOf(KeyEvent.VK_RIGHT), MV_RIGHT },
 			{ String.valueOf(KeyEvent.VK_F1), FK_SOS },
-			{ String.valueOf(KeyEvent.VK_ESCAPE), FK_CLR },
-			{ String.valueOf(KeyEvent.VK_F2), FK_CALL },
+			{ String.valueOf(KeyEvent.VK_F2), FK_CLR },
+			{ String.valueOf(KeyEvent.VK_F3), FK_CALL },
+			{ String.valueOf(KeyEvent.VK_F4), FK_ENT },
 			{ String.valueOf(KeyEvent.VK_ENTER), FK_ENT } };
 
 	/**
@@ -408,7 +411,6 @@ public interface Constants {
 	 * Parameter name for simulation of GPS.
 	 */
 	public static final String SETUP_GPS = "GPS";
-	
 
 	/**
 	 * Virtual button string ids.
@@ -434,20 +436,18 @@ public interface Constants {
 	public static final int DISPLAY_Y = _screenSize[0][1];
 	public static final int DISPLAY_W = 210;//_screenSize[1][0] - _screenSize[0][0]+10;		
 	public static final int DISPLAY_H = 160;//_screenSize[1][1] - _screenSize[0][1];
-	
+
 	public static final String NULL = "NULL";
-	public static final String BLANK = "";	
-	public static final String BLANK_1 = " ";	
+	public static final String BLANK = "";
+	public static final String BLANK_1 = " ";
 	public static final String BLANK_2 = "  ";
 	public static final String BLANK_3 = "   ";
-	
-	
+
 	public static final String ADDRESS_BOOK_FNAME = "mmsi_addressbook";
 	public static final String GROUP_BOOK_FNAME = "group_addressbook";
 	public static final String INCOMING_OTHER_CALLS = "incoming_other_calls";
 	public static final String INCOMING_DISTRESS_CALLS = "incoming_distress_calls";
-	
-	
+
 	//properties file constants
 	public static final String POS_GPS = "POS_GPS";
 	public static final String POS_MNL = "POS_MNL";
