@@ -160,6 +160,7 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 			String keyId = oBut.getKeyId();			
 		    if(DSC_POWERED_ON.equals(keyId)){
 		    	_powerOn = true;
+		    	beepSync(BEEP_SIMPLE);
 		    }
 		}		
 		
