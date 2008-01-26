@@ -55,7 +55,8 @@ public class JEditBox extends JScreenComponent {
 	private boolean upperCase = true;
 
 	private ArrayList<String> pickList = null;
-
+	private ArrayList<String> keys = null;
+	
 	private static final String KEY2UPPER[][] = { { "0000" }, { "1ABC" },
 			{ "2DEF" }, { "3GHI" }, { "4JKL" }, { "5MNO" }, { "6PQR" },
 			{ "7STU" }, { "8VWY" }, { "9YZY" }, };
@@ -224,6 +225,13 @@ public class JEditBox extends JScreenComponent {
 			value = this.pickList.get((idx + 1) % this.pickList.size());
 		} else if (MV_DOWN.equals(oMessage.getButtonEvent().getKeyId())) {
 			value = this.pickList.get((idx-1+this.pickList.size()) % this.pickList.size());
+		}
+		
+		if(this.keys != null && keys.contains(keyID)){
+			idx = keys.indexOf(keyID);
+			if(idx < this.pickList.size()){
+				value = this.pickList.get(idx);
+			}
 		}
 
 		return;
@@ -629,8 +637,9 @@ public class JEditBox extends JScreenComponent {
 		return pickList;
 	}
 
-	public void setPickList(ArrayList<String> pickList) {
+	public void setPickList(ArrayList<String> pickList, ArrayList<String>keys) {
 		this.pickList = pickList;
+		this.keys = keys;
 		this.value = this.pickList.get(0);
 	}
 
