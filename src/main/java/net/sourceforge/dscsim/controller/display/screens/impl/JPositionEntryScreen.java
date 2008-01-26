@@ -23,6 +23,7 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 import net.sourceforge.dscsim.controller.BusMessage;
@@ -85,10 +86,13 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 		this.setForceRefresh(true);
 		this.ebLatHem = (JEditBox) this.getComponentByName("lathem", 0);
 		this.ebLatHem.setMode(JEditBox.Mode.Pick);
+		ArrayList<String>m=new ArrayList<String>();
 		ArrayList<String>p = new ArrayList<String>();
+		m.add(KP_6);
+		m.add(KP_7);
 		p.add("N");
 		p.add("S");
-		this.ebLatHem.setPickList(p);
+		this.ebLatHem.setPickList(p, m);
 		this.ebLatHem.setValidator(new JEditBox.PickListValidator());
 		
 		ebLatNull = (JTextBox) this.getComponentByName("latnull", 0);
@@ -107,9 +111,14 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 		
 		this.ebLonHem.setMode(JEditBox.Mode.Pick);
 		p = new ArrayList<String>();
+		m=new ArrayList<String>();
+		m.add(KP_3);
+		m.add(KP_9);
 		p.add("E");
 		p.add("W");
-		this.ebLonHem.setPickList(p);
+		this.ebLonHem.setPickList(p, m);
+		
+		
 		this.ebLonHem.setValidator(new JEditBox.PickListValidator());
 
 		ebLonNull = (JTextBox) this.getComponentByName("lonnull", 0);
