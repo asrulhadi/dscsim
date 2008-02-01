@@ -1,7 +1,7 @@
-Readme for dscsim, Version X.X.X
-======================================
+Readme for dscsim, Version 1.3.3-SNAPSHOT
+=========================================
 
-This is dscsim, Version X.X.X
+This is dscsim, Version 1.3.3-SNAPSHOT
 
 Please visit http://dscsim.sourceforge.net for latest
 information about dscsim.
@@ -10,8 +10,22 @@ For licensing information see file License.txt and the
 licenses of the bundled libraries in directory "legal".
 
 ==================================================
-New in dscsim X.X.X:
-- Fixed (?) [1673020] White noise to loud as compared to speech:
+New in dscsim 1.3.3-SNAPSHOT:
+
+New in dscsim 1.3.2:
+- Fixed [1667425] Teilweise falsche Zuordnung der Funktionstasten im Control.
+- Fixed [1667418] Die CALL-Taste sollte immer zum Grundzustand zurückführen.
+- Fixed [1667433] Cursor sollte blinken, wenn Eingaben erwarten werden.
+- Fixed [1667436] Eingabe für Nord/Süd bzw. E/W ist nicht richtig.
+- Fixed [1667447] CALL und ENT sollten bei der Sendemaske nicht weiterführen.
+- Fixed [1667458] Das Senden darf nicht mit der ENT-Taste alleine ermöglicht.
+- Fixed [1667428] Gleich komplette Meldung zeigen beim Empfang eines Noterufs 
+- Fixed [1667419] Das Auswahlmenue muss immer die letzte Auswahl zeigen.
+- Fixed [1601613] CH70 WATCHING darf nicht blinken
+- Fixed [1667399] Das Fenster für den Controller ist zu klein.
+- Fixed [1667401] Der Splashscreen müsste aktualisiert werden auf 1.3.
+- Fixed [1667389] Fenster sollte nur acht Zeilen und 21 Spalten haben.
+- Fixed [1673020] White noise to loud as compared to speech:
   Level of white noise sound reduced by factor 2
 - Fixed [1667405] Sendetaste des Radios darf nicht bedient werden...
 New in dscsim 1.3.1:
