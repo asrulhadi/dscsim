@@ -28,7 +28,7 @@ public class Version {
 	/**
 	 * The constant containing the version information
 	 */
-	private static final String VERSION = "1-SNAPSHOT";
+	private static final String VERSION = "1.3.3-SNAPSHOT";
 
 	/**
 	 * Returns version information about the application
