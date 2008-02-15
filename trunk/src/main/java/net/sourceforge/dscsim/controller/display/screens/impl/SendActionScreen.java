@@ -28,12 +28,12 @@ import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
 
 /**
  * Screen used to send message. User is pressed with a choice to proceed or
@@ -72,22 +72,22 @@ public class SendActionScreen extends ActionScreen {
 			Button btCall = this.getInstanceContext().getController().getButton(FK_CALL);
 			if (btCall.getAction().equals(PRESSED)) {
 
-				DscMessage outGoing = (DscMessage) getInstanceContext()
-						.getContentManager().getOutGoingDscMessage();
+				Dscmessage outGoing = (Dscmessage) getInstanceContext()
+						.getContentManager().getOutGoingDscmessage();
 
 				/*
 				 * if outgoing is one of the following, then switch the channel
 				 * immediately as there will be no acks.
 				 */
-				if (CALL_TYPE_ALL_SHIPS.equals(outGoing.getCallType())
-						|| CALL_TYPE_GROUP.equals(outGoing.getCallType())) {
+				if (CALL_TYPE_ALL_SHIPS.equals(outGoing.getCallTypeCd())
+						|| CALL_TYPE_GROUP.equals(outGoing.getCallTypeCd())) {
 					RadioCoreController oRadio = getInstanceContext()
 							.getRadioCoreController();
-					oRadio.setChannel(outGoing.getChannel());
+					oRadio.setChannel(outGoing.getChannelStr());
 				}
 
 				/* make sure outgoing message has my mmsi */
-				outGoing.setFromMMSI(getInstanceContext().getContentManager()
+				outGoing.setSender(getInstanceContext().getContentManager()
 						.getMMSI());
 				getInstanceContext().getBeeper().beepSync(
 						MultiBeeper.BEEP_TRANSMITTING);

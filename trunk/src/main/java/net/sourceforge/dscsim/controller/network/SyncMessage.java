@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 
 import net.sourceforge.dscsim.controller.BusMessage;
-import net.sourceforge.dscsim.controller.utils.Utilities;
+
 
 
 
@@ -48,42 +48,13 @@ public class SyncMessage implements Serializable, DscSendable, DscMessageAttribu
 	}
 
 	public String toXml() {
-		
-   		String strXml = "<syncMessage>";
-    	
-	    if(_srcMMSI != null){    		
-	    		strXml += "<_srcMMSI>" + _srcMMSI + "</_srcMMSI>";	    	
-	    }
-	    
-   		if(_busMessage != null){
-   			strXml += "<_busMessage>" + ((DscMessageAttribute)_busMessage).toXml() + "</_busMessage>";	    	
-    		}
-    		
-    		strXml += "</syncMessage>";
-    		
-    		return strXml;
-
+		return "";
 	}
 
 
 	public void fromXml(String inXml) throws Exception {
 		
-		_srcMMSI = Utilities.getAttributeValue("_srcMMSI", inXml);
-		
-	
-		String subXml = Utilities.getAttributeValue("_busMessage", inXml);
-		
-		if(subXml != null){
-			
-			DscMessageAttribute tmpBusMsg =null;
-			tmpBusMsg = new BusMessage(null, null, null);
-			
-			tmpBusMsg.fromXml(subXml);
-			
-			_busMessage =  tmpBusMsg;
-			
-		}
-		
+
 	}
 
 	public String getTo() {

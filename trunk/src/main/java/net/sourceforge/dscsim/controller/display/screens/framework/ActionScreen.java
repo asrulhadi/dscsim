@@ -22,10 +22,10 @@ package net.sourceforge.dscsim.controller.display.screens.framework;
 import java.awt.Component;
 
 import net.sourceforge.dscsim.controller.BusMessage;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.panels.Screen;
 
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 
 public class ActionScreen extends JScreen {
 	
@@ -34,7 +34,7 @@ public class ActionScreen extends JScreen {
 	 */
 	private boolean forceRefresh = false;
 	
-	private DscMessage incomingDscMessage = null;
+	private Dscmessage incomingDscmessage = null;
 
 	
 	public ActionScreen(JDisplay display, Screen screen) {
@@ -42,37 +42,14 @@ public class ActionScreen extends JScreen {
 	}
 	
 	public static class JActionMapping 
-		implements ActionMapping {
+		extends ActionMapping {
 		
-		private String event;
-		private String source;
-		private String forward;
 		
 		public JActionMapping(String event, String source, String forward){
-			this.event = event;
-			this.source = source;
-			this.forward = forward;
-		}
-		public String getEvent() {
-			return event;
-		}
-		public void setEvent(String event) {
-			this.event = event;
-		}
-		public String getSource() {
-			return source;
-		}
-		public void setSource(String source) {
-			this.source = source;
-		}
-		public String getForward() {
-			return forward;
-		}
-		public void setForward(String forward) {
-			this.forward = forward;
-		}
-		
-		
+			setEvent(event);
+			setSource(source);
+			setForward(forward);
+		}	
 	}
 	
 	public ActionMapping notify(BusMessage oMessage) {
@@ -118,14 +95,14 @@ public class ActionScreen extends JScreen {
 	}
 
 	
-	public DscMessage getIncomingDscMessage() {
-		return this.incomingDscMessage;
+	public Dscmessage getIncomingDscmessage() {
+		return this.incomingDscmessage;
 	}
 
 
 
 	
-	public DscMessage getOutGoingDscMessage() {
+	public Dscmessage getOutGoingDscmessage() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -137,13 +114,13 @@ public class ActionScreen extends JScreen {
 	}
 
 	
-	public void setIncomingDscMessage(DscMessage dscMessage) {
-		this.incomingDscMessage = dscMessage;
+	public void setIncomingDscmessage(Dscmessage Dscmessage) {
+		this.incomingDscmessage = Dscmessage;
 		
 	}
 	
 	
-	public void setOutGoingDscMessage(DscMessage dscMessage) {
+	public void setOutGoingDscmessage(Dscmessage Dscmessage) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -7,8 +7,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import net.sourceforge.dscsim.controller.InstanceContext;
-import net.sourceforge.dscsim.controller.panels.Device;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.screens.*;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
@@ -26,7 +25,7 @@ public class JScreenFactory {
 		this.display = display;
 		
 		try {					
-			JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.panels", JScreenFactory.class.getClassLoader());		
+			JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.screens", JScreenFactory.class.getClassLoader());		
 			Unmarshaller u = jc.createUnmarshaller();  
 			//device = (Device)u.unmarshal(new FileInputStream("D:\\Projekte\\sourceforge\\dscsim\\src\\main\\resources\\etc\\ship-screens.xml"));
 			device = (Device)u.unmarshal(dis);
@@ -58,7 +57,7 @@ public class JScreenFactory {
 		String impl = jaxb.getImplementation();	
 		if(impl != null){
 			Class<?> clazz = Class.forName(impl);		
-			java.lang.reflect.Constructor<?> ctor = clazz.getConstructor(new Class[]{net.sourceforge.dscsim.controller.display.screens.framework.JDisplay.class, net.sourceforge.dscsim.controller.panels.Screen.class});
+			java.lang.reflect.Constructor<?> ctor = clazz.getConstructor(new Class[]{net.sourceforge.dscsim.controller.display.screens.framework.JDisplay.class, net.sourceforge.dscsim.controller.screens.Screen.class});
 			screen = (ActionScreen)ctor.newInstance(this.display, jaxb);
 		}else{
 			screen = new ActionScreen(this.display, jaxb);			

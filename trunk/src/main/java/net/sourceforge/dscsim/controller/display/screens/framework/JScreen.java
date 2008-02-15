@@ -34,15 +34,12 @@ import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
+
 import net.sourceforge.dscsim.controller.InstanceContext;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.panels.Device;
-import net.sourceforge.dscsim.controller.panels.Editbox;
-import net.sourceforge.dscsim.controller.panels.MenuType;
-import net.sourceforge.dscsim.controller.panels.Menubox;
-import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.panels.Textbox;
-import net.sourceforge.dscsim.controller.panels.impl.FieldsImpl;
+import net.sourceforge.dscsim.controller.screens.*;
+
+
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
@@ -110,39 +107,44 @@ public class JScreen extends Container
 	 	//AppLogger.debug2("Screen.Screen parent=" + this.getParent());
 	 	
 	 	//handle jaxb.
-		List<FieldsImpl>fields = screen.getFields();
-		for(FieldsImpl field: fields){
+		List<Object>fields = screen.getFields().getAny();
+		
+		
+		for(Object field: fields){
 			System.out.println(field.getClass().getName());
-			List kids = field.getAny();			
-			for(Object kid: kids){
+			
+			Object kid = ((JAXBElement<Object>)field).getValue();
+			
+	
+			//for(Object kid: kids){
 				System.out.println(kid.getClass().getName());	
 		
-				if(kid instanceof Textbox){
-					Textbox b = (Textbox)kid;
+				if(kid instanceof TextBoxType){
+					TextBoxType b = (TextBoxType)kid;
 					JTextBox item = new JTextBox(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
 					item.setText(b.getValue());
 					item.setName(b.getName());
 					item.setBlink(b.getBlink());
 					this.add(item);
-				}else if(kid instanceof Editbox){
-					Editbox b = (Editbox)kid;
+				}else if(kid instanceof EditBoxType){
+					EditBoxType b = (EditBoxType)kid;
 					JEditBox item = new JEditBox(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
 					item.setValue(b.getValue());
 					item.setName(b.getName());
 					item.setTabOn(JEditBox.TAB_EVENT.asEnum(b.getTabon()));
 					this.add(item);				
-				}else if(kid instanceof Menubox){					
-					Menubox b = (Menubox)kid;
+				}else if(kid instanceof MenuType){					
+					MenuType b = (MenuType)kid;
 					JMenu item = new JMenu(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
 					item.setName(b.getName());
-					List<MenuType.ChoiceType> choices = b.getChoice();					
-					for(MenuType.ChoiceType c: choices){
+					List<MenuType.Choice> choices = b.getChoice();					
+					for(MenuType.Choice c: choices){
 						item.addItem(c.getValue(), c.getLink(), c.getCode());
 					}
 					this.add(item);						
 				}			
 			}
-		}
+		//}
 	 
 	}
 	/**

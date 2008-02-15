@@ -87,17 +87,6 @@ public class DscIACManager implements Constants {
 			_receiver.addDependent(oListener);
 			_receiver.turnon();
 			_transmitter = AirwaveTransmitter.getInstance(oInstCtx);
-		}else{
-			
-			//stand alone slave
-			AppLogger.debug2("DscIACManager.init - MulticastReceiver");
-		
-			_strIACMethod = IAC_UDP;
-			_receiver = new MulticastReceiver();
-			_receiver.addDependent(oListener);
-			_receiver.turnon();
-			_transmitter = MulticastTransmitter.getInstance(oInstCtx);
-			
 		}
 		
 	

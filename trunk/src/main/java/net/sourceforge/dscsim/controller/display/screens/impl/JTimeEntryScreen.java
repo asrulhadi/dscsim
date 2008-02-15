@@ -28,12 +28,12 @@ import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.impl.JEditBoxInputScreen.MoveWhenComplete;
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.TimeType;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+import net.sourceforge.dscsim.controller.message.types.Time;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -68,10 +68,16 @@ public class JTimeEntryScreen extends JEditBoxInputScreen {
 		this.ebTimeNull = (JTextBox) this.getComponentByName("timenull", 0);
 		
 		MultiContentManager oMngr = getInstanceContext().getContentManager();
-		TimeType time = oMngr.getInfoStore().getPosition().getTime();
+		Time time = oMngr.getInfoStore().getPosition().getTime();
 	
-		this.ebHours.setValue(time.getHours());
-		this.ebMinutes.setValue(time.getMinutes());
+		if(time.isValid()){
+			this.ebHours.setValue(time.hoursAsString());
+			this.ebMinutes.setValue(time.minutesAsString());			
+		}else{
+			this.ebHours.setValue(BLANK);
+			this.ebMinutes.setValue(BLANK);
+			this.ebTimeNull.setText(NULL);
+		}
 		
 		//position cursur.
 		this.activeComponent = this.ebHours;
@@ -157,10 +163,14 @@ public class JTimeEntryScreen extends JEditBoxInputScreen {
 			
 			Position position = oMCmgr.getInfoStore().getPosition();
 			
-			TimeType time = position.getTime();
+			Time time = position.getTime();
 			
-			time.setHours(this.ebHours.getValue());
-			time.setMinutes(this.ebMinutes.getValue());
+			if(NULL.compareToIgnoreCase(this.ebTimeNull.getText())== 0){
+				time.inValidate();
+			}else{
+				time.setHours(this.ebHours.getValue());
+				time.setMinutes(this.ebMinutes.getValue());
+			}
 			
 			oMCmgr.persistInfoStore();
 		}

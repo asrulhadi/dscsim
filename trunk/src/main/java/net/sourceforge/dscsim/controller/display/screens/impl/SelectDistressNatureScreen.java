@@ -20,13 +20,13 @@ package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
@@ -55,8 +55,8 @@ public class SelectDistressNatureScreen extends MenuScreen{
 			oMCmgr.getInfoStore().setNature(nature);						
 			oMCmgr.persistInfoStore();
 			
-			DscMessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscMessage();
-			outGoing.setNature(nature);		
+			Dscmessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscmessage();
+			outGoing.setNatureCd(nature);		
 
 		}
 	}

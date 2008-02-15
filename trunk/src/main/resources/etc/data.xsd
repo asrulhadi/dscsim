@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://dscsim.sourceforge.net/controller/message/types"
+	xmlns:msg="http://dscsim.sourceforge.net/controller/message/types"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:complexType name="Dscmessage">
+		<xsd:sequence>
+			<xsd:element name="uid" type="xsd:long"></xsd:element>		
+			<xsd:element name="to" type="xsd:string"></xsd:element>
+			<xsd:element name="from" type="msg:MMSI"></xsd:element>	
+			<xsd:element name="position" type="msg:Position"></xsd:element>
+			<xsd:element name="nature" type="msg:Nature"></xsd:element>
+			<xsd:element name="type" type="msg:CallType"></xsd:element>
+			<xsd:element name="catagory" type="msg:Catagory"></xsd:element>
+			<xsd:element name="channel" type="msg:Channel"></xsd:element>
+			<xsd:element name="compliance" type="msg:Compliance"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:simpleType name="MMSI">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[0-9]{8}"></xsd:pattern>							
+		</xsd:restriction>
+	</xsd:simpleType>
+		
+	<xsd:simpleType name="Compliance">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="AB"></xsd:enumeration>
+			<xsd:enumeration value="UN"></xsd:enumeration>								
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Channel">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minExclusive value="0"></xsd:minExclusive>
+			<xsd:maxExclusive value="100"></xsd:maxExclusive>		
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Catagory">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DI"></xsd:enumeration>
+			<xsd:enumeration value="UR"></xsd:enumeration>	
+			<xsd:enumeration value="SA"></xsd:enumeration>
+			<xsd:enumeration value="RO"></xsd:enumeration>									
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	
+	<xsd:simpleType name="Nature">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DC"></xsd:enumeration>
+			<xsd:enumeration value="UC"></xsd:enumeration>			
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	
+	<xsd:simpleType name="CallType">
+		 <xsd:restriction base="xsd:string">
+		 	<xsd:enumeration value="IC"></xsd:enumeration>
+		 	<xsd:enumeration value="IA"></xsd:enumeration>
+		 	<xsd:enumeration value="GC"></xsd:enumeration>
+		 	<xsd:enumeration value="GA"></xsd:enumeration>
+		 	<xsd:enumeration value="AC"></xsd:enumeration>
+		 	<xsd:enumeration value="AA"></xsd:enumeration>
+		 	<xsd:enumeration value="DC"></xsd:enumeration>
+		 	<xsd:enumeration value="DA"></xsd:enumeration>
+		 	<xsd:enumeration value="PR"></xsd:enumeration>
+		 	<xsd:enumeration value="RA"></xsd:enumeration>		 	
+		 </xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:complexType name="Position">
+		<xsd:sequence>
+			<xsd:element name="latitude" type="msg:Latitude" />
+			<xsd:element name="longitude" type="msg:Longitude" />
+			<xsd:element name="time" type="msg:Time" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:simpleType name="Minutes">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0"></xsd:minInclusive>
+			<xsd:maxInclusive value="59"></xsd:maxInclusive>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="Latitude">
+		<xsd:sequence>
+			<xsd:element name="degrees">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:int">
+						<xsd:minInclusive value="-90"></xsd:minInclusive>
+						<xsd:maxInclusive value="90"></xsd:maxInclusive>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="minutes" type="msg:Minutes"/>
+			<xsd:element name="hemisphere">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="N" />
+						<xsd:enumeration value="S" />
+						<xsd:enumeration value="X" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+			
+	<xsd:complexType name="Longitude">
+		<xsd:sequence>
+			<xsd:element name="degrees">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:int">
+						<xsd:minInclusive value="-180"></xsd:minInclusive>
+						<xsd:maxInclusive value="180"></xsd:maxInclusive>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="minutes" type="msg:Minutes"/>
+			<xsd:element name="hemisphere">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="W" />
+						<xsd:enumeration value="E" />
+						<xsd:enumeration value="X" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Time">
+		<xsd:sequence>
+			<xsd:element name="hours">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:int">
+						<xsd:minInclusive value="0"></xsd:minInclusive>
+						<xsd:maxInclusive value="24"></xsd:maxInclusive>					
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="minutes" type="msg:Minutes"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.02.2008 17:23:08 by Hibernate Tools 3.2.0.beta8 -->
+<hibernate-mapping>
+    <class name="net.sourceforge.dscsim.controller.message.types.AddressBook" table="ADDRESS_BOOK">
+        <id name="mmsi" type="string">
+            <column name="MMSI" length="9" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="codeText" class="net.sourceforge.dscsim.controller.message.types.CodeText" fetch="select">
+            <column name="TYPE_CD" length="2" />
+        </many-to-one>
+        <property name="id" type="string">
+            <column name="ID" length="15" />
+        </property>
+    </class>
+</hibernate-mapping>

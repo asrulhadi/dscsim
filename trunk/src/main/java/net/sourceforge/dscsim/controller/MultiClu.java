@@ -21,14 +21,14 @@ package net.sourceforge.dscsim.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.network.DscMessage;
 
 import net.sourceforge.dscsim.controller.display.screens.impl.SendDistressScreen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
 
 /**
  * Central unit for controlling state flow.
@@ -203,9 +203,9 @@ public class MultiClu implements BusListener, Constants {
 			/* the source of the message is another client. */
 			if (BusMessage.MSGTYPE_NETWORK.equals(oMessage.getType())) {
 
-				DscMessage oDscMessage = oMessage.getDscMessage();
-				String callType = oDscMessage.getCallType();
-				String toMMSI = oDscMessage.getToMMSI();
+				Dscmessage oDscmessage = oMessage.getDscmessage();
+				String callType = oDscmessage.getCallTypeCd();
+				String toMMSI = oDscmessage.getRecipient();
 				String myMMSI = _oContext.getApplicationContext()
 						.getIndividualMmsi();
 
@@ -222,19 +222,19 @@ public class MultiClu implements BusListener, Constants {
 						return;
 					}
 				}
-				_oContext.getContentManager().setIncomingDscMessage(oDscMessage);
+				_oContext.getContentManager().setIncomingDscmessage(oDscmessage);
 
 				/* now show incoming ack */
 				String strScreenName = _oContext.getContentManager()
-						.getCallTypeMappingValue(oDscMessage.getCallType());
+						.getCallTypeMappingValue(oDscmessage.getCallTypeCd());
 				ActionScreen oScreen1 = (ActionScreen) _oContext
 						.getContentManager().getScreenContent(strScreenName,
 								_oContext);
-				oScreen1.setIncomingDscMessage(oDscMessage);
+				oScreen1.setIncomingDscmessage(oDscmessage);
 
 				// copy the incoming to the outcoming just to have some defaults
-				DscMessage oCopy = new DscMessage(oDscMessage);
-				oScreen1.setOutGoingDscMessage(oCopy);
+				Dscmessage oCopy = new Dscmessage(oDscmessage);
+				oScreen1.setOutGoingDscmessage(oCopy);
 				oScreen1.enter(oCopy);
 				_oScreenStack.add(oScreen1);
 				_oContext.getController().setScreenContent(oScreen1);
@@ -302,13 +302,13 @@ public class MultiClu implements BusListener, Constants {
 					} else {
 						// moving down deeper in state diagram
 						active.exit(oMessage);
-						next.setIncomingDscMessage(active
-								.getIncomingDscMessage());
-						next.setOutGoingDscMessage(active
-								.getOutGoingDscMessage());
+						next.setIncomingDscmessage(active
+								.getIncomingDscmessage());
+						next.setOutGoingDscmessage(active
+								.getOutGoingDscmessage());
 					}
 
-					next.enter(active.getIncomingDscMessage());
+					next.enter(active.getIncomingDscmessage());
 					_oScreenStack.add(next);
 					_oContext.getController().setScreenContent(next);
 				}
@@ -339,13 +339,13 @@ public class MultiClu implements BusListener, Constants {
 					} else {
 						// moving down deeper in state diagram
 						oScreen.exit(oMessage);
-						oReturnScreen.setIncomingDscMessage(oScreen
-								.getIncomingDscMessage());
-						oReturnScreen.setOutGoingDscMessage(oScreen
-								.getOutGoingDscMessage());
+						oReturnScreen.setIncomingDscmessage(oScreen
+								.getIncomingDscmessage());
+						oReturnScreen.setOutGoingDscmessage(oScreen
+								.getOutGoingDscmessage());
 					}
 
-					oReturnScreen.enter(oScreen.getIncomingDscMessage());
+					oReturnScreen.enter(oScreen.getIncomingDscmessage());
 					_oScreenStack.add(oReturnScreen);
 					_oContext.getController().setScreenContent(oReturnScreen);
 

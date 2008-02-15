@@ -30,16 +30,17 @@ import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.DscPosition;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 
 /**
  * @author katharina
@@ -52,7 +53,7 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 	private int pressCount = 0;
 
 	public IncomingDistressAlertScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+			Screen screen) {
 		super(display, screen);
 	}
 
@@ -65,27 +66,28 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 		pressCount = 0;
 
 		MultiContentManager oMngr = getInstanceContext().getContentManager();
-		DscMessage incoming = oMngr.getIncomingDscMessage();
+		Dscmessage incoming = oMngr.getIncomingDscmessage();
 		if (incoming == null)
 			return;
 
-		this.setTextBox("from", incoming.getFromMMSI());
-		this.setTextBox("nature", incoming.getNatureText());
+		this.setTextBox("from", incoming.getSender());
+		this.setTextBox("nature", incoming.getNatureCd());
 
-		this.setTextBox("time", incoming.getTime().toString());
+		//TODO Time should be 
+		//this.setTextBox("time", incoming.getTime().toString());
 
-		DscPosition pos = incoming.getPosition();
+		Position pos = incoming.getPosition();
 		Latitude lat = pos.getLatitude();
 		Longitude lon = pos.getLongitude();
 		Properties props = oMngr.getProperties();
 		this.setTextBox("lat", lat.getAsFromattedString(props));
 		this.setTextBox("lon", lon.getAsFromattedString(props));
 
-		DscMessage inComing = this.getIncomingDscMessage();
+		Dscmessage inComing = this.getIncomingDscmessage();
 		if (inComing != null) {
 			RadioCoreController oRadio = getInstanceContext()
 					.getRadioCoreController();
-			oRadio.setChannel(inComing.getChannel());
+			oRadio.setChannel(inComing.getChannelStr());
 		}
 
 	}
@@ -101,11 +103,11 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 		/*only for shore mode*/
 		if (mngr.getAsMMSI().isCoastal() && keyID.equals(FK_ENT)
 				|| keyID.equals(FK_CALL)) {
-				mngr.setIncomingDscMessage(this.getIncomingDscMessage());
-			DscMessage outGoing = new DscMessage();
-			outGoing.setToMMSI(this.getIncomingDscMessage().getFromMMSI());
-			outGoing.setCallType(CALL_TYPE_DISTRESS_ACK);
-			mngr.setOutGoingDscMessage(outGoing);
+				mngr.setIncomingDscmessage(this.getIncomingDscmessage());
+			Dscmessage outGoing = new Dscmessage();
+			outGoing.setRecipient(this.getIncomingDscmessage().getSender());
+			outGoing.setCallTypeCd(CALL_TYPE_DISTRESS_ACK);
+			mngr.setOutGoingDscmessage(outGoing);
 		}
 	}
 

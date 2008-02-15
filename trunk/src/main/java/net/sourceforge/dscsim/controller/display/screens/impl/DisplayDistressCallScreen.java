@@ -22,22 +22,19 @@
  
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
-import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
-import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
-import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.DscPosition;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.screens.Screen;
+
+
 /**
  * @author katharina
  *
@@ -46,8 +43,7 @@ import net.sourceforge.dscsim.controller.screen.types.Longitude;
  */
 public class DisplayDistressCallScreen extends MenuScreen {
 
-	public DisplayDistressCallScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+	public DisplayDistressCallScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 	}
 
@@ -58,17 +54,16 @@ public class DisplayDistressCallScreen extends MenuScreen {
 		super.enter(msg);
 
 		MultiContentManager oMngr = getInstanceContext().getContentManager();	
-		DscMessage selected = oMngr.getSelectedIncomingDistressCall();
+		Dscmessage selected = oMngr.getSelectedIncomingDistressCall();
 		if(selected == null)
 			return;
-		
-		this.setTextBox("from", selected.getFromMMSI());
-		this.setTextBox("nature", selected.getNatureText());
-		
-		this.setTextBox("time", selected.getTime().toString());
-		
 		Properties props = oMngr.getProperties();
-		DscPosition pos = selected.getPosition();
+		this.setTextBox("from", selected.getFrom());
+		this.setTextBox("nature", props.getProperty(selected.getNatureCd()));
+		
+		this.setTextBox("time", selected.getPosition().getTime().toString());
+		
+		Position pos = selected.getPosition();
 		if(pos != null){
 		Latitude lat = pos.getLatitude();
 		Longitude lon  = pos.getLongitude();
@@ -87,7 +82,7 @@ public class DisplayDistressCallScreen extends MenuScreen {
 		
 		if(msg.getButtonEvent().getKeyId().equals(KP_Aa)){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			DscMessage distmsg = oMCmgr.getSelectedIncomingDistressCall();			
+			Dscmessage distmsg = oMCmgr.getSelectedIncomingDistressCall();			
 			if(distmsg != null){				
 				oMCmgr.removeIncomingDistressCall(distmsg);				
 			}

@@ -23,13 +23,21 @@ package net.sourceforge.dscsim.controller.network;
 import java.net.MulticastSocket;
 import java.net.InetAddress;
 import java.net.DatagramPacket;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.RadioCoreController;
+import net.sourceforge.dscsim.controller.infostore.InfoStoreFactory;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.util.ByteConverter;
 
@@ -88,7 +96,7 @@ public class AirwaveTransmitter extends DscRadioTransmitter implements Runnable 
          }
          
          
-		DscMessage tobeDispatched = null;
+		Dscmessage tobeDispatched = null;
         while(true){
 
             try {
@@ -99,7 +107,7 @@ public class AirwaveTransmitter extends DscRadioTransmitter implements Runnable 
  					_outboundQueue.wait(1000);
 					
 	                if(_outboundQueue.size() > 0 ){
-	                    tobeDispatched = (DscMessage) _outboundQueue.get(0);	
+	                    tobeDispatched = (Dscmessage) _outboundQueue.get(0);	
 	                    _outboundQueue.remove(tobeDispatched);
 	                }
 	                
@@ -110,17 +118,19 @@ public class AirwaveTransmitter extends DscRadioTransmitter implements Runnable 
 
 				if(tobeDispatched != null) {
 
-					DscMessage tmpMessage = tobeDispatched;
+					Dscmessage tmpMessage = tobeDispatched;
 					tobeDispatched = null;
-	                AppLogger.info("AirwaveTransmitter.run - message being sent is=" + tmpMessage.toString());
 	                
-	                ByteArrayOutputStream oOutStrm = new ByteArrayOutputStream();
-	                ObjectOutputStream oObjStrm = new ObjectOutputStream(oOutStrm);
-	                
-	                //DcsMessage oDscMsg = new DcsMessage(theMessage);
-	                oObjStrm.writeObject(tmpMessage);
-	                
-	                byte[] byteMsg = oOutStrm.toByteArray();
+	                ByteArrayOutputStream oOutStrm = new ByteArrayOutputStream();	                
+	    			JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.message.types", AirwaveTransmitter.class.getClassLoader());		
+	    			Marshaller m = jc.createMarshaller();  			
+	    			//OutputStream os = new DataOutputStream(oOutStrm);
+	    			m.marshal(tmpMessage, oOutStrm);	
+                
+	    			String strMsg = new String(oOutStrm.toByteArray());
+	                AppLogger.info("AirwaveTransmitter.run - message being sent is=" + strMsg);
+	    			
+	                byte[] byteMsg = strMsg.getBytes();
 	                byte[] msgWithHeader = new byte[byteMsg.length+4];
 	                AppLogger.debug("AirwaveTransmitter.run - message length bytes=" + byteMsg.length);
 
@@ -148,7 +158,7 @@ public class AirwaveTransmitter extends DscRadioTransmitter implements Runnable 
         }        
     }
     
-	public void transmit(DscMessage oMsg) {
+	public void transmit(Dscmessage oMsg) {
 		
                AppLogger.debug("AirwaveTransmitter.transmit - queuing message.");
                
@@ -165,26 +175,6 @@ public class AirwaveTransmitter extends DscRadioTransmitter implements Runnable 
  
 		
 	}
-    
-    public static void main(String args[]) throws Exception{        
-    	AirwaveTransmitter oMT = new AirwaveTransmitter(null, args[0]);
-    
-        Thread oTh = new Thread(oMT);
-        oTh.start();
-        
-        DscMessage oMsg = new DscMessage();
-        
-        oMsg.setToMMSI("002110124");
-        oMsg.setFromMMSI("211232323");
-        
-       
-        oMT.transmit(oMsg);
-        AppLogger.debug("test join");       
-        oTh.join();
-        
-        AppLogger.debug("test done");
-        
-    }
   
 
 }

@@ -32,14 +32,14 @@ import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
-import net.sourceforge.dscsim.controller.infostore.impl.InfoStoreTypeImpl;
+import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+
 
 /**
  * @author katharina
@@ -127,16 +127,18 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 		MultiContentManager oMngr = getInstanceContext().getContentManager();
 		Position position = oMngr.getInfoStore().getPosition();
 
-		LatitudeType lat = position.getLatitude();
-		LongitudeType lon = position.getLongitude();
+		Latitude lat = position.getLatitude();
+		Longitude lon = position.getLongitude();
+		
+		if(lat.hasValue()){
+			this.ebLatDeg.setValue(lat.getDegreesAsString());
+			this.ebLatMin.setValue(lat.getMinutesAsString());
+			this.ebLatHem.setValue(lat.getHemisphere().name());
 
-		this.ebLatDeg.setValue(lat.getDegrees());
-		this.ebLatMin.setValue(lat.getMinutes());
-		this.ebLatHem.setValue(lat.getHemisphere());
-
-		this.ebLonDeg.setValue(lon.getDegrees());
-		this.ebLonMin.setValue(lon.getMinutes());
-		this.ebLonHem.setValue(lon.getHemisphere());
+			this.ebLonDeg.setValue(lon.getDegreesAsString());
+			this.ebLonMin.setValue(lon.getMinutesAsString());
+			this.ebLonHem.setValue(lon.getHemisphere().name());			
+		}
 
 		//position cursur.
 		this.activeComponent = ebLatDeg;
@@ -185,16 +187,23 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 
 			Position position = oMCmgr.getInfoStore().getPosition();
 
-			LatitudeType lat = position.getLatitude();
-			LongitudeType lon = position.getLongitude();
+			Latitude lat = position.getLatitude();
+			Longitude lon = position.getLongitude();
 
-			lat.setDegrees(this.ebLatDeg.getValue());
-			lat.setMinutes(this.ebLatMin.getValue());
-			lat.setHemisphere(this.ebLatHem.getValue());
+			
+			if(NULL.compareToIgnoreCase(this.ebLatNull.getText())== 0){
+				lat.setHemisphere(Latitude.Hemisphere.X);
+				lon.setHemisphere(Longitude.Hemisphere.X);
+			} else{
+				lat.setDegrees(this.ebLatDeg.getValue());
+				lat.setMinutes(this.ebLatMin.getValue());
+				lat.setHemisphere(this.ebLatHem.getValue());
 
-			lon.setDegrees(this.ebLonDeg.getValue());
-			lon.setMinutes(this.ebLonMin.getValue());
-			lon.setHemisphere(this.ebLonHem.getValue());
+				lon.setDegrees(this.ebLonDeg.getValue());
+				lon.setMinutes(this.ebLonMin.getValue());
+				lon.setHemisphere(this.ebLonHem.getValue());				
+			}
+			
 
 			oMCmgr.persistInfoStore();
 		}

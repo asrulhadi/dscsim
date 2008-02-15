@@ -20,7 +20,7 @@ package net.sourceforge.dscsim.controller;
 
 import javax.sound.sampled.Clip;
 
-import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 
@@ -125,9 +125,9 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 		String msgType = oMessage.getType();
 		if(_powerOn && msgType.equals(BusMessage.MSGTYPE_NETWORK) == true){
 			
-			DscMessage oDscMessage = (DscMessage)oMessage.getDscMessage();
+			Dscmessage oDscMessage = (Dscmessage)oMessage.getDscmessage();
 			
-			if(CALL_CAT_DISTRESS.equals(oDscMessage.getCatagory())){
+			if(CALL_CAT_DISTRESS.equals(oDscMessage.getCatagoryCd())){
 				soundIncomingDistressAlarm();
 			} else {
 				beepSync(BEEP_TRANSMITTING);

@@ -1,10 +1,11 @@
 package net.sourceforge.dscsim.controller.network;
 
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 public class NullTransmitterReceiver implements DscsimTransmitter, DscsimReceiver {
 
-	public void transmit(DscMessage oMsg) {
+	public void transmit(Dscmessage oMsg) {
 		AppLogger.debug2("NullTransmitterReceiver.transmit called");		
 	}
 

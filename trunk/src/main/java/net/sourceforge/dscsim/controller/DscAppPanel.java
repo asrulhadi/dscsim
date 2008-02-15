@@ -30,7 +30,7 @@ import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.network.InternalBusListener;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
@@ -174,7 +174,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 	/**
 	 * handle notification for network and dispatch the into the application.
 	 */
-	public void updateSignal(DscMessage oDscMessage) {
+	public void updateSignal(Dscmessage oDscMessage) {
 		
 		AppLogger.debug("applet.DscAppPanel.updateSignal=" + oDscMessage.toString());
 		
@@ -185,9 +185,9 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 		}
 		*/
 		
-		String msgFromMMSI = oDscMessage.getFromMMSI();
-		String msgType = oDscMessage.getCallType();
-		String msgToMMSI = oDscMessage.getToMMSI();
+		String msgFromMMSI = oDscMessage.getSender();
+		String msgType = oDscMessage.getCallTypeCd();
+		String msgToMMSI = oDscMessage.getRecipient();
 		String myMMSI = getApplicationContext().getIndividualMmsi();
 		String myGroupMMSI = getApplicationContext().getGroupMmsi();
 		boolean hasToMMSI = oDscMessage.hasToMMSI();
@@ -199,7 +199,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 				||  ((hasToMMSI && myGroupMMSI.equals(msgToMMSI)==true) && (CALL_TYPE_GROUP.equals(msgType) || CALL_TYPE_GROUP.equals(msgType)))){
 			
 				//ContentManager.storeLastDistressCalls(oDscMessage);
-				getContentManager().storeIncomingMessage((DscMessage)oDscMessage.clone());
+				getContentManager().storeIncomingMessage((Dscmessage)oDscMessage.clone());
 				BusMessage oBusMessage = new BusMessage(this, oDscMessage);				
 				getBus().publish(oBusMessage);
 			}

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.02.2008 17:23:08 by Hibernate Tools 3.2.0.beta8 -->
+<hibernate-mapping>
+    <class name="net.sourceforge.dscsim.controller.message.types.Dscmessage" table="DSCMESSAGE">
+        <composite-id>
+            <key-property name="uid" type="timestamp">
+                <column name="UID" length="6" />
+            </key-property>
+            <key-property name="sender" type="string">
+                <column name="SENDER" length="9" />
+            </key-property>
+        </composite-id>
+        <property name="recipient" type="string">
+            <column name="RECIPIENT" length="9" />
+        </property>
+        <property name="callTypeCd" type="string">
+            <column name="CALL_TYPE_CD" length="2" />
+        </property>
+        <property name="natureCd" type="string">
+            <column name="NATURE_CD" length="2" />
+        </property>
+        <property name="catagoryCd" type="string">
+            <column name="CATAGORY_CD" length="2" />
+        </property>
+
+        <property name="position" type="net.sourceforge.dscsim.controller.message.types.Position">     
+            <column name="POS_LAT_DEG" sql-type="INTEGER"/>
+            <column name="POS_LAT_MIN" sql-type="INTEGER"/>
+			<column name="POS_LAT_HEM" sql-type="VARCHAR(1)"/>
+            <column name="POS_LON_DEG" sql-type="INTEGER"/>
+			<column name="POS_LON_MIN" sql-type="INTEGER"/>
+			<column name="POS_LON_HEM" sql-type="VARCHAR(1)"/>
+            <column name="POS_TIME_HRS" sql-type="INTEGER"/>
+           	<column name="POS_TIME_MIN" sql-type="INTEGER"/>
+        </property>
+        
+        <property name="channel" type="java.lang.Integer">
+            <column name="CHANNEL" />
+        </property>
+        <property name="complianceCd" type="string">
+            <column name="COMPLIANCE_CD" length="2" />
+        </property>
+        <property name="complianceReasonCd" type="string">
+            <column name="COMPLIANCE_REASON_CD" length="2" />
+        </property>
+        <property name="ackdTime" type="timestamp">
+            <column name="ACKD_TIME" length="6" />
+        </property>
+    </class>
+</hibernate-mapping>

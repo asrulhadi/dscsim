@@ -15,10 +15,9 @@ import java.util.Properties;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 
-import net.sourceforge.dscsim.controller.screen.types.DscString;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
-import net.sourceforge.dscsim.controller.screen.types.Time;
+import net.sourceforge.dscsim.controller.data.types.DscString;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
@@ -126,7 +125,7 @@ public class SetupSimulationDialog extends  JDialog implements ActionListener, C
             			oMngr.resetProperty("Time");
             			//oMngr.saveProperties();
     		       		DscString mode = new DscString("POS_MNL");
-    		       	   	oMngr.getSetting("PositionType").setValue(mode);		
+    		       	   	//oMngr.getSetting("PositionType").setValue(mode);		
    				
         			}catch(Exception oEx){
         				AppLogger.error(oEx);
@@ -136,17 +135,17 @@ public class SetupSimulationDialog extends  JDialog implements ActionListener, C
        	   			MultiContentManager oMngr = _oCtx.getContentManager();
        	   		
 		       	   	try{
-			       	   	Longitude lon = new Longitude("071", "30", "W");
-			       	   	oMngr.setSetting("Longitude", lon);
+			       	   	Longitude lon = new Longitude(72, 30, Longitude.Hemisphere.W);
+			       	   	//oMngr.setSetting("Longitude", lon);
 	        
-			       	   	Latitude lat = new Latitude("42", "15", "N");
-			       	   	oMngr.setSetting("Latitude", lat);
+			       	   	Latitude lat = new Latitude(42, 15, Latitude.Hemisphere.N);
+			       	   	//oMngr.setSetting("Latitude", lat);
 	
-			       	   	Time time = new Time("12", "30");
-			       	   	oMngr.setSetting("Time", time);
+			       	   	//Time time = new Time("12", "30");
+			       	   	//oMngr.setSetting("Time", time);
 			       	   	
 			       		DscString mode = new DscString("POS_GPS");
-			       	   	oMngr.setSetting("PositionType", mode);		
+			       	   	//oMngr.setSetting("PositionType", mode);		
 		       	   		
 		       	   	}catch(Exception oEx){
 						AppLogger.error(oEx);

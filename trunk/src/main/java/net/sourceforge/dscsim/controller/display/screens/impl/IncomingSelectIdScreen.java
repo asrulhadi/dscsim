@@ -24,12 +24,12 @@ import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.screens.Screen;
 
 /**
  * @author wnpr
@@ -49,12 +49,12 @@ implements Constants {
 		JMenu menu = this.getMenu();		
 		MultiContentManager mngr = getInstanceContext().getContentManager();
 		
-		ArrayList<DscMessage>calls = mngr.getIncomingOtherCalls();		
-		DscMessage dscmsg = calls.get(0);
+		ArrayList<Dscmessage>calls = mngr.getIncomingOtherCalls();		
+		Dscmessage dscmsg = calls.get(0);
 
 		if(dscmsg != null){
-			menu.addItem(dscmsg.getFromMMSI(), "ack_individual_compliance", "");
-			mngr.setIncomingDscMessage(dscmsg);
+			menu.addItem(dscmsg.getSender(), "ack_individual_compliance", "");
+			mngr.setIncomingDscmessage(dscmsg);
 		}
 		
 		menu.addItem("Other", "select_ack_other_calls", "OTHER");
@@ -70,7 +70,7 @@ implements Constants {
 			MultiContentManager mngr = getInstanceContext()
 					.getContentManager();
 			//set to default which is good if other is not chosen.
-			//mngr.setIncomingDscMessage();
+			//mngr.setIncomingDscmessage();
 			
 		}
 	}

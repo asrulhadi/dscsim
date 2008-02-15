@@ -233,6 +233,12 @@ public interface Constants {
 	 * Channel 16 constant.
 	 */
 	public static final String CH_16 = "16";
+	
+	/**
+	 * Channel 16 constant.
+	 */
+	public static final int iCH_16 = 16;
+	
 	/**
 	 * Channel 70 constant.
 	 */
@@ -241,74 +247,74 @@ public interface Constants {
 	/**
 	 * Call type individual.
 	 */
-	public static final String CALL_TYPE_INDIVIDUAL = "TYPE_INDIVIDUAL";
+	public static final String CALL_TYPE_INDIVIDUAL = "IN";
 	/**
 	 * Call type individual acknowlege.
 	 */
-	public static final String CALL_TYPE_INDIVIDUAL_ACK = "TYPE_INDIVIDUAL_ACK";
+	public static final String CALL_TYPE_INDIVIDUAL_ACK = "IA";
 	/**
 	 * Call type group.
 	 */
-	public static final String CALL_TYPE_GROUP = "TYPE_GROUP";
+	public static final String CALL_TYPE_GROUP = "GR";
 
 	/**
 	 * Call type group acknowledge.
 	 */
-	public static final String CALL_TYPE_GROUP_ACK = "TYPE_GROUP_ACK";
+	public static final String CALL_TYPE_GROUP_ACK = "GA";
 
 	/**
 	 * Call type all ships.
 	 */
-	public static final String CALL_TYPE_ALL_SHIPS = "TYPE_ALL_SHIPS";
+	public static final String CALL_TYPE_ALL_SHIPS = "AS";
 
 	/**
 	 * Call type all ships acknowledge.
 	 */
-	public static final String CALL_TYPE_ALL_SHIPS_ACK = "TYPE_ALL_SHIPS_ACK";
+	public static final String CALL_TYPE_ALL_SHIPS_ACK = "AA";
 
 	/**
 	 * Call type distress.
 	 */
-	public static final String CALL_TYPE_DISTRESS = "TYPE_DISTRESS";
+	public static final String CALL_TYPE_DISTRESS = "DI";
 
 	/**
 	 * Call type distress acknowledgement
 	 */
-	public static final String CALL_TYPE_DISTRESS_ACK = "TYPE_DISTRESS_ACK";
+	public static final String CALL_TYPE_DISTRESS_ACK = "DA";
 
 	/**
 	 * Call type position request.
 	 */
-	public static final String CALL_TYPE_POSITION_REQ = "TYPE_POSITION_REQ";
+	public static final String CALL_TYPE_POSITION_REQ = "PR";
 
 	/**
 	 * Designated called.
 	 */
-	public static final String CALL_NATURE_DESIGNATED = "DESIG";
+	public static final String CALL_NATURE_DESIGNATED = "DE";
 
 	/**
 	 * Call nature undesignated.
 	 */
-	public static final String CALL_NATURE_UNDESIGNATED = "UNDESIG";
+	public static final String CALL_NATURE_UNDESIGNATED = "UN";
 
 	/**
 	 * Catagory distress.
 	 */
-	public static final String CALL_CAT_DISTRESS = "CAT_DISTRESS";
+	public static final String CALL_CAT_DISTRESS = "DI";
 
 	/**
 	 * Catagory urgency.
 	 */
-	public static final String CALL_CAT_URGENCY = "CAT_URGENCY";
+	public static final String CALL_CAT_URGENCY = "UR";
 
 	/**
 	 * Catagory saftey.
 	 */
-	public static final String CALL_CAT_SAFETY = "CAT_SAFETY";
+	public static final String CALL_CAT_SAFETY = "SA";
 	/**
 	 * Catagory routine.
 	 */
-	public static final String CALL_CAT_ROUTINE = "CAT_ROUTINE";
+	public static final String CALL_CAT_ROUTINE = "RO";
 
 	/**
 	 * Catagory distress.

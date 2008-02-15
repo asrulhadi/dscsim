@@ -20,15 +20,12 @@
  * where applicable.
  */
  
-package net.sourceforge.dscsim.controller.screen.types;
+package net.sourceforge.dscsim.controller.data.types;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-
-import org.jdom.Element;
-
 
 /**
  * @author katharina
@@ -48,23 +45,7 @@ public class DscString extends BaseType {
 		_oCode = oCode;	
 	}
 	
-	public DscString(Element oElement) {
-		super(oElement, null);		
-		_oCode = oElement.getAttributeValue("code");		
-	}
-
-	public DscString(Element oElement, String oCode){
-		super(oElement, oCode);
-		_oCode = oCode;
-	}
-	public DscString(Element oElement, Object oObj){
-		super(oElement, oObj);
-		if(oObj instanceof String)
-			_oCode = oElement.getAttributeValue("code");
-		
-	}
-	public DscString(DscString oOther) {
-		super(oOther);		
+	public DscString(DscString oOther) {		
 		
 		if(oOther._oCode != null)
 			_oCode = new String(oOther._oCode.toString());	
@@ -122,12 +103,7 @@ public class DscString extends BaseType {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see applet.screen.bean.types.ActiveField#setElement(org.jdom.Element)
-	 */
-	public void setElement(Element oElement) {
-		
-	}
+
 
 	/* (non-Javadoc)
 	 * @see applet.screen.bean.types.ActiveField#isValid()
@@ -180,13 +156,6 @@ public class DscString extends BaseType {
 		return _oCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see applet.screen.bean.types.ActiveField#reset()
-	 */
-	public void reset() {
-		_oCode = _oElement.getAttributeValue("code");;
-		
-	}
 	
 	public void setValue(ActiveField oValue) {
 	
@@ -195,6 +164,11 @@ public class DscString extends BaseType {
 			DscString src = (DscString)oValue;
 			_oCode = src._oCode;
 		}
+	}
+
+	public void reset() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

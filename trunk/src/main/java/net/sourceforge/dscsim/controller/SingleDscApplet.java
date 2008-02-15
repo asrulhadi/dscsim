@@ -41,8 +41,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 
+import net.sourceforge.dscsim.controller.message.types.MMSI;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.screen.types.MMSI;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 

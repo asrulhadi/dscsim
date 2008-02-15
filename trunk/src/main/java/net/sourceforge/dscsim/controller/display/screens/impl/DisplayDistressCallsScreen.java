@@ -19,7 +19,7 @@
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  */
- 
+
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import java.util.ArrayList;
@@ -29,105 +29,108 @@ import java.util.Properties;
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.message.types.Time;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.screen.types.Time;
 
 /**
  * @author katharina
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 
+ * TODO To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Style - Code Templates
  */
 public class DisplayDistressCallsScreen extends MenuScreen {
-	
+
 	private JMenu menu = null;
 	private JTextBox tbMessage = null;
-	
 
-	public DisplayDistressCallsScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+	public DisplayDistressCallsScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#enter()
 	 */
 	public void enter(Object msg) {
 		super.enter(msg);
-		
-		JMenu m = (JMenu)this.getComponentByName("menu", 0);			
-		if(m != null)
-			this.menu = m;
-		
-		JTextBox t = (JTextBox)this.getComponentByName("nothing", 0);
-		if(t!=null)
-			this.tbMessage=t;
 
-		
-		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-		ArrayList<DscMessage>callsList = oMCmgr.getIncomingDistressCalls();	
-		
-		/*in case screen was cached.*/
-		if(callsList.size()<1){
-			if(m!=null)
+		JMenu m = (JMenu) this.getComponentByName("menu", 0);
+		if (m != null)
+			this.menu = m;
+
+		JTextBox t = (JTextBox) this.getComponentByName("nothing", 0);
+		if (t != null)
+			this.tbMessage = t;
+
+		MultiContentManager oMCmgr = getInstanceContext().getContentManager();
+		ArrayList<Dscmessage> callsList = oMCmgr.getIncomingDistressCalls();
+
+		/* in case screen was cached. */
+		if (callsList.size() < 1) {
+			if (m != null)
 				this.remove(m);
-			
-			if(t==null)
+
+			if (t == null)
 				this.add(this.tbMessage);
 			return;
-		} else{
-			if(m==null){
+		} else {
+			if (m == null) {
 				this.menu.removeAll();
 				this.add(this.menu);
 			}
-			
-			if(t!=null)
+
+			if (t != null)
 				this.remove(t);
 		}
 		int count = 1;
 		Properties props = oMCmgr.getProperties();
-		String notime = props.getProperty("EMPTY_TIME", "");	
-		String text =  null;
+		String notime = props.getProperty("EMPTY_TIME", "");
+		String text = null;
 		String strTime = notime;
-		for(DscMessage call: callsList){	
-			text = call.getCallType();
+		for (Dscmessage call : callsList) {
+			text = call.getCallTypeCd();
 			text = props.getProperty(text);
-			text = props.getProperty(text);			
-			Time ctime = call.getTime();
+			text = props.getProperty(text);
+			Time ctime = call.getPosition().getTime();
 			if (ctime.isValid())
 				strTime = ctime.toString();
 			else
 				strTime = notime;
-			
-			menu.addItem(count + ":" + text + " " + strTime, "show_distress_call", "");
+
+			menu.addItem(count + ":" + text + " " + strTime,
+					"show_distress_call", "");
 			count++;
-		}	
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
 	public void exit(BusMessage msg) throws Exception {
 
-		JMenu m = (JMenu)this.getComponentByName("menu", 0);	
-		
-		if(m == null)
+		JMenu m = (JMenu) this.getComponentByName("menu", 0);
+
+		if (m == null)
 			return;
-		
+
 		int selected = m.getSelected();
-		if(msg.getButtonEvent().getKeyId().equals(FK_ENT) && selected > -1){
-			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<DscMessage>callList = oMCmgr.getIncomingDistressCalls();
+		if (msg.getButtonEvent().getKeyId().equals(FK_ENT) && selected > -1) {
+			MultiContentManager oMCmgr = getInstanceContext()
+					.getContentManager();
+			ArrayList<Dscmessage> callList = oMCmgr.getIncomingDistressCalls();
 			oMCmgr.setSelectedIncomingDistressCall(callList.get(selected));
-		}else{
-			getInstanceContext().getContentManager().setSelectedIncomingDistressCall(null);
+		} else {
+			getInstanceContext().getContentManager()
+					.setSelectedIncomingDistressCall(null);
 		}
 	}
 
-
-	
 }

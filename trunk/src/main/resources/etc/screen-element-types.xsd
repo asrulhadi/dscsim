@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	targetNamespace="http://dscsim.sourcefore.net/xml/ns/dscsim"
-	xmlns:dscsim="http://dscsim.sourcefore.net/xml/ns/dscsim"
-	elementFormDefault="qualified" attributeFormDefault="unqualified"
-	jxb:version="1.0">
-
-
-	<!-- <xsd:import namespace="http://java.sun.com/xml/ns/jaxb" schemaLocation="./bindingschema_2_0.xsd"></xsd:import>
-	-->
+	targetNamespace="http://dscsim.sourceforge.net/controller/screens"
+	xmlns:dscsim="http://dscsim.sourceforge.net/controller/screens"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
 	<xsd:complexType name="MenuType">
+
 		<xsd:sequence>
 			<xsd:element name="choice" minOccurs="0"
 				maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:simpleContent>
 						<xsd:extension base="xsd:string">
-							<xsd:attribute name="link" type="xsd:string" use="required" />
-							<xsd:attribute name="code" type="xsd:string" use="optional" />
+							<xsd:attribute name="link" type="xsd:string"
+								use="required" />
+							<xsd:attribute name="code" type="xsd:string"
+								use="optional" />
 						</xsd:extension>
 					</xsd:simpleContent>
 				</xsd:complexType>
@@ -30,29 +28,32 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="EditBoxType">
-		<xsd:simpleContent>
+		<xsd:complexContent>
 			<xsd:extension base="dscsim:BaseBoxType">
 				<xsd:attribute name="name" use="required"></xsd:attribute>
 				<xsd:attribute name="tabon" default="ANY">
 					<xsd:simpleType>
 						<xsd:restriction base="xsd:string">
 							<xsd:enumeration value="ENT"></xsd:enumeration>
-							<xsd:enumeration value="ANY"></xsd:enumeration>						
+							<xsd:enumeration value="ANY"></xsd:enumeration>
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:attribute>
 			</xsd:extension>
-		</xsd:simpleContent>
+		</xsd:complexContent>
 	</xsd:complexType>
 
 	<xsd:complexType name="TextBoxType">
-		<xsd:simpleContent>
+		<xsd:complexContent>
 			<xsd:extension base="dscsim:BaseBoxType">
 				<xsd:attribute name="name" use="optional"></xsd:attribute>
-				<xsd:attribute name="blink" type="xsd:long" default="0" use="optional"></xsd:attribute>
+				<xsd:attribute name="blink" type="xsd:long" default="0"
+					use="optional">
+				</xsd:attribute>
 			</xsd:extension>
-		</xsd:simpleContent>
+		</xsd:complexContent>
 	</xsd:complexType>
+
 
 	<xsd:complexType name="BaseBoxType">
 		<xsd:simpleContent>

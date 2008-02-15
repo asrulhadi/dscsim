@@ -25,12 +25,12 @@ import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.Screen;
 
 /**
  * @author wnpr
@@ -49,12 +49,12 @@ implements Constants {
 		
 		JTextBox tb = (JTextBox)this.getComponentByName("mmsi", 0);			
 		MultiContentManager mngr = getInstanceContext().getContentManager();		
-		tb.setText(this.getIncomingDscMessage().getFromMMSI());
+		tb.setText(this.getIncomingDscmessage().getSender());
 		
-		DscMessage inComing = this.getIncomingDscMessage();
+		Dscmessage inComing = this.getIncomingDscmessage();
 		if(inComing != null){
 			RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
-			oRadio.setChannel(inComing.getChannel());					
+			oRadio.setChannel(inComing.getChannelStr());					
 		}
 
 		
@@ -68,11 +68,11 @@ implements Constants {
 		if (keyID.equals(FK_ENT) || keyID.equals(FK_CALL)) {
 			MultiContentManager mngr = getInstanceContext()
 					.getContentManager();
-			mngr.setIncomingDscMessage(this.getIncomingDscMessage());
-			DscMessage outGoing  = new DscMessage();
-			outGoing.setToMMSI(this.getIncomingDscMessage().getFromMMSI());
-			outGoing.setCallType(CALL_TYPE_INDIVIDUAL_ACK);
-			mngr.setOutGoingDscMessage(outGoing);
+			mngr.setIncomingDscmessage(this.getIncomingDscmessage());
+			Dscmessage outGoing  = new Dscmessage();
+			outGoing.setRecipient(this.getIncomingDscmessage().getSender());
+			outGoing.setCallTypeCd(CALL_TYPE_INDIVIDUAL_ACK);
+			mngr.setOutGoingDscmessage(outGoing);
 		}
 	}
 

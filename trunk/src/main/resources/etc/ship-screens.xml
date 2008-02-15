@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <dscsim:device xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:dscsim="http://dscsim.sourcefore.net/xml/ns/dscsim"
-  xsi:schemaLocation="http://dscsim.sourcefore.net/xml/ns/dscsim D:\\Projekte\\sourceforge\\dscsim\\src\\main\\resources\\etc\\device.xsd">
+  xmlns:dscsim="http://dscsim.sourceforge.net/controller/screens"
+  xsi:schemaLocation="http://dscsim.sourceforge.net/controller/screens D:\\Projekte\\sourceforge\\dscsim\\src\\main\\resources\\etc\\device.xsd">
 
 	<dscsim:screens>
 					
