@@ -19,7 +19,7 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
 public abstract class DscRadioTransmitter implements DscsimTransmitter, Constants {
 	
 	private InstanceContext _oInstCtx = null;
-	private String _origChan = null;
+	private String _origChan = "0";
 	public static int DELAY_TIME = 2000;
 	
 	public DscRadioTransmitter(InstanceContext oInstCtx){

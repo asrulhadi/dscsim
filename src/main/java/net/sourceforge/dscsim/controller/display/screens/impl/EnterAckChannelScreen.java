@@ -19,10 +19,11 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import net.sourceforge.dscsim.controller.BusMessage;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.Screen;
+
 
 /**
  * @author wnpr
@@ -46,10 +47,10 @@ public class EnterAckChannelScreen extends JEditBoxInputScreen {
 		if(this.activeComponent != null)
 			this.activeComponent.setCursor(true);
 		
-		DscMessage incoming = (DscMessage)getInstanceContext().getContentManager().getIncomingDscMessage();
+		Dscmessage incoming = (Dscmessage)getInstanceContext().getContentManager().getIncomingDscmessage();
 
 		if(incoming != null)
-			eb.setValue(incoming.getChannel());
+			eb.setValue(incoming.getChannel().toString());
 		else
 			eb.setValue(CH_16);
 	}
@@ -59,8 +60,8 @@ public class EnterAckChannelScreen extends JEditBoxInputScreen {
 	 */
 	@Override
 	public void exit(BusMessage msg) throws Exception {			
-		DscMessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscMessage();
-		outGoing.setChannel(eb.getValue());
+		Dscmessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscmessage();
+		outGoing.setChannel(Integer.valueOf(eb.getValue()));
 	}
 
 }

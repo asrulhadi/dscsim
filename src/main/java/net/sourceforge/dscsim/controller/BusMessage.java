@@ -20,9 +20,8 @@ package net.sourceforge.dscsim.controller;
 
 import java.io.Serializable;
 
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.DscMessageAttribute;
-import net.sourceforge.dscsim.controller.utils.Utilities;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+
 
 
 /**
@@ -31,7 +30,7 @@ import net.sourceforge.dscsim.controller.utils.Utilities;
  *
  */
 
-public class BusMessage implements Serializable,  DscMessageAttribute, Constants {
+public class BusMessage implements Serializable, Constants {
 	
 	/**
 	 * The message contains a message, which originated from the network.
@@ -62,7 +61,7 @@ public class BusMessage implements Serializable,  DscMessageAttribute, Constants
 	 * @param from is the memory address of the sender.
 	 * @param oDscMessage is the message specific information.
 	 */
-	public BusMessage(Object from, net.sourceforge.dscsim.controller.network.DscMessage oDscMessage){
+	public BusMessage(Object from, Dscmessage oDscMessage){
 		_from = from;
 		_content = oDscMessage;
 		_msgType = MSGTYPE_NETWORK;
@@ -92,8 +91,8 @@ public class BusMessage implements Serializable,  DscMessageAttribute, Constants
 	 * Get message specific information.
 	 * @return DscMessage.
 	 */
-	public DscMessage getDscMessage(){
-		return (DscMessage)_content;
+	public Dscmessage getDscmessage(){
+		return (Dscmessage)_content;
 	}
 	
 	/**
@@ -147,61 +146,5 @@ public class BusMessage implements Serializable,  DscMessageAttribute, Constants
 		
 	}
 
-
-	/**
-	 * Return an xml representation of the message.
-	 * @return String.
-	 */
-	public String toXml() {
-  		String strXml = "<busMessage>";
-    	
-	    if(_msgType != null){    		
-	    		strXml += "<_msgType>" + _msgType + "</_msgType>";	    	
-	    }
-	    
-	    if(_from != null){    		
-    			strXml += "<_from>" + _from.getClass().getName() + "</_from>";	    	
-	    }
-	    
-   		if(_content != null){
-   			
-   			String tag = _content.getClass().getName();
-   			strXml += "<" + tag + ">" 
-				+ ((DscMessageAttribute)_content).toXml() 
-				+ "</" + tag + ">";	    	
-    		}
-    		
-    		strXml += "</busMessage>";
-    		
-    		return strXml;
-	
-
-	}
-
-
-	/**
-	 * Set the members of the message from the xml string.
-	 */
-	public void fromXml(String inXml) throws Exception {
-		
-		_msgType = Utilities.getAttributeValue("_msgType", inXml);
-			
-		String subXml = Utilities.getAttributeValue(DscMessage.class.getName(), inXml);		
-		if(subXml != null){			
-			DscMessageAttribute tmpBusMsg = new DscMessage();			
-			tmpBusMsg.fromXml(subXml);			
-			_content =  tmpBusMsg;			
-		} else {			
-			subXml = Utilities.getAttributeValue(Button.class.getName(), inXml);
-			DscMessageAttribute tmpBusMsg = new Button();			
-			tmpBusMsg.fromXml(subXml);			
-			_content =  tmpBusMsg;			
-		}
-
-		subXml = Utilities.getAttributeValue("_from", inXml);
-		_from = null;
-
-		
-	}
 	
 }

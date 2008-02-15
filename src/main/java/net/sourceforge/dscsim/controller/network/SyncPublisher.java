@@ -27,6 +27,7 @@ import java.net.SocketAddress;
 import java.nio.channels.Channel;
 import java.nio.channels.Selector;
 
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
@@ -188,7 +189,7 @@ public class SyncPublisher implements SyncPublisherInterface {
 			
 		}
 		
-		SyncMessage oMsg = new SyncMessage("211001604", new DscMessage());
+		SyncMessage oMsg = new SyncMessage("211001604", new Dscmessage());
 		
 		for(int i =0;i< 100; i++){
 			AppLogger.debug("SyncPublisher.main sendSync #" + i);

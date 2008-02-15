@@ -1,98 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://dscsim.sourcefore.net/xml/ns/dscsim"
-	xmlns:dscsim="http://dscsim.sourcefore.net/xml/ns/dscsim"
+	targetNamespace="http://dscsim.sourceforge.net/controller/settings"
+	xmlns:dscsim="http://dscsim.sourceforge.net/controller/settings"
+	xmlns:types="http://dscsim.sourceforge.net/controller/message/types"	
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
+   <xsd:import namespace="http://dscsim.sourceforge.net/controller/message/types" schemaLocation="./data.xsd"/>
 
 	<xsd:element name="infostore" type="dscsim:InfoStoreType"/>
 	
 	<xsd:complexType name="InfoStoreType">
 		<xsd:sequence>
-			<xsd:element name="position" type="dscsim:Position"></xsd:element>
+			<xsd:element name="position" type="types:Position"></xsd:element>
 			<xsd:element name="nature" type="xsd:string" default="NATURE_DISTR_UNDESIG"/>	
 		</xsd:sequence>
-
-	</xsd:complexType>	
-		<xsd:complexType name="Position">
-		<xsd:sequence>
-			<xsd:element name="latitude" >
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="degrees">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:pattern value="([0-8][0-9]|90)"></xsd:pattern>	
-								</xsd:restriction>
-							</xsd:simpleType>	
-						</xsd:element>
-						<xsd:element name="minutes">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:pattern value="[0-5][0-9]"></xsd:pattern>	
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-						<xsd:element name="hemisphere">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:enumeration value="N"/>
-									<xsd:enumeration value="S"/>
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>		
-			<xsd:element name="longitude" >
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="degrees">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:pattern value="([0-1][0-7][0-9]|180)"></xsd:pattern>	
-								</xsd:restriction>
-							</xsd:simpleType>	
-						</xsd:element>
-						<xsd:element name="minutes">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:pattern value="[0-5][0-9]"></xsd:pattern>	
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-						<xsd:element name="hemisphere">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:enumeration value="W"/>
-									<xsd:enumeration value="E"/>
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>	
-			<xsd:element name="time">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="hours">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:pattern value="[0-2][0-4]"></xsd:pattern>	
-								</xsd:restriction>
-							</xsd:simpleType>	
-						</xsd:element>
-						<xsd:element name="minutes">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:string">
-									<xsd:pattern value="[0-5][0-9]"></xsd:pattern>	
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-					</xsd:sequence>
-				</xsd:complexType>	
-			</xsd:element>					
-		</xsd:sequence>
 	</xsd:complexType>
+
 </xsd:schema>

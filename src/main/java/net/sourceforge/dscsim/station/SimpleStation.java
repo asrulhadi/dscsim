@@ -36,7 +36,7 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.radio.core.impl.SimpleRadioGUI;
 import net.sourceforge.dscsim.status.SimulationInfoFrame;
 import net.sourceforge.dscsim.util.ConfigReader;
-import net.sourceforge.dscsim.controller.screen.types.MMSI;
+import net.sourceforge.dscsim.controller.message.types.MMSI;
 
 /**
  * @author katharina

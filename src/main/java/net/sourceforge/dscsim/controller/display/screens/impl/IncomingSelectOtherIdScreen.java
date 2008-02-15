@@ -24,12 +24,12 @@ import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.screens.Screen;
 
 /**
  * @author wnpr
@@ -48,9 +48,9 @@ implements Constants {
 		
 		JMenu menu = this.getMenu();		
 		MultiContentManager mngr = getInstanceContext().getContentManager();		
-		ArrayList<DscMessage>calls = mngr.getIncomingOtherCalls();		
-		for(DscMessage call: calls){		
-			menu.addItem(call.getFromMMSI(), "ack_individual_compliance", "");		
+		ArrayList<Dscmessage>calls = mngr.getIncomingOtherCalls();		
+		for(Dscmessage call: calls){		
+			menu.addItem(call.getSender(), "ack_individual_compliance", "");		
 		}
 		
 	}
@@ -63,9 +63,9 @@ implements Constants {
 		if (keyID.equals(FK_ENT) || keyID.equals(FK_CALL)) {
 			MultiContentManager mngr = getInstanceContext()
 					.getContentManager();
-			ArrayList<DscMessage>calls = mngr.getIncomingOtherCalls();		
+			ArrayList<Dscmessage>calls = mngr.getIncomingOtherCalls();		
 			int selected = this.getMenu().getSelected();
-			mngr.setIncomingDscMessage(calls.get(selected));
+			mngr.setIncomingDscmessage(calls.get(selected));
 			
 		}
 	}

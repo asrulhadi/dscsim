@@ -30,16 +30,17 @@ import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.DscPosition;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 /**
  * @author katharina
  *
@@ -51,7 +52,7 @@ public class IncomingDistressAlertAckScreen extends ActionScreen {
 	private int pressCount = 0;
 	
 	public IncomingDistressAlertAckScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+			Screen screen) {
 		super(display, screen);
 	}
 
@@ -64,17 +65,17 @@ public class IncomingDistressAlertAckScreen extends ActionScreen {
 		pressCount=0;
 		
 		MultiContentManager oMngr = getInstanceContext().getContentManager();	
-		DscMessage incoming = oMngr.getIncomingDscMessage();
+		Dscmessage incoming = oMngr.getIncomingDscmessage();
 		if(incoming == null)
 			return;
 		
-		this.setTextBox("mmsi", incoming.getFromMMSI());
-		this.setTextBox("callerid", oMngr.findAddressId(incoming.getFromMMSI()));
+		this.setTextBox("mmsi", incoming.getSender());
+		this.setTextBox("callerid", oMngr.findAddressId(incoming.getSender()));
 	
-		DscMessage inComing = this.getIncomingDscMessage();
+		Dscmessage inComing = this.getIncomingDscmessage();
 		if(inComing != null){
 			RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
-			oRadio.setChannel(inComing.getChannel());					
+			oRadio.setChannel(inComing.getChannelStr());					
 		}
 
 

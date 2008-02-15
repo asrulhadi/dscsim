@@ -30,25 +30,20 @@ import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.MultiBeeper;
 import net.sourceforge.dscsim.controller.MultiBus;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreenComponent;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.TimeType;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.DscPosition;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.screen.types.DscString;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
-import net.sourceforge.dscsim.controller.screen.types.Time;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
-import org.jdom.Element;
+
 
 
 /**
@@ -196,18 +191,18 @@ public class SendDistressScreen extends SendBaseScreen implements Runnable {
 		this.tbNature.setText(props.getProperty(nature));
 		
 		Position pos = oMngr.getInfoStore().getPosition();
-		TimeType time = pos.getTime();
+		Time time = pos.getTime();
 		
-		if(time.getHours().length()<1){
+		if(!time.hasValue()){
 			this.tbTime.setText(props.getProperty("MS_TIME_NON"));
 		} else{
 			this.tbTime.setText(props.getProperty("MS_TIME_PREF") + time.getHours() + ":" + time.getMinutes());
 		}
 		
-		LatitudeType lat = pos.getLatitude();
-		LongitudeType lon = pos.getLongitude();
+		Latitude lat = pos.getLatitude();
+		Longitude lon = pos.getLongitude();
 		
-		if (lat.getDegrees().length() < 1) {
+		if (!lat.hasValue()) {
 			this.tbLat.setText(props.getProperty("MS_POS_NON"));
 			this.tbLon.setText("");
 		} else {

@@ -23,10 +23,11 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import net.sourceforge.dscsim.controller.BusMessage;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 
 
 
@@ -39,7 +40,7 @@ import net.sourceforge.dscsim.controller.panels.ActionMapping;
 public class EnterMmsiScreen extends JEditBoxInputScreen {
 
 	public EnterMmsiScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+			Screen screen) {
 		super(display, screen);
 	}
 
@@ -65,8 +66,8 @@ public class EnterMmsiScreen extends JEditBoxInputScreen {
 	 */
 	@Override
 	public void exit(BusMessage msg) throws Exception {			
-		DscMessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscMessage();
-		outGoing.setToMMSI(eb.getValue());
+		Dscmessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscmessage();
+		outGoing.setRecipient(eb.getValue());
 	}
 	
 	public ActionMapping notify(BusMessage msg){		

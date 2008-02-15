@@ -34,24 +34,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.hibernate.Session;
+
+import net.sourceforge.dscsim.controller.data.types.ActiveField;
+import net.sourceforge.dscsim.controller.message.types.MMSI;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreenFactory;
 import net.sourceforge.dscsim.controller.infostore.InfoStoreFactory;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.panels.Device;
-import net.sourceforge.dscsim.controller.screen.types.ActiveField;
-import net.sourceforge.dscsim.controller.screen.types.DscBoolean;
-import net.sourceforge.dscsim.controller.screen.types.MMSI;
+import net.sourceforge.dscsim.controller.settings.*;
+import net.sourceforge.dscsim.controller.data.types.*;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Device;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
+import net.sourceforge.dscsim.controller.screens.Screen;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.persistence.HibernateUtil;
 
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
 
 public class MultiContentManager implements BusListener, Constants {
 
@@ -60,7 +60,6 @@ public class MultiContentManager implements BusListener, Constants {
 	private MMSI mmsi = null;
 
 	private InstanceContext _oInstanceContext = null;
-	private Document m_oDocument = null;
 
 	// cache for lists
 	private ArrayList _oSessionCache = new ArrayList();
@@ -85,8 +84,8 @@ public class MultiContentManager implements BusListener, Constants {
 	private JScreenFactory screenFactory = null;
 	private InfoStoreFactory infostoreFactory = null;
 
-	private DscMessage outGoingDscMessage = new DscMessage();
-	private DscMessage incomingDscMessage = new DscMessage();
+	private Dscmessage outGoingDscmessage = new Dscmessage();
+	private Dscmessage incomingDscmessage = new Dscmessage();
 
 	private AddressIdEntry selectedAddressId = null;
 	private ArrayList<AddressIdEntry> addressIdList = null;
@@ -94,11 +93,11 @@ public class MultiContentManager implements BusListener, Constants {
 	private AddressIdEntry selectedGroupId = null;
 	private ArrayList<AddressIdEntry> groupIdList = null;
 
-	private ArrayList<DscMessage> incomingOtherCalls = null;
-	private DscMessage selectedIncomingOtherCall = null;
+	private ArrayList<Dscmessage> incomingOtherCalls = null;
+	private Dscmessage selectedIncomingOtherCall = null;
 
-	private ArrayList<DscMessage> incomingDistressCalls = null;
-	private DscMessage selectedIncomingDistressCall = null;
+	private ArrayList<Dscmessage> incomingDistressCalls = null;
+	private Dscmessage selectedIncomingDistressCall = null;
 
 	public static MultiContentManager getInstance(InstanceContext oCtx) {
 		return new MultiContentManager(oCtx.getContentManager().getMMSI(), oCtx);
@@ -118,44 +117,10 @@ public class MultiContentManager implements BusListener, Constants {
 
 			this.infostoreFactory = new InfoStoreFactory(mmsi);
 
-			SAXBuilder oBuilder = new SAXBuilder();
-			xmlName = oInstanceContext.getApplicationContext()
-					.getScreenFileName();
-			dataInput = new DataInputStream(getResourceStream(xmlName, this
-					.getClass()));
-			m_oDocument = oBuilder.build(dataInput);
-			oBuilder = null;
 		} catch (Exception oEx) {
 			AppLogger.error(oEx);
 		}
 
-	}
-
-	public String getActionFromEventName(String eventId) {
-
-		// TODO cache the events
-		String strActionName = null;
-
-		Element oRoot = m_oDocument.getRootElement();
-
-		Element oEvents = oRoot.getChild("events");
-
-		Iterator oIter = oEvents.getChildren().iterator();
-
-		Element oElement = null;
-		String strNameAttr = null;
-		while (oIter.hasNext()) {
-
-			oElement = (Element) oIter.next();
-
-			strNameAttr = oElement.getAttributeValue("name");
-
-			if (strNameAttr.equals(eventId))
-				return oElement.getAttributeValue("action");
-
-		}
-
-		return strActionName;
 	}
 
 	public MMSI getAsMMSI() {
@@ -188,46 +153,6 @@ public class MultiContentManager implements BusListener, Constants {
 
 	private void clearCache() {
 		_oSessionCache.clear();
-	}
-
-	public Element getSettingsElement(String listName) {
-
-		List oChildren = m_oDocument.getRootElement().getChild("settings")
-				.getChildren();
-
-		Element oSettings = null;
-		for (int i = 0; i < oChildren.size(); i++) {
-
-			oSettings = (Element) oChildren.get(i);
-
-			if (oSettings.getAttributeValue("property").equals(listName)) {
-				break;
-			}
-
-			oSettings = null;
-		}
-
-		return oSettings;
-	}
-
-	public Element getStorageElement(String listName) {
-
-		List oChildren = m_oDocument.getRootElement().getChild("storage")
-				.getChildren();
-
-		Element oStorage = null;
-		for (int i = 0; i < oChildren.size(); i++) {
-
-			oStorage = (Element) oChildren.get(i);
-
-			if (oStorage.getAttributeValue("name").equals(listName)) {
-				break;
-			}
-
-			oStorage = null;
-		}
-
-		return oStorage;
 	}
 
 	private ActionScreen getCache(String srchName) {
@@ -317,34 +242,6 @@ public class MultiContentManager implements BusListener, Constants {
 		return retValue != null ? retValue : "";
 	}
 
-	public Element getScreenElement(String strScreenName) {
-
-		Element oRoot = m_oDocument.getRootElement();
-
-		Element oScreens = oRoot.getChild("screens");
-
-		Iterator oIter = oScreens.getChildren().iterator();
-
-		Element oTarget = null;
-		Attribute oAttr = null;
-
-		while (oIter.hasNext()) {
-			oTarget = (Element) oIter.next();
-
-			oAttr = oTarget.getAttribute("name");
-			String strValue = oAttr != null ? oAttr.getValue() : null;
-
-			if (strValue != null && strValue.equals(strScreenName))
-				return oTarget;
-			else
-				oTarget = null;
-
-		}
-
-		return oTarget;
-
-	}
-
 	/*
 	 * public Element getCodeString(String strId){
 	 * 
@@ -375,45 +272,18 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public Element getContextElement(String strScreenName) {
 
-		Element oRoot = m_oDocument.getRootElement();
-
-		Element oScreens = oRoot.getChild("contexts");
-
-		Iterator oIter = oScreens.getChildren().iterator();
-
-		Element oTarget = null;
-		Attribute oAttr = null;
-
-		while (oIter.hasNext()) {
-			oTarget = (Element) oIter.next();
-
-			oAttr = oTarget.getAttribute("name");
-			String strValue = oAttr != null ? oAttr.getValue() : null;
-
-			if (strValue != null && strValue.equals(strScreenName))
-				return oTarget;
-			else
-				oTarget = null;
-
-		}
-
-		return oTarget;
-
-	}
-
-	public boolean isIncomingOtherRequest(DscMessage oMessage) {
+	public boolean isIncomingOtherRequest(Dscmessage oMessage) {
 
 		boolean bValue = false;
 
-		if (CALL_TYPE_GROUP.equals(oMessage.getCallType())) {
+		if (CALL_TYPE_GROUP.equals(oMessage.getCallTypeCd())) {
 			bValue = true;
-		} else if (CALL_TYPE_INDIVIDUAL.equals(oMessage.getCallType())) {
+		} else if (CALL_TYPE_INDIVIDUAL.equals(oMessage.getCallTypeCd())) {
 			bValue = true;
-		} else if (CALL_TYPE_ALL_SHIPS.equals(oMessage.getCallType())) {
+		} else if (CALL_TYPE_ALL_SHIPS.equals(oMessage.getCallTypeCd())) {
 			bValue = true;
-		} else if (CALL_TYPE_INDIVIDUAL_ACK.equals(oMessage.getCallType())) {
+		} else if (CALL_TYPE_INDIVIDUAL_ACK.equals(oMessage.getCallTypeCd())) {
 			bValue = true;
 		}
 
@@ -421,12 +291,12 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public void storeIncomingMessage(DscMessage oMessage) {
+	public void storeIncomingMessage(Dscmessage oMessage) {
 
 		if (MultiContentManager.CALL_TYPE_DISTRESS.equals(oMessage
-				.getCallType())
+				.getCallTypeCd())
 				|| MultiContentManager.CALL_TYPE_DISTRESS_ACK.equals(oMessage
-						.getCallType())) {
+						.getCallTypeCd())) {
 			addIncomingDistressCall(oMessage);
 		} else if (isIncomingOtherRequest(oMessage)) {
 			addIncomingOtherCalls(oMessage);
@@ -434,31 +304,38 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public void addIncomingOtherCalls(DscMessage oMessage) {
-		ArrayList<DscMessage> calls = this.getIncomingOtherCalls();
+	public void addIncomingOtherCalls(Dscmessage oMessage) {
+		ArrayList<Dscmessage> calls = this.getIncomingOtherCalls();
 		calls.add(0, oMessage);
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
 
 	public void storeIncomingOtherCalls() {
-		ArrayList<DscMessage> calls = this.getIncomingOtherCalls();
+		ArrayList<Dscmessage> calls = this.getIncomingOtherCalls();
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
 
-	public void removeIncomingOtherCall(DscMessage oMessage) {
-		ArrayList<DscMessage> calls = this.getIncomingOtherCalls();
+	public void removeIncomingOtherCall(Dscmessage oMessage) {
+		ArrayList<Dscmessage> calls = this.getIncomingOtherCalls();
 		calls.remove(oMessage);
 		this.storeList(INCOMING_OTHER_CALLS, calls);
 	}
 
-	public void addIncomingDistressCall(DscMessage oMessage) {
-		ArrayList<DscMessage> calls = this.getIncomingDistressCalls();
+	public void addIncomingDistressCall(Dscmessage oMessage) {
+		
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		session.save(oMessage);
+		session.getTransaction().commit();
+		
+		ArrayList<Dscmessage> calls = this.getIncomingDistressCalls();
 		calls.add(0, oMessage);
 		this.storeList(INCOMING_DISTRESS_CALLS, calls);
+		
 	}
 
-	public void removeIncomingDistressCall(DscMessage oMessage) {
-		ArrayList<DscMessage> calls = this.getIncomingDistressCalls();
+	public void removeIncomingDistressCall(Dscmessage oMessage) {
+		ArrayList<Dscmessage> calls = this.getIncomingDistressCalls();
 		calls.remove(oMessage);
 		this.storeList(INCOMING_DISTRESS_CALLS, calls);
 	}
@@ -469,18 +346,18 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public DscMessage findLatestMessage(DscMessage oTarget) {
+	public Dscmessage findLatestMessage(Dscmessage oTarget) {
 
 		List oCalls = getIncomingOtherCalls();
 
 		if (oCalls == null)
 			return null;
 
-		DscMessage oFound = null;
+		Dscmessage oFound = null;
 		for (int i = 0; i < oCalls.size(); i++) {
-			oFound = (DscMessage) oCalls.get(i);
-
-			if (oFound.getUid().equals(oTarget.getUid())) {
+			oFound = (Dscmessage) oCalls.get(i);
+			
+			if (oFound.getUid() == oTarget.getUid()) {
 				break;
 			} else {
 				oFound = null;
@@ -491,35 +368,35 @@ public class MultiContentManager implements BusListener, Constants {
 		return oFound;
 	}
 
-	public ArrayList<DscMessage> getIncomingOtherCalls() {
+	public ArrayList<Dscmessage> getIncomingOtherCalls() {
 
 		if (this.incomingOtherCalls == null) {
 			this.incomingOtherCalls = readList(this.getStoreExtension(),
 					getStorePrefix() + INCOMING_OTHER_CALLS);
 
 			if (this.incomingOtherCalls == null) {
-				this.incomingOtherCalls = new ArrayList<DscMessage>();
+				this.incomingOtherCalls = new ArrayList<Dscmessage>();
 			}
 		}
 		return incomingOtherCalls;
 
 	}
 
-	public ArrayList<DscMessage> getIncomingDistressCalls() {
+	public ArrayList<Dscmessage> getIncomingDistressCalls() {
 
 		if (this.incomingDistressCalls == null) {
 			this.incomingDistressCalls = readList(this.getStoreExtension(),
 					getStorePrefix() + INCOMING_DISTRESS_CALLS);
 
 			if (this.incomingDistressCalls == null) {
-				this.incomingDistressCalls = new ArrayList<DscMessage>();
+				this.incomingDistressCalls = new ArrayList<Dscmessage>();
 			}
 		}
 		return incomingDistressCalls;
 
 	}
 
-	public void addIncomingDistressAcks(DscMessage oMessage) {
+	public void addIncomingDistressAcks(Dscmessage oMessage) {
 
 		_oIncomingDistressAcks.add(0, oMessage);
 
@@ -527,55 +404,6 @@ public class MultiContentManager implements BusListener, Constants {
 			_oIncomingDistressAcks.remove(i);
 		}
 
-	}
-
-	public ArrayList getPersistantList(String name) {
-
-		// is list already in cache.
-		ArrayList oList = (ArrayList) _oSessionLists.get(name);
-
-		// yes, return it.
-		if (oList != null)
-			return oList;
-
-		// find xml definition of the list
-		Element elemStorage = m_oDocument.getRootElement().getChild("storage");
-
-		Iterator oItr = elemStorage.getChildren("list").iterator();
-
-		Element elemList = null;
-		while (oItr.hasNext()) {
-
-			elemList = (Element) oItr.next();
-
-			String listName = elemList.getAttributeValue("name");
-
-			if (listName != null && listName.equals(name))
-				break;
-			else
-				elemList = null;
-
-		}
-
-		if (elemList == null)
-			return null;
-
-		oList = new ArrayList();
-
-		String strScope = elemList.getAttributeValue("scope");
-
-		if (strScope == null || strScope.equals("session")) {
-			_oSessionLists.put(name, oList);
-			return oList;
-		}
-
-		/*
-		 * if(true) throw new RuntimeException("permant list persistance not yet
-		 * implemented.");
-		 * 
-		 * return null;
-		 */
-		return oList;
 	}
 
 	public ArrayList getIncomingDistressAcks() {
@@ -609,12 +437,12 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public void storeIncomingCall(DscMessage oDscMessage) {
+	public void storeIncomingCall(Dscmessage oDscmessage) {
 
 		// AppLogger.debug("storeIncomingCall called for"+
 		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
 
-		if (CALL_CAT_DISTRESS.equals(oDscMessage.getClass())) {
+		if (CALL_CAT_DISTRESS.equals(oDscmessage.getClass())) {
 
 		} else {
 
@@ -622,7 +450,7 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public void storeLastDistressCalls(DscMessage oDscMsg) {
+	public void storeLastDistressCalls(Dscmessage oDscMsg) {
 
 		// AppLogger.debug("storeLastDistressCalls called for"+
 		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
@@ -781,35 +609,6 @@ public class MultiContentManager implements BusListener, Constants {
 		oInstance.removeProperties();
 	}
 
-	public static Object getContextPropertyEx(InstanceContext oInstance,
-			String strContextKey) throws Exception {
-
-		if (strContextKey == null)
-			throw new Exception("Context Element must have a name.");
-
-		Object oInfo = oInstance.getProperty(strContextKey);
-
-		if (oInfo == null) {
-
-			// try{
-
-			Element oStorage = oInstance.getContentManager().getContextElement(
-					strContextKey);
-			String strClass = oStorage.getAttributeValue("class");
-			Class clazz = Class.forName(strClass);
-			oInfo = clazz.newInstance();
-
-			// }catch(Exception oEx){
-			// AppLogger.error(oEx);
-			// }
-
-			oInstance.setProperty(strContextKey, oInfo);
-
-		}
-
-		return oInfo;
-
-	}
 
 	public void reloadProperties() {
 
@@ -866,22 +665,6 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public ActiveField getSetting(String name) throws Exception {
-
-		Element oElement = getSettingsElement(name);
-
-		return getPropertyEx(oElement);
-
-	}
-
-	public void setSetting(String name, ActiveField oValue) throws Exception {
-
-		Element oElement = getSettingsElement(name);
-
-		setPropertyEx(name, oValue, oElement);
-
-	}
-
 	public synchronized HashMap getPropertyMap() {
 
 		if (_oSessionProperties == null)
@@ -901,75 +684,6 @@ public class MultiContentManager implements BusListener, Constants {
 		oMap.remove(key);
 
 		oMap.put(key, oValue);
-
-	}
-
-	public void setPropertyEx(String name, ActiveField oNew, Element oElement) {
-
-		HashMap oMap = getPropertyMap();
-
-		ActiveField oOld = (ActiveField) _oSessionProperties.get(name);
-
-		if (oOld == null) {
-
-			try {
-				String strClass = oElement.getAttributeValue("class");
-				strClass = strClass == null ? oElement
-						.getAttributeValue("type") : strClass;
-
-				Class clazz = Class.forName(strClass);
-
-				Constructor oCtor = clazz.getConstructor(new Class[] { oElement
-						.getClass() });
-
-				ActiveField created = (ActiveField) oCtor
-						.newInstance(new Object[] { oElement });
-
-				created.setValue(oNew);
-				created.setElement(oElement);
-
-				oMap.put(name, created);
-
-			} catch (Exception oEx) {
-				AppLogger.error(oEx);
-			}
-		} else {
-
-			oOld.setValue(oNew);
-
-		}
-
-	}
-
-	public ActiveField getPropertyEx(Element oElement) throws Exception {
-
-		HashMap oMap = getPropertyMap();
-
-		String key = oElement.getAttributeValue("property");
-		ActiveField oValue = (ActiveField) _oSessionProperties.get(key);
-
-		if (oValue == null) {
-
-			String strClass = oElement.getAttributeValue("class");
-			strClass = strClass == null ? oElement.getAttributeValue("type")
-					: strClass;
-
-			Class clazz = Class.forName(strClass);
-
-			Constructor oCtor = clazz.getConstructor(new Class[] { oElement
-					.getClass() });
-
-			oValue = (ActiveField) oCtor.newInstance(new Object[] { oElement });
-
-			oMap.put(key, oValue);
-
-		} else {
-
-			oValue = (ActiveField) oValue.copyObject();
-			oValue.setElement(oElement);
-		}
-
-		return oValue;
 
 	}
 
@@ -1082,26 +796,7 @@ public class MultiContentManager implements BusListener, Constants {
 		}
 
 	}
-
-	public boolean isFalse(String conditionName) {
-
-		boolean retVal = false;
-
-		Element oElement = getSettingsElement(conditionName);
-
-		DscBoolean oField = null;
-		try {
-			oField = (DscBoolean) getPropertyEx(oElement);
-
-			retVal = oField.getValue();
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-		return retVal;
-
-	}
-
+	
 	public boolean isCondition(String conditionName) {
 
 		boolean retVal = false;
@@ -1152,20 +847,20 @@ public class MultiContentManager implements BusListener, Constants {
 		return this.selectedGroupId;
 	}
 
-	public DscMessage getOutGoingDscMessage() {
-		return outGoingDscMessage;
+	public Dscmessage getOutGoingDscmessage() {
+		return outGoingDscmessage;
 	}
 
-	public void setOutGoingDscMessage(DscMessage outGoingDscMessage) {
-		this.outGoingDscMessage = outGoingDscMessage;
+	public void setOutGoingDscmessage(Dscmessage outGoingDscmessage) {
+		this.outGoingDscmessage = outGoingDscmessage;
 	}
 
-	public DscMessage getIncomingDscMessage() {
-		return incomingDscMessage;
+	public Dscmessage getIncomingDscmessage() {
+		return incomingDscmessage;
 	}
 
-	public void setIncomingDscMessage(DscMessage incomingDscMessage) {
-		this.incomingDscMessage = incomingDscMessage;
+	public void setIncomingDscmessage(Dscmessage incomingDscmessage) {
+		this.incomingDscmessage = incomingDscmessage;
 	}
 
 	public String findAddressId(String mmsi) {
@@ -1248,21 +943,22 @@ public class MultiContentManager implements BusListener, Constants {
 		return list;
 	}
 
-	public DscMessage getSelectedIncomingOtherCall() {
+	public Dscmessage getSelectedIncomingOtherCall() {
 		return selectedIncomingOtherCall;
 	}
 
 	public void setSelectedIncomingOtherCall(
-			DscMessage selectedIncomingOtherCall) {
+			Dscmessage selectedIncomingOtherCall) {
 		this.selectedIncomingOtherCall = selectedIncomingOtherCall;
 	}
 
-	public DscMessage getSelectedIncomingDistressCall() {
+	public Dscmessage getSelectedIncomingDistressCall() {
 		return selectedIncomingDistressCall;
 	}
 
 	public void setSelectedIncomingDistressCall(
-			DscMessage selectedIncomingDistressCall) {
+			Dscmessage selectedIncomingDistressCall) {
 		this.selectedIncomingDistressCall = selectedIncomingDistressCall;
 	}
+	
 }

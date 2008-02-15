@@ -40,7 +40,7 @@ import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 public class DisplayGroupIdsScreen extends MenuScreen {
 
 	public DisplayGroupIdsScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+			net.sourceforge.dscsim.controller.screens.Screen screen) {
 		super(display, screen);
 	}
 

@@ -29,12 +29,13 @@ import java.util.Properties;
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.screens.Screen;
 /**
  * @author katharina
  *
@@ -44,7 +45,7 @@ import net.sourceforge.dscsim.controller.network.DscMessage;
 public class DisplayOtherCallScreen extends MenuScreen {
 
 	public DisplayOtherCallScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+			Screen screen) {
 		super(display, screen);
 	}
 
@@ -55,13 +56,13 @@ public class DisplayOtherCallScreen extends MenuScreen {
 		super.enter(msg);
 		
 		MultiContentManager oMngr = getInstanceContext().getContentManager();	
-		DscMessage selected = oMngr.getSelectedIncomingOtherCall();
+		Dscmessage selected = oMngr.getSelectedIncomingOtherCall();
 		if(selected == null)
 			return;
 	
-		this.setTextBox("descr", selected.getCatagoryForTypeText());
-		this.setTextBox("from", selected.getFromMMSI());
-		this.setTextBox("channel", selected.getChannel());
+		this.setTextBox("descr", selected.getCatagoryCd());
+		this.setTextBox("from", selected.getSender());
+		this.setTextBox("channel", selected.getChannel().toString());
 		
 		
 	}
@@ -72,7 +73,7 @@ public class DisplayOtherCallScreen extends MenuScreen {
 	public void exit(BusMessage msg) throws Exception {
 		if(msg.getButtonEvent().getKeyId().equals(KP_Aa)){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			DscMessage call = oMCmgr.getSelectedIncomingOtherCall();			
+			Dscmessage call = oMCmgr.getSelectedIncomingOtherCall();			
 			if(call != null){				
 				oMCmgr.removeIncomingOtherCall(call);				
 			}

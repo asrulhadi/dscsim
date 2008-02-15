@@ -31,6 +31,8 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 /**
  * @author katharina
  *
@@ -39,8 +41,7 @@ import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
  */
 public class DisplayAddressIdsScreen extends MenuScreen {
 
-	public DisplayAddressIdsScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+	public DisplayAddressIdsScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 	}
 

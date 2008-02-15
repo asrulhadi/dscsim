@@ -25,12 +25,12 @@ package net.sourceforge.dscsim.controller.display.screens.impl;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
-import net.sourceforge.dscsim.controller.infostore.Position.TimeType;
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
+import net.sourceforge.dscsim.controller.message.types.Time;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.Constants;
 
 import java.util.Properties;
@@ -61,33 +61,37 @@ public class JMainScreen extends ActionScreen
 		MultiContentManager oMngr = getInstanceContext().getContentManager();		
 		Properties props = oMngr.getProperties();
 		
-		this.tbSource.setText(props.getProperty("MS_SOURCE_GPS"));
+		this.tbSource.setText(props.getProperty("MS_SOURCE_GPS", "NA"));
 		
 		Position pos = oMngr.getInfoStore().getPosition();
-		TimeType time = pos.getTime();
+		Time time = pos.getTime();
 		
-		if(time.getHours().length()<1){
+		if(!time.hasValue()){
 			this.tbTime.setText(props.getProperty("MS_TIME_NON"));
 		} else{
 			this.tbTime.setText(props.getProperty("MS_TIME_PREF") + time.getHours() + ":" + time.getMinutes());
 		}
 		
-		LatitudeType lat = pos.getLatitude();
-		LongitudeType lon = pos.getLongitude();
+		Latitude lat = pos.getLatitude();
+		Longitude lon = pos.getLongitude();
 		
-		if (lat.getDegrees().length() < 1) {
+		if (!lat.hasValue()) {
 			this.tbLat.setText(props.getProperty("MS_POS_NON"));
 			this.tbLon.setText("");
 		} else {
+			this.tbLat.setText(lat.getAsFromattedString(props));
+			this.tbLon.setText(lon.getAsFromattedString(props));
+			/*
 			this.tbLat.setText(props.getProperty("MS_LAT_PREF")
 					+ lat.getDegrees() + props.getProperty("DEGREE_SYMBOL")
 					+ lat.getMinutes() + props.getProperty("MINUTE_SYMBOL")
 					+ lat.getHemisphere());
+			
 			this.tbLon.setText(props.getProperty("MS_LON_PREF")
 					+ lon.getDegrees() + props.getProperty("DEGREE_SYMBOL")
 					+ lon.getMinutes() + props.getProperty("MINUTE_SYMBOL")
 					+ lon.getHemisphere());
-
+			*/
 		}
 		
 

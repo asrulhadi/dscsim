@@ -22,7 +22,7 @@
  
 package net.sourceforge.dscsim.controller;
 
-import net.sourceforge.dscsim.controller.network.DscMessage;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.radio.core.RadioCore;
 import net.sourceforge.dscsim.radio.core.RadioEventListener;
@@ -38,7 +38,7 @@ import net.sourceforge.dscsim.radiotransport.Antenna;
 public class RadioCoreController implements Constants, BusListener, RadioEventListener {
 
 	 /*last incoming acknowlegement observed*/
-	private DscMessage _lastAck = null;
+	private Dscmessage _lastAck = null;
 	private RadioCore _radioCore = null;
 	private InstanceContext _instCtx = null;
 	private boolean _masterSwitchOn = false;
@@ -62,12 +62,12 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 
 		/*first incoming ack must be obeserved*/
 		if(busType.equals(BusMessage.MSGTYPE_NETWORK)){			
-			DscMessage dscMsg = oMessage.getDscMessage();	
+			Dscmessage dscMsg = oMessage.getDscmessage();	
 				
-			AppLogger.debug2("RadioCoreController.signal - dscmsg type:" + dscMsg.getCallType());
+			AppLogger.debug2("RadioCoreController.signal - dscmsg type:" + dscMsg.getCallTypeCd());
 			AppLogger.debug2("RadioCoreController.signal - isAck:" + dscMsg.isCallAcknowledgement());
 			
-			String callType = dscMsg.getCallType(); 
+			String callType = dscMsg.getCallTypeCd(); 
 			if(dscMsg.isCallAcknowledgement()
 				|| callType.equals(CALL_TYPE_ALL_SHIPS)
 				|| callType.equals(CALL_TYPE_GROUP)){
@@ -89,7 +89,7 @@ public class RadioCoreController implements Constants, BusListener, RadioEventLi
 
 				AppLogger.debug2("RadioCoreController.signal - setting channel to:" + _lastAck.getChannel());
 				
-				setChannel(_lastAck.getChannel());				
+				setChannel(_lastAck.getChannelStr());				
 				_lastAck = null;
 			}
 			

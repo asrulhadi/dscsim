@@ -20,11 +20,9 @@
  * where applicable.
  */
  
-package net.sourceforge.dscsim.controller.screen.types;
+package net.sourceforge.dscsim.controller.data.types;
 
 import net.sourceforge.dscsim.controller.MultiContentManager;
-
-import org.jdom.Element;
 
 
 /**
@@ -40,35 +38,6 @@ public class PositionType extends DscString {
 	 */
 	public PositionType(String oCode) {
 		super(oCode);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param oElement
-	 */
-	public PositionType(Element oElement) {
-		super(oElement);
-		
-		if(getCode()==null){
-			setCode("POS_MNL");
-		}
-	}
-
-	/**
-	 * @param oElement
-	 * @param oCode
-	 */
-	public PositionType(Element oElement, String oCode) {
-		super(oElement, oCode);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param oElement
-	 * @param oObj
-	 */
-	public PositionType(Element oElement, Object oObj) {
-		super(oElement, oObj);
 		// TODO Auto-generated constructor stub
 	}
 

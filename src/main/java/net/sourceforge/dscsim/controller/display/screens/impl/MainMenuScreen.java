@@ -21,19 +21,16 @@ package net.sourceforge.dscsim.controller.display.screens.impl;
 import java.util.List;
 
 import net.sourceforge.dscsim.controller.BusMessage;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.TimeType;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
-import net.sourceforge.dscsim.controller.screen.types.Time;
+import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+import net.sourceforge.dscsim.controller.message.types.Time;
+import net.sourceforge.dscsim.controller.screens.Screen;
 
 /**
  * @author wnpr
@@ -71,22 +68,30 @@ public class MainMenuScreen extends MenuScreen {
 							|| code.equals(CALL_TYPE_ALL_SHIPS) || code
 							.equals(CALL_TYPE_POSITION_REQ))) {
 
-				DscMessage outGoing = new DscMessage();
+				Dscmessage outGoing = new Dscmessage();
 				this.getInstanceContext().getContentManager()
-						.setOutGoingDscMessage(outGoing);
+						.setOutGoingDscmessage(outGoing);
 				InfoStoreType store = this.getInstanceContext()
 						.getContentManager().getInfoStore();
 				Position pos = store.getPosition();
-				LatitudeType lat = pos.getLatitude();
-				LongitudeType lon = pos.getLongitude();
-				TimeType time = pos.getTime();
+				Latitude lat = pos.getLatitude();
+				Longitude lon = pos.getLongitude();
+				Time time = pos.getTime();
 
-				outGoing.setDistressLatitude(new Latitude(lat.getDegrees(), lat
-						.getMinutes(), lat.getHemisphere()));
-				outGoing.setDistressLongitude(new Longitude(lon.getDegrees(),
-						lon.getMinutes(), lon.getHemisphere()));
-				outGoing.setTime(new Time(time.getHours(), time.getMinutes()));
-				outGoing.setCallType(code);
+				
+				Latitude dlat = new Latitude(lat.getDegrees(), lat
+						.getMinutes(), lat.getHemisphere());
+				
+				Longitude dlon = new Longitude(lon.getDegrees(),
+						lon.getMinutes(), lon.getHemisphere());
+				
+				Time dtime = new Time(time.getHours(), time.getMinutes());
+				
+				Position dpos = new Position(dlat, dlon, dtime);
+			
+				outGoing.setPosition(dpos);
+				
+				outGoing.setCallTypeCd(code);
 			}
 
 		}

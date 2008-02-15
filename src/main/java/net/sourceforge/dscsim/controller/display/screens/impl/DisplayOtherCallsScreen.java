@@ -28,11 +28,12 @@ import java.util.List;
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
 /**
  * @author katharina
  *
@@ -46,7 +47,7 @@ public class DisplayOtherCallsScreen extends MenuScreen {
 	
 
 	public DisplayOtherCallsScreen(JDisplay display,
-			net.sourceforge.dscsim.controller.panels.Screen screen) {
+			Screen screen) {
 		super(display, screen);
 	}
 
@@ -66,7 +67,7 @@ public class DisplayOtherCallsScreen extends MenuScreen {
 
 		
 		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-		ArrayList<DscMessage>callsList = oMCmgr.getIncomingOtherCalls();	
+		ArrayList<Dscmessage>callsList = oMCmgr.getIncomingOtherCalls();	
 		
 		/*in case screen was cached.*/
 		if(callsList.size()<1){
@@ -86,8 +87,8 @@ public class DisplayOtherCallsScreen extends MenuScreen {
 				this.remove(t);
 		}
 		int count = 1;
-		for(DscMessage call: callsList){	
-			menu.addItem(count + ":" + call.getCallTypeText(), "show_other_call_detail", "");
+		for(Dscmessage call: callsList){	
+			menu.addItem(count + ":" + call.getCallTypeCd(), "show_other_call_detail", "");
 			count++;
 		}	
 	}
@@ -105,7 +106,7 @@ public class DisplayOtherCallsScreen extends MenuScreen {
 		int selected = m.getSelected();
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT) && selected > -1){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<DscMessage>callList = oMCmgr.getIncomingOtherCalls();
+			ArrayList<Dscmessage>callList = oMCmgr.getIncomingOtherCalls();
 			oMCmgr.setSelectedIncomingOtherCall(callList.get(selected));
 		}else{
 			getInstanceContext().getContentManager().setSelectedIncomingOtherCall(null);

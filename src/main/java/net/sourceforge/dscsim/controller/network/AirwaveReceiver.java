@@ -23,12 +23,20 @@ import java.net.MulticastSocket;
 import java.net.InetAddress;
 import java.net.DatagramPacket;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.controller.InstanceContext;
+import net.sourceforge.dscsim.controller.infostore.InfoStoreFactory;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.radio.core.RadioEventListener;
 import net.sourceforge.dscsim.radio.core.VHFChannel;
@@ -67,18 +75,15 @@ public class AirwaveReceiver implements Demodulator, DscsimReceiver {
 			} else {
 				
 	            ByteArrayInputStream oInputStr = new ByteArrayInputStream(signal,4,signal.length-4);
-	            ObjectInputStream oObjStrm = new ObjectInputStream(oInputStr);
-	            DscMessage oDcsMessage = (DscMessage)oObjStrm.readObject();
-	            
-	            //String inBound = new String(recv.getData());
-	           
-	            AppLogger.info("inbound message is=" + oDcsMessage.toString());
-	            
-	            _oSignalRecipient.updateSignal(oDcsMessage);
-	            //Thread.sleep(5000);  
+	            AppLogger.info("inbound message is=" + new String(signal));
+	
+	    		JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.message.types", AirwaveReceiver.class.getClassLoader());		
+	    		Unmarshaller u = jc.createUnmarshaller();  
+	    		Dscmessage inComing =(Dscmessage)u.unmarshal(oInputStr);
+	      	          	   
+	            _oSignalRecipient.updateSignal(inComing);
+	          
 			}
-         }catch(EOFException oEofEx){
-        	 AppLogger.error("EOFException - possible cause: buffer too small: Message=" + oEofEx.toString());
          }catch(Exception oEx){
              AppLogger.error(oEx.getMessage());
          }

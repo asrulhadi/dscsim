@@ -22,6 +22,8 @@
 
 package net.sourceforge.dscsim.controller.network;
 
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+
 /**
  * @author katharina
  *
@@ -29,5 +31,5 @@ package net.sourceforge.dscsim.controller.network;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public interface DscsimTransmitter {
-	public abstract void transmit(DscMessage oMsg);
+	public abstract void transmit(Dscmessage oMsg);
 }

@@ -26,11 +26,11 @@ import java.util.ArrayList;
 
 import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
@@ -71,8 +71,8 @@ public class SelectGroupIdScreen extends MenuScreen {
 	 * @see net.sourceforge.dscsim.common.display.textscreen.State#exit()
 	 */
 	public void exit(BusMessage oMessage) {
-		DscMessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscMessage();
-		outGoing.setToMMSI(this.getMenu().getSelectedData().getCode());		
+		Dscmessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscmessage();
+		outGoing.setRecipient(this.getMenu().getSelectedData().getCode());		
 		AppLogger.debug2("-----------"+this.getMenu().getSelectedData().toString());
 	}
 

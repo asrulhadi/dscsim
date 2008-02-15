@@ -29,12 +29,12 @@ import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
 
 /**
  * Screen used to send message. User is pressed with a choice to proceed or
@@ -76,27 +76,27 @@ public class SendAckActionScreen extends ActionScreen {
 
 				MultiContentManager mngr = getInstanceContext()
 						.getContentManager();
-				DscMessage outGoing = mngr.getOutGoingDscMessage();
+				Dscmessage outGoing = mngr.getOutGoingDscmessage();
 
-				if (outGoing.getToMMSI().length() < 1) {
-					outGoing.setToMMSI(mngr.getIncomingDscMessage()
-							.getFromMMSI());
+				if (outGoing.getRecipient().length() < 1) {
+					outGoing.setRecipient(mngr.getIncomingDscmessage()
+							.getSender());
 				}
 
 				/* if individual call, then wait for ack before changing channel */
-				DscMessage inComing = (DscMessage) getInstanceContext()
-						.getContentManager().getIncomingDscMessage();
+				Dscmessage inComing = (Dscmessage) getInstanceContext()
+						.getContentManager().getIncomingDscmessage();
 				if (inComing != null
-						&& inComing.getCallType().equals(CALL_TYPE_INDIVIDUAL)) {
+						&& inComing.getCallTypeCd().equals(CALL_TYPE_INDIVIDUAL)) {
 					if (inComing.getChannel().equals(outGoing.getChannel()) == false
-							&& COMPL_ABLE.equals(outGoing.getComplianceCode())) {
-						outGoing.setCallType(CALL_TYPE_INDIVIDUAL);
+							&& COMPL_ABLE.equals(outGoing.getComplianceCd())) {
+						outGoing.setCallTypeCd(CALL_TYPE_INDIVIDUAL);
 					} else {
 						/* set radio to agree upon channel */
 						RadioCoreController oRadio = getInstanceContext()
 								.getRadioCoreController();
-						oRadio.setChannel(outGoing.getChannel());
-						outGoing.setCallType(CALL_TYPE_INDIVIDUAL_ACK);
+						oRadio.setChannel(outGoing.getChannelStr());
+						outGoing.setCallTypeCd(CALL_TYPE_INDIVIDUAL_ACK);
 					}
 
 				}
@@ -104,15 +104,15 @@ public class SendAckActionScreen extends ActionScreen {
 				 * if outgoing is one of the following, then switch the channel
 				 * immediately as there will be no acks.
 				 */
-				if (CALL_TYPE_ALL_SHIPS.equals(outGoing.getCallType())
-						|| CALL_TYPE_GROUP.equals(outGoing.getCallType())) {
+				if (CALL_TYPE_ALL_SHIPS.equals(outGoing.getCallTypeCd())
+						|| CALL_TYPE_GROUP.equals(outGoing.getCallTypeCd())) {
 					RadioCoreController oRadio = getInstanceContext()
 							.getRadioCoreController();
-					oRadio.setChannel(outGoing.getChannel());
+					oRadio.setChannel(outGoing.getChannelStr());
 				}
 
 				/* make sure outgoing message has my mmsi */
-				outGoing.setFromMMSI(getInstanceContext().getContentManager()
+				outGoing.setSender(getInstanceContext().getContentManager()
 						.getMMSI());
 				getInstanceContext().getBeeper().beepSync(
 						MultiBeeper.BEEP_TRANSMITTING);
@@ -120,7 +120,7 @@ public class SendAckActionScreen extends ActionScreen {
 						.debug("BeanSendScreen.signal =" + outGoing.toString());
 				DscIACManager.getTransmitter().transmit(outGoing);
 
-				inComing.setAknowledged(true);
+				inComing.setAckdTime(java.util.Calendar.getInstance().getTime());
 				mngr.storeIncomingOtherCalls();
 
 				// for affect and as well a yield to Transmitter.

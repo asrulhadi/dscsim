@@ -8,9 +8,11 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.Marshaller;
+import net.sourceforge.dscsim.controller.settings.*;
 
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
@@ -43,9 +45,11 @@ public class InfoStoreFactory implements net.sourceforge.dscsim.controller.Const
 	
 	private InfoStoreType loadStore(String sourceName) throws Exception {
 		DataInputStream dis = new DataInputStream(new FileInputStream(sourceName));
-		JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.infostore", InfoStoreFactory.class.getClassLoader());		
+		JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.settings", InfoStoreFactory.class.getClassLoader());		
 		Unmarshaller u = jc.createUnmarshaller();  
-		this.infostore = (InfoStoreType)u.unmarshal(dis);
+		JAXBElement<InfoStoreType>element =(JAXBElement<InfoStoreType>)u.unmarshal(dis);
+	
+		this.infostore = element.getValue();
 		return this.infostore;	
 	}
 	
@@ -56,7 +60,7 @@ public class InfoStoreFactory implements net.sourceforge.dscsim.controller.Const
 	public InfoStoreType persistInfoStore(){
 		
 		try{
-			JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.infostore", InfoStoreFactory.class.getClassLoader());		
+			JAXBContext jc =  JAXBContext.newInstance("net.sourceforge.dscsim.controller.settings", InfoStoreFactory.class.getClassLoader());		
 			Marshaller m = jc.createMarshaller();  			
 			//m.marshal(this.infostore, new FileOutputStream("D:\\Projekte\\sourceforge\\dscsim\\src\\main\\resources\\etc\\infostore.xml"));	
 			FileOutputStream fos = new FileOutputStream(this.storeName);

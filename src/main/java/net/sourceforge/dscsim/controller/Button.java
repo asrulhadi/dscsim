@@ -23,7 +23,7 @@ import java.lang.reflect.Field;
 
 import net.sourceforge.dscsim.controller.network.DscMessageAttribute;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
-import net.sourceforge.dscsim.controller.utils.Utilities;
+
 
 /**
  * Button class - each instance represents the keys on the dsc device.
@@ -261,7 +261,7 @@ public class Button
 
 			String strName = oField.getName();
 
-			String attrXml = Utilities.getAttributeValue(strName, inXml);
+			String attrXml = "NA";
 
 			try {
 

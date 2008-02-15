@@ -21,30 +21,22 @@ package net.sourceforge.dscsim.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.geom.Dimension2D;
 import java.util.HashMap;
 
 import javax.swing.JApplet;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EtchedBorder;
 
+import net.sourceforge.dscsim.controller.message.types.MMSI;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.InternalBusListener;
-import net.sourceforge.dscsim.controller.network.MulticastReceiver;
-import net.sourceforge.dscsim.controller.network.SyncListenerDispatcher;
 import net.sourceforge.dscsim.controller.network.SyncListenerSubscriber;
 import net.sourceforge.dscsim.controller.network.SyncMessage;
-import net.sourceforge.dscsim.controller.screen.types.MMSI;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 

@@ -23,23 +23,20 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import net.sourceforge.dscsim.controller.MultiContentManager;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.message.types.Position;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreType;
-import net.sourceforge.dscsim.controller.infostore.Position;
-import net.sourceforge.dscsim.controller.infostore.Position.LatitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.LongitudeType;
-import net.sourceforge.dscsim.controller.infostore.Position.TimeType;
+import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.message.types.Latitude;
+import net.sourceforge.dscsim.controller.message.types.Longitude;
+import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.network.DscPosition;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
 import net.sourceforge.dscsim.controller.network.DscRadioTransmitter;
-import net.sourceforge.dscsim.controller.panels.Screen;
-import net.sourceforge.dscsim.controller.screen.types.Latitude;
-import net.sourceforge.dscsim.controller.screen.types.Longitude;
-import net.sourceforge.dscsim.controller.screen.types.Time;
+import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
@@ -51,7 +48,7 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
  */
 public abstract class SendBaseScreen extends ActionScreen  {
 
-	private DscMessage message = new DscMessage();
+	private Dscmessage message = new Dscmessage();
 
 	public SendBaseScreen(JDisplay display, Screen screen) {
 		super(display, screen);
@@ -63,7 +60,7 @@ public abstract class SendBaseScreen extends ActionScreen  {
 	 **/
 	protected void sendSyncUndesignatedDistressAck(String channel){
 		
-		final DscMessage oMsg = sendUndesignatedDistressAck();
+		final Dscmessage oMsg = sendUndesignatedDistressAck();
 		final String chann = channel;
 
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -84,22 +81,22 @@ public abstract class SendBaseScreen extends ActionScreen  {
 
 	}
 	
-	protected DscMessage sendUndesignatedDistressAck(){
+	protected Dscmessage sendUndesignatedDistressAck(){
 	
-		DscMessage oMsg = new DscMessage();
+		Dscmessage oMsg = new Dscmessage();
 
 		try{
-			Latitude lat = (Latitude)getInstanceContext().getContentManager().getSetting("Latitude");			
-			Longitude longitude = (Longitude)getInstanceContext().getContentManager().getSetting("Longitude");				
-			DscPosition oPos = new DscPosition(lat,longitude);			
-			oMsg.setPosition(oPos);			
-			Time time = (Time)getInstanceContext().getContentManager().getSetting("Time");		
-			oMsg.setTime(time);			
-			oMsg.setCatagory(CALL_CAT_DISTRESS);
-			oMsg.setCallType(CALL_TYPE_DISTRESS_ACK);
-			oMsg.setNature(CALL_NATURE_UNDESIGNATED);			
-			oMsg.setChannel(CH_16);
-			sendDscMessage(oMsg);	
+			//Latitude lat = (Latitude)getInstanceContext().getContentManager().getSetting("Latitude");			
+			//Longitude longitude = (Longitude)getInstanceContext().getContentManager().getSetting("Longitude");				
+			//DscPosition oPos = new DscPosition(lat,longitude);			
+			//oMsg.setPosition(oPos);			
+			//Time time = (Time)getInstanceContext().getContentManager().getSetting("Time");		
+			//oMsg.setTime(time);			
+			oMsg.setCatagoryCd(CALL_CAT_DISTRESS);
+			oMsg.setCallTypeCd(CALL_TYPE_DISTRESS_ACK);
+			oMsg.setNatureCd(CALL_NATURE_UNDESIGNATED);			
+			oMsg.setChannel(iCH_16);
+			sendDscmessage(oMsg);	
 		}catch(Exception oEx){
 			AppLogger.error(oEx);
 		}
@@ -125,22 +122,24 @@ public abstract class SendBaseScreen extends ActionScreen  {
 		
 		
 		try{
-			this.message.setCallType(CALL_TYPE_DISTRESS);
-			this.message.setCatagory(CALL_CAT_DISTRESS);
-			this.message.setChannel(CH_16);		
+			this.message.setCallTypeCd(CALL_TYPE_DISTRESS);
+			this.message.setCatagoryCd(CALL_CAT_DISTRESS);
+			this.message.setChannel(iCH_16);		
 			
 			InfoStoreType store = this.getInstanceContext().getContentManager().getInfoStore();
 			Position pos = store.getPosition();
-			LatitudeType lat = pos.getLatitude();
-			LongitudeType lon = pos.getLongitude();
-			TimeType time = pos.getTime();
+			Latitude lat = pos.getLatitude();
+			Longitude lon = pos.getLongitude();
+			Time time = pos.getTime();
 			
-			this.message.setDistressLatitude(new Latitude(lat.getDegrees(), lat.getMinutes(), lat.getHemisphere()));
-			this.message.setDistressLongitude(new Longitude(lon.getDegrees(), lon.getMinutes(), lon.getHemisphere()));
-			this.message.setTime(new Time(time.getHours(), time.getMinutes()));
-			this.message.setNature(store.getNature());
+			Latitude dlat = new Latitude(lat.getDegrees(), lat.getMinutes(), lat.getHemisphere());
+			Longitude dlon = new Longitude(lon.getDegrees(), lon.getMinutes(), lon.getHemisphere());
+			Time dtime = new Time(time.getHours(), time.getMinutes());
+			this.message.setNatureCd(store.getNature());
 			
-			sendDscMessage(this.message);
+			Position dpos = new Position(dlat, dlon, dtime);
+			this.message.setPosition(dpos);
+			sendDscmessage(this.message);
 		}catch(Exception oEx){
 			AppLogger.error(oEx);
 		}
@@ -148,13 +147,13 @@ public abstract class SendBaseScreen extends ActionScreen  {
 		
 		
 	}
-	protected void sendDscMessage(DscMessage msg){
-		//AppLogger.debug("SendBaseScreen.sendDscMessage ="+ oMsg.toString());		
-		msg.setFromMMSI(getInstanceContext().getContentManager().getMMSI());		
+	protected void sendDscmessage(Dscmessage msg){
+		//AppLogger.debug("SendBaseScreen.sendDscmessage ="+ oMsg.toString());		
+		msg.setSender(getInstanceContext().getContentManager().getMMSI());		
 		DscIACManager.getTransmitter().transmit(msg);		
 	}
 
-	public DscMessage getMessage() {
+	public Dscmessage getMessage() {
 		return message;
 	}
 	

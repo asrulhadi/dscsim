@@ -18,13 +18,13 @@
  */
 package net.sourceforge.dscsim.controller.network;
 
-
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 
 public interface InternalBusListener {
 	
 	
 	void keyReleased(String keyId);
 	
-	void updateSignal(DscMessage oDscMessage);
+	void updateSignal(Dscmessage oDscmessage);
 
 }

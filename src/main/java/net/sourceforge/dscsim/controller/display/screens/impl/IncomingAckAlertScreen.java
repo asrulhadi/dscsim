@@ -26,13 +26,13 @@ import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
-import net.sourceforge.dscsim.controller.network.DscMessage;
-import net.sourceforge.dscsim.controller.panels.ActionMapping;
-import net.sourceforge.dscsim.controller.panels.Screen;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Screen;
 
 /**
  * @author wnpr
@@ -50,14 +50,14 @@ public class IncomingAckAlertScreen extends ActionScreen implements Constants {
 
 		MultiContentManager mngr = getInstanceContext().getContentManager();
 		JTextBox tb = (JTextBox) this.getComponentByName("mmsi", 0);
-		tb.setText(this.getIncomingDscMessage().getFromMMSI());
+		tb.setText(this.getIncomingDscmessage().getSender());
 
 		Properties props = mngr.getProperties();
 		tb = (JTextBox) this.getComponentByName("compl", 0);
-		tb.setText(props.getProperty(this.getIncomingDscMessage().getComplianceCode()));
+		tb.setText(props.getProperty(this.getIncomingDscmessage().getComplianceCd()));
 
 		tb = (JTextBox) this.getComponentByName("reason", 0);
-		tb.setText(props.getProperty(this.getIncomingDscMessage().getComplianceReasonCode()));
+		tb.setText(props.getProperty(this.getIncomingDscmessage().getComplianceReasonCd()));
 	}
 
 	@Override
@@ -69,10 +69,10 @@ public class IncomingAckAlertScreen extends ActionScreen implements Constants {
 		if (keyAction.equals(PRESSED)
 				&& keyID.equals(FK_ENT)){
 		
-			DscMessage inComing = this.getIncomingDscMessage();
-			if(inComing != null && COMPL_ABLE.equals(inComing.getComplianceCode())){
+			Dscmessage inComing = this.getIncomingDscmessage();
+			if(inComing != null && COMPL_ABLE.equals(inComing.getComplianceCd())){
 				RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
-				oRadio.setChannel(inComing.getChannel());					
+				oRadio.setChannel(inComing.getChannelStr());					
 			}
 		}
 

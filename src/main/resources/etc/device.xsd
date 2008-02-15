@@ -1,78 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://dscsim.sourcefore.net/xml/ns/dscsim"
-	xmlns:dscsim="http://dscsim.sourcefore.net/xml/ns/dscsim"
+	targetNamespace="http://dscsim.sourceforge.net/controller/screens"
+	xmlns:screen="http://dscsim.sourceforge.net/controller/screens"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-	<xsd:include schemaLocation="./screen-element-types.xsd" />
 
+	<!-- 
+	<xsd:import namespace="http://dscsim.sourceforge.net/controller/screens/types" schemaLocation="./screen-element-types.xsd" />
+	-->
+	
+    <xsd:include schemaLocation="./screen-element-types.xsd"></xsd:include>
+
+	<!-- 
+	<xsd:import namespace="http://dscsim.sourceforge.net/controller/settings"  schemaLocation="./infostore.xsd" />
+	<xsd:import namespace="http://dscsim.sourceforge.net/controller/message/types" schemaLocation="./data.xsd" />
+	 -->
 	<xsd:element name="device">
-	 	<xsd:complexType>
-	 		<xsd:sequence>
-				<xsd:element name="screens" minOccurs="0" maxOccurs="1">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="screens" minOccurs="0"
+					maxOccurs="1">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="screen" type="dscsim:Screen" minOccurs="0" maxOccurs="unbounded"/>
-							</xsd:sequence>				
+							<xsd:element name="screen"
+								type="screen:Screen" minOccurs="0" maxOccurs="unbounded" />
+						</xsd:sequence>
 					</xsd:complexType>
-				</xsd:element>	 		
-				
-				<xsd:element name="actions" type="dscsim:Actions"  minOccurs="0"/>
-			 		
-				
-	 		</xsd:sequence>
-	 	</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="actions" type="screen:Actions"
+					minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
 	</xsd:element>
-	
-	<xsd:complexType name="Screen">	
+
+	<xsd:complexType name="Screen">
 		<xsd:sequence>
-			<xsd:element name="description" type="xsd:anySimpleType" minOccurs="0"/>
-			<xsd:element name="fields" type="dscsim:Fields"  minOccurs="0" maxOccurs="unbounded"/>				
-			<xsd:element name="actions" type="dscsim:Actions" minOccurs="0"/>				
+			<xsd:element name="description" type="xsd:anySimpleType"
+				minOccurs="0" />
+			<xsd:element name="fields" type="screen:Fields"
+				minOccurs="0"/>
+			<xsd:element name="actions" type="screen:Actions"
+				minOccurs="0" />
 		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:string" use="required"/>			
-		<xsd:attribute name="implementation" type="xsd:string" use="optional"/>	
-		<xsd:attribute name="scope" default="transient">	
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="implementation" type="xsd:string"
+			use="optional" />
+		<xsd:attribute name="scope" default="transient">
 			<xsd:simpleType>
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="transient"/>
-					<xsd:enumeration value="session"/>
-					<xsd:enumeration value="persistant"/>
+					<xsd:enumeration value="transient" />
+					<xsd:enumeration value="session" />
+					<xsd:enumeration value="persistant" />
 				</xsd:restriction>
 			</xsd:simpleType>
-		</xsd:attribute>	
-	</xsd:complexType>
-	
-	<xsd:complexType name="Fields">
-		<xsd:complexContent>
-			<xsd:extension base="xsd:anyType">
-			</xsd:extension>
-		</xsd:complexContent>
-	</xsd:complexType>
-	
-	<xsd:element name="textbox" type="dscsim:TextBoxType"></xsd:element>
-	<xsd:element name="editbox" type="dscsim:EditBoxType"></xsd:element>
-	<xsd:element name="menubox" type="dscsim:MenuType"></xsd:element>
-	
-	
-	
-	<xsd:complexType name="Actions">
-		<xsd:sequence>
-			<xsd:element name="action" type="dscsim:ActionMapping" minOccurs="0" maxOccurs="unbounded"/>
-			</xsd:sequence>				
+		</xsd:attribute>
 	</xsd:complexType>
 
-				
+	<xsd:complexType name="Fields">
+	    <xsd:sequence>
+	    	<xsd:any minOccurs="0" maxOccurs="unbounded" >
+	    		
+	    	</xsd:any>
+	    </xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="textbox" type="screen:TextBoxType"></xsd:element>
+	<xsd:element name="editbox" type="screen:EditBoxType"></xsd:element>
+	<xsd:element name="menubox" type="screen:MenuType"></xsd:element>
+
+	<xsd:complexType name="Actions">
+		<xsd:sequence>
+			<xsd:element name="action" type="screen:ActionMapping"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
 	<xsd:complexType name="ActionMapping">
 		<xsd:complexContent>
 			<xsd:restriction base="xsd:anyType">
-				<xsd:attribute name="event" type="xsd:string"/>
-				<xsd:attribute name="source" type="xsd:string"/>
-				<xsd:attribute name="forward" type="xsd:string" use="required"/>		
+				<xsd:attribute name="event" type="xsd:string" />
+				<xsd:attribute name="source" type="xsd:string" />
+				<xsd:attribute name="forward" type="xsd:string"
+					use="required" />
 			</xsd:restriction>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 </xsd:schema>
 
