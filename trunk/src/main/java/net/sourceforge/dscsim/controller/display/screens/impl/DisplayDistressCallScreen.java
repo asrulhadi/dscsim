@@ -84,7 +84,7 @@ public class DisplayDistressCallScreen extends MenuScreen {
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
 			Dscmessage distmsg = oMCmgr.getSelectedIncomingDistressCall();			
 			if(distmsg != null){				
-				oMCmgr.removeIncomingDistressCall(distmsg);				
+				oMCmgr.removeCallMessage(distmsg);				
 			}
 		}
 	}

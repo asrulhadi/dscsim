@@ -70,8 +70,10 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 		if (incoming == null)
 			return;
 
+		Properties props = oMngr.getProperties();
+		
 		this.setTextBox("from", incoming.getSender());
-		this.setTextBox("nature", incoming.getNatureCd());
+		this.setTextBox("nature", incoming.getNatureText(props));
 
 		//TODO Time should be 
 		//this.setTextBox("time", incoming.getTime().toString());
@@ -79,7 +81,6 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 		Position pos = incoming.getPosition();
 		Latitude lat = pos.getLatitude();
 		Longitude lon = pos.getLongitude();
-		Properties props = oMngr.getProperties();
 		this.setTextBox("lat", lat.getAsFromattedString(props));
 		this.setTextBox("lon", lon.getAsFromattedString(props));
 
