@@ -597,6 +597,21 @@
 
 		</dscsim:screen>	
 		
+		<dscsim:screen name="system_error" implementation="net.sourceforge.dscsim.controller.display.screens.impl.SendActionScreen">
+
+			<dscsim:fields>
+				<dscsim:textbox row="1" column="0" width="21" height="1">Unexpected error</dscsim:textbox>
+				<dscsim:textbox row="2" column="0" width="21" height="1">encountered. Please,</dscsim:textbox>
+				<dscsim:textbox row="3" column="0" width="21" height="1">visit our website for</dscsim:textbox>
+				<dscsim:textbox row="4" column="0" width="21" height="1">more information.</dscsim:textbox>				
+				<dscsim:textbox row="7" column="2" width="19" height="1">[CLR] -> Return</dscsim:textbox>					
+			</dscsim:fields>
+
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="main_entry_screen"/>
+			</dscsim:actions>					
+
+		</dscsim:screen>	
 		
 		<!-- network responses -->
 		<dscsim:screen name="incoming_individual_message"  implementation="net.sourceforge.dscsim.controller.display.screens.impl.IncomingAlertScreen" scope="transient">				

@@ -18,17 +18,15 @@
  */
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.MultiContentManager;
-import net.sourceforge.dscsim.controller.message.types.Dscmessage;
-import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
-import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
+import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.screens.Screen;
 
 /**
@@ -49,7 +47,7 @@ implements Constants {
 		JMenu menu = this.getMenu();		
 		MultiContentManager mngr = getInstanceContext().getContentManager();
 		
-		ArrayList<Dscmessage>calls = mngr.getIncomingOtherCalls();		
+		List<Dscmessage>calls = mngr.getIncomingOtherCalls();		
 		Dscmessage dscmsg = calls.get(0);
 
 		if(dscmsg != null){

@@ -69,7 +69,7 @@ public class DisplayDistressCallsScreen extends MenuScreen {
 			this.tbMessage = t;
 
 		MultiContentManager oMCmgr = getInstanceContext().getContentManager();
-		ArrayList<Dscmessage> callsList = oMCmgr.getIncomingDistressCalls();
+		List<Dscmessage> callsList = oMCmgr.getIncomingDistressCalls();
 
 		/* in case screen was cached. */
 		if (callsList.size() < 1) {
@@ -125,7 +125,7 @@ public class DisplayDistressCallsScreen extends MenuScreen {
 		if (msg.getButtonEvent().getKeyId().equals(FK_ENT) && selected > -1) {
 			MultiContentManager oMCmgr = getInstanceContext()
 					.getContentManager();
-			ArrayList<Dscmessage> callList = oMCmgr.getIncomingDistressCalls();
+			List<Dscmessage> callList = oMCmgr.getIncomingDistressCalls();
 			oMCmgr.setSelectedIncomingDistressCall(callList.get(selected));
 		} else {
 			getInstanceContext().getContentManager()

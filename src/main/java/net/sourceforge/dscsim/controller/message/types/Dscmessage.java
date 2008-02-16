@@ -2,7 +2,9 @@ package net.sourceforge.dscsim.controller.message.types;
 
 // Generated 08.02.2008 17:23:08 by Hibernate Tools 3.2.0.beta8
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.persistence.Column;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -39,7 +41,7 @@ public class Dscmessage
 	// Fields    
 
     @XmlElement(required = true)
-	private Date uid;
+	private Date uid =Calendar.getInstance().getTime();
     @XmlElement(required = true)
 	private String sender;
     @XmlElement(required = true)
@@ -131,6 +133,10 @@ public class Dscmessage
 
 	public String getNatureCd() {
 		return this.natureCd;
+	}
+
+	public String getNatureText(Properties props) {
+		return props.getProperty(this.getNatureCd(), this.getNatureCd());
 	}
 
 	public void setNatureCd(String natureCd) {

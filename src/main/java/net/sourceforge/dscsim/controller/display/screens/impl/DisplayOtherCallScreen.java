@@ -75,7 +75,7 @@ public class DisplayOtherCallScreen extends MenuScreen {
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
 			Dscmessage call = oMCmgr.getSelectedIncomingOtherCall();			
 			if(call != null){				
-				oMCmgr.removeIncomingOtherCall(call);				
+				oMCmgr.removeCallMessage(call);				
 			}
 		}
 	}

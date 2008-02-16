@@ -199,7 +199,7 @@ class DscAppPanel extends JPanel implements InstanceContext, InternalBusListener
 				||  ((hasToMMSI && myGroupMMSI.equals(msgToMMSI)==true) && (CALL_TYPE_GROUP.equals(msgType) || CALL_TYPE_GROUP.equals(msgType)))){
 			
 				//ContentManager.storeLastDistressCalls(oDscMessage);
-				getContentManager().storeIncomingMessage((Dscmessage)oDscMessage.clone());
+				getContentManager().storeCallMessage((Dscmessage)oDscMessage.clone());
 				BusMessage oBusMessage = new BusMessage(this, oDscMessage);				
 				getBus().publish(oBusMessage);
 			}

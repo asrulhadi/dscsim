@@ -22,6 +22,8 @@
 
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
+import org.hibernate.Session;
+
 import net.sourceforge.dscsim.controller.Button;
 import net.sourceforge.dscsim.controller.MultiBeeper;
 import net.sourceforge.dscsim.controller.BusMessage;
@@ -29,6 +31,7 @@ import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
+import net.sourceforge.dscsim.controller.persistence.HibernateUtil;
 import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
@@ -120,8 +123,11 @@ public class SendAckActionScreen extends ActionScreen {
 						.debug("BeanSendScreen.signal =" + outGoing.toString());
 				DscIACManager.getTransmitter().transmit(outGoing);
 
-				inComing.setAckdTime(java.util.Calendar.getInstance().getTime());
-				mngr.storeIncomingOtherCalls();
+				inComing.setAckdTime(java.util.Calendar.getInstance().getTime());				
+				Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+				session.beginTransaction();
+				session.update(inComing);
+				session.getTransaction().commit();
 
 				// for affect and as well a yield to Transmitter.
 				try {

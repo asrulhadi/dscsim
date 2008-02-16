@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import net.sourceforge.dscsim.controller.data.types.ActiveField;
 import net.sourceforge.dscsim.controller.message.types.MMSI;
@@ -99,7 +101,14 @@ public class MultiContentManager implements BusListener, Constants {
 	private ArrayList<Dscmessage> incomingDistressCalls = null;
 	private Dscmessage selectedIncomingDistressCall = null;
 
-	public static MultiContentManager getInstance(InstanceContext oCtx) {
+	static {
+		try {
+			HibernateUtil.getSessionFactory().getCurrentSession();			
+		}catch(Exception e){
+			AppLogger.error(e);
+		}
+	}
+	public static MultiContentManager getInstance(InstanceContext oCtx) { 
 		return new MultiContentManager(oCtx.getContentManager().getMMSI(), oCtx);
 	}
 
@@ -291,53 +300,24 @@ public class MultiContentManager implements BusListener, Constants {
 
 	}
 
-	public void storeIncomingMessage(Dscmessage oMessage) {
-
-		if (MultiContentManager.CALL_TYPE_DISTRESS.equals(oMessage
-				.getCallTypeCd())
-				|| MultiContentManager.CALL_TYPE_DISTRESS_ACK.equals(oMessage
-						.getCallTypeCd())) {
-			addIncomingDistressCall(oMessage);
-		} else if (isIncomingOtherRequest(oMessage)) {
-			addIncomingOtherCalls(oMessage);
-		}
-
+	public void storeCallMessage(Dscmessage message) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		session.save(message);
+		session.getTransaction().commit();
 	}
 
-	public void addIncomingOtherCalls(Dscmessage oMessage) {
-		ArrayList<Dscmessage> calls = this.getIncomingOtherCalls();
-		calls.add(0, oMessage);
-		this.storeList(INCOMING_OTHER_CALLS, calls);
-	}
-
-	public void storeIncomingOtherCalls() {
-		ArrayList<Dscmessage> calls = this.getIncomingOtherCalls();
-		this.storeList(INCOMING_OTHER_CALLS, calls);
-	}
-
-	public void removeIncomingOtherCall(Dscmessage oMessage) {
-		ArrayList<Dscmessage> calls = this.getIncomingOtherCalls();
-		calls.remove(oMessage);
-		this.storeList(INCOMING_OTHER_CALLS, calls);
-	}
-
-	public void addIncomingDistressCall(Dscmessage oMessage) {
+	public void removeCallMessage(Dscmessage message) {
 		
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		session.save(oMessage);
+		session.delete(message);
 		session.getTransaction().commit();
-		
-		ArrayList<Dscmessage> calls = this.getIncomingDistressCalls();
-		calls.add(0, oMessage);
-		this.storeList(INCOMING_DISTRESS_CALLS, calls);
-		
-	}
-
-	public void removeIncomingDistressCall(Dscmessage oMessage) {
+		/*
 		ArrayList<Dscmessage> calls = this.getIncomingDistressCalls();
 		calls.remove(oMessage);
 		this.storeList(INCOMING_DISTRESS_CALLS, calls);
+		*/
 	}
 
 	public List getStorageList(String storageName) {
@@ -368,103 +348,55 @@ public class MultiContentManager implements BusListener, Constants {
 		return oFound;
 	}
 
-	public ArrayList<Dscmessage> getIncomingOtherCalls() {
-
-		if (this.incomingOtherCalls == null) {
-			this.incomingOtherCalls = readList(this.getStoreExtension(),
-					getStorePrefix() + INCOMING_OTHER_CALLS);
-
-			if (this.incomingOtherCalls == null) {
-				this.incomingOtherCalls = new ArrayList<Dscmessage>();
-			}
-		}
-		return incomingOtherCalls;
-
+	public List<Dscmessage> getIncomingOtherCalls() {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();		
+		session.beginTransaction();
+		
+		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
+		.add(Restrictions.ne(this.PROP_SENDER, this.getMMSI()))
+		.add(Restrictions.ne(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
+		.addOrder(Order.desc(PROP_UID))
+		.list();
+	
+		return list;
 	}
 
-	public ArrayList<Dscmessage> getIncomingDistressCalls() {
-
-		if (this.incomingDistressCalls == null) {
-			this.incomingDistressCalls = readList(this.getStoreExtension(),
-					getStorePrefix() + INCOMING_DISTRESS_CALLS);
-
-			if (this.incomingDistressCalls == null) {
-				this.incomingDistressCalls = new ArrayList<Dscmessage>();
-			}
-		}
-		return incomingDistressCalls;
-
+	public List<Dscmessage> getIncomingDistressCalls() {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction().begin();
+		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
+		.add(Restrictions.ne(PROP_SENDER, this.getMMSI()))
+		.add(Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
+		.addOrder(Order.desc(PROP_UID))
+		.list();
+		
+		return list;
 	}
 
-	public void addIncomingDistressAcks(Dscmessage oMessage) {
-
-		_oIncomingDistressAcks.add(0, oMessage);
-
-		for (int i = _oIncomingDistressAcks.size() - 1; i > 6; i--) {
-			_oIncomingDistressAcks.remove(i);
-		}
-
+	public List<Dscmessage> getIncomingDistressAcks() {
+		
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction().begin();
+		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
+		.add(Restrictions.ne(PROP_SENDER, this.getMMSI()))
+		.add(Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS_ACK))
+		.addOrder(Order.desc(PROP_UID))
+		.list();
+		
+		return list;
+		
 	}
 
-	public ArrayList getIncomingDistressAcks() {
-
-		return _oIncomingDistressCalls;
-
-	}
-
-	public ArrayList fetchDistressCalls() {
-
-		// AppLogger.debug("fetching store called for"+
-		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
-
-		ArrayList oRetList = null;
-
-		try {
-
-			FileInputStream fis = new FileInputStream(
-					cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
-
-			ObjectInputStream ois = new ObjectInputStream(fis);
-
-			oRetList = (ArrayList) ois.readObject();
-
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-			oRetList = new ArrayList();
-		}
-
-		return oRetList;
-
-	}
-
-	public void storeIncomingCall(Dscmessage oDscmessage) {
-
-		// AppLogger.debug("storeIncomingCall called for"+
-		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
-
-		if (CALL_CAT_DISTRESS.equals(oDscmessage.getClass())) {
-
-		} else {
-
-		}
-
-	}
-
-	public void storeLastDistressCalls(Dscmessage oDscMsg) {
-
-		// AppLogger.debug("storeLastDistressCalls called for"+
-		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
-
-		ArrayList oLastCalls = fetchDistressCalls();
-
-		oLastCalls.add(0, oDscMsg);
-
-		for (int i = oLastCalls.size() - 1; i > 6; i--) {
-			oLastCalls.remove(i);
-		}
-
-		storeDistressCalls(oLastCalls);
-
+	public List fetchDistressCalls() {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
+		.add(Restrictions.ne(PROP_SENDER, this.getMMSI()))
+		.add(Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
+		.addOrder(Order.desc(PROP_UID))
+		.list();
+		
+		return list;
 	}
 
 	public String getStoreExtension() {
@@ -479,27 +411,6 @@ public class MultiContentManager implements BusListener, Constants {
 	public String getStorePrefix() {
 		return Constants.STORE_BASE;
 	}
-
-	public void storeDistressCalls(ArrayList oCalls) {
-
-		// AppLogger.debug("storeDistressCalls called for"+
-		// cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
-
-		try {
-
-			FileOutputStream fos = new FileOutputStream(getStorePrefix()
-					+ cDISTRESS_CALL_PERSISTANCE + getStoreExtension());
-
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-			oos.writeObject(oCalls);
-
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-	}
-
 	/**
 	 * -----------------------------------------------------------------------------
 	 * 

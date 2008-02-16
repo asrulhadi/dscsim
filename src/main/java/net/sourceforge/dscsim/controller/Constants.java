@@ -247,74 +247,74 @@ public interface Constants {
 	/**
 	 * Call type individual.
 	 */
-	public static final String CALL_TYPE_INDIVIDUAL = "IN";
+	public static final String CALL_TYPE_INDIVIDUAL = "CALL_TYPE_INDIVIDUAL";
 	/**
 	 * Call type individual acknowlege.
 	 */
-	public static final String CALL_TYPE_INDIVIDUAL_ACK = "IA";
+	public static final String CALL_TYPE_INDIVIDUAL_ACK = "CALL_TYPE_INDIVIDUAL_ACK";
 	/**
 	 * Call type group.
 	 */
-	public static final String CALL_TYPE_GROUP = "GR";
+	public static final String CALL_TYPE_GROUP = "CALL_TYPE_GROUP";
 
 	/**
 	 * Call type group acknowledge.
 	 */
-	public static final String CALL_TYPE_GROUP_ACK = "GA";
+	public static final String CALL_TYPE_GROUP_ACK = "TYPE_GROUP_ACK";
 
 	/**
 	 * Call type all ships.
 	 */
-	public static final String CALL_TYPE_ALL_SHIPS = "AS";
+	public static final String CALL_TYPE_ALL_SHIPS = "TYPE_ALL_SHIPS";
 
 	/**
 	 * Call type all ships acknowledge.
 	 */
-	public static final String CALL_TYPE_ALL_SHIPS_ACK = "AA";
+	public static final String CALL_TYPE_ALL_SHIPS_ACK = "TYPE_ALL_SHIPS_ACK";
 
 	/**
 	 * Call type distress.
 	 */
-	public static final String CALL_TYPE_DISTRESS = "DI";
+	public static final String CALL_TYPE_DISTRESS = "TYPE_DISTRESS";
 
 	/**
 	 * Call type distress acknowledgement
 	 */
-	public static final String CALL_TYPE_DISTRESS_ACK = "DA";
+	public static final String CALL_TYPE_DISTRESS_ACK = "TYPE_DISTRESS_ACK";
 
 	/**
 	 * Call type position request.
 	 */
-	public static final String CALL_TYPE_POSITION_REQ = "PR";
+	public static final String CALL_TYPE_POSITION_REQ = "TYPE_POSITION_REQ";
 
 	/**
 	 * Designated called.
 	 */
-	public static final String CALL_NATURE_DESIGNATED = "DE";
+	public static final String CALL_NATURE_DESIGNATED = "NATURE_DESIGNATED";
 
 	/**
 	 * Call nature undesignated.
 	 */
-	public static final String CALL_NATURE_UNDESIGNATED = "UN";
+	public static final String CALL_NATURE_UNDESIGNATED = "NATURE_UNDESIGNATED";
 
 	/**
 	 * Catagory distress.
 	 */
-	public static final String CALL_CAT_DISTRESS = "DI";
+	public static final String CALL_CAT_DISTRESS = "CAT_DISTRESS";
 
 	/**
 	 * Catagory urgency.
 	 */
-	public static final String CALL_CAT_URGENCY = "UR";
+	public static final String CALL_CAT_URGENCY = "CAT_URGENCY";
 
 	/**
 	 * Catagory saftey.
 	 */
-	public static final String CALL_CAT_SAFETY = "SA";
+	public static final String CALL_CAT_SAFETY = "CAT_SAFETY";
 	/**
 	 * Catagory routine.
 	 */
-	public static final String CALL_CAT_ROUTINE = "RO";
+	public static final String CALL_CAT_ROUTINE = "CAT_SAFETY";
 
 	/**
 	 * Catagory distress.
@@ -472,4 +472,40 @@ public interface Constants {
 	public static final String MS_LAT_PREF = "MS_LAT_PREF";
 	public static final String MS_LON_PREF = "MS_LON_PREF";
 
+	/**
+	 * DSCMESSAGE TABLE column names.
+	 */
+	public static final String DB_UID = "UID";
+	public static final String DB_SENDER = "SENDER SENDER";
+	public static final String DB_RECIPIENT = "RECIPIENT"; 
+	public static final String DB_CALL_TYPE_CD = "CALL_TYPE_CD";
+	public static final String DB_NATURE_CD = "NATURE_CD";
+	public static final String DB_CATAGORY_CD = "CATAGORY_CD";
+	public static final String DB_POS_LAT_DEG = "POS_LAT_DEG";
+	public static final String DB_POS_LAT_MIN = "POS_LAT_MIN";
+	public static final String DB_POS_LAT_HEM = "POS_LAT_HEM";
+	public static final String DB_POS_LON_DEG = "POS_LON_DEG";
+	public static final String DB_POS_LON_MIN = "POS_LON_MIN";
+	public static final String DB_POS_LON_HEM = "POS_LON_HEM";
+	public static final String DB_POS_TIME_HRS = "POS_TIME_HRS";
+	public static final String DB_POS_TIME_MIN = "POS_TIME_MIN";
+	public static final String DB_CHANNEL = "CHANNEL";
+	public static final String DB_COMPLIANCE_CD = "COMPLIANCE_CD";
+	public static final String DB_COMPLIANCE_REASON_CD = "COMPLIANCE_REASON_CD";
+	public static final String DB_ACKD_TIME = "ACKD_TIME";
+	
+	/**
+	 *Persistent object property names.
+	 */
+	public static final String PROP_UID = "uid";
+	public static final String PROP_SENDER = "sender";
+	public static final String PROP_RECIPIENT = "recipient"; 
+	public static final String PROP_CALL_TYPE_CD = "position";
+	public static final String PROP_NATURE_CD = "callTypeCd";
+	public static final String PROP_CATAGORY_CD = "natureCd";
+	public static final String PROP_CHANNEL = "channel";
+	public static final String PROP_COMPLIANCE_CD = "complianceCd";
+	public static final String PROP_COMPLIANCE_REASON_CD = "complianceReasonCd";
+	public static final String PROP_ACKD_TIME = "ackdTime";
+	
 }
