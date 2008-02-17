@@ -73,6 +73,7 @@ public class Dscmessage
 		this.uid = other.uid != null ? other.uid : null;
 		this.sender = other.sender != null ? other.sender : null;
 		this.recipient = other.recipient != null ? other.recipient : null;
+		this.position = other.position != null ? other.position.clone() : null;
 		this.callTypeCd = other.callTypeCd != null ? other.callTypeCd : null;
 		this.natureCd = other.natureCd != null ? other.natureCd : null;
 		this.catagoryCd = other.catagoryCd != null ? other.catagoryCd : null;
