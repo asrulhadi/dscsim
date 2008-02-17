@@ -90,18 +90,13 @@ public class DisplayDistressCallsScreen extends MenuScreen {
 		}
 		int count = 1;
 		Properties props = oMCmgr.getProperties();
-		String notime = props.getProperty("EMPTY_TIME", "");
 		String text = null;
-		String strTime = notime;
+		String strTime = null;
 		for (Dscmessage call : callsList) {
 			text = call.getCallTypeCd();
 			text = props.getProperty(text);
 			text = props.getProperty(text);
-			Time ctime = call.getPosition().getTime();
-			if (ctime.isValid())
-				strTime = ctime.toString();
-			else
-				strTime = notime;
+			strTime = call.getPosition().getTime().getAsFormattedString2(props);
 
 			menu.addItem(count + ":" + text + " " + strTime,
 					"show_distress_call", "");

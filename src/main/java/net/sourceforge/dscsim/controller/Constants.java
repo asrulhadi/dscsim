@@ -465,6 +465,8 @@ public interface Constants {
 	public static final String MS_SOURCE_MNL = "MS_SOURCE_MNL";
 	public static final String MS_SOURCE_GPS = "MS_SOURCE_GPS";
 	public static final String MS_TIME_NON = "MS_TIME_NON";
+	public static final String TIME_FORMAT = "TIME_FORMAT";
+	public static final String EMPTY_TIME = "EMPTY_TIME";
 	public static final String MS_POS_NON = "MS_POS_NON";
 	public static final String MS_LAT_NON = "MS_LAT_NON";
 	public static final String MS_LON_NON = "MS_LON_NON";

@@ -8,10 +8,14 @@
 
 package net.sourceforge.dscsim.controller.message.types;
 
+import java.text.MessageFormat;
+import java.util.Properties;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.message.types.Latitude.Hemisphere;
 
 
@@ -47,11 +51,14 @@ import net.sourceforge.dscsim.controller.message.types.Latitude.Hemisphere;
     "hours",
     "minutes"
 })
-public class Time implements Cloneable {
+public class Time 
+	implements Cloneable, Constants {
 
 	/*valid is 0 to 23*/
     protected int hours = -1;
     protected int minutes;
+
+    private static final String PARTS_FORMAT = "{0,number,00}";
 
     public Time(){
     	
@@ -75,7 +82,10 @@ public class Time implements Cloneable {
     }
 
     public String hoursAsString() {
-        return String.valueOf(getHours());
+		if(this.hasValue())
+			return MessageFormat.format(PARTS_FORMAT, new Object[]{this.getHours()});
+		else
+			return "";   
     }
     /**
      * Sets the value of the hours property.
@@ -99,8 +109,11 @@ public class Time implements Cloneable {
         return minutes;
     }
 
-    public String minutesAsString() {
-        return String.valueOf(getMinutes());
+    public String minutesAsString() { 	
+		if(this.hasValue())
+			return MessageFormat.format(PARTS_FORMAT, new Object[]{this.getMinutes()});
+		else
+			return "";       
     }
     /**
      * Sets the value of the minutes property.
@@ -116,6 +129,21 @@ public class Time implements Cloneable {
     	else
     		setMinutes(Integer.valueOf(minutes));
     
+    }
+    
+    
+    public String getAsFormattedString2(Properties props){
+		if(this.hasValue())
+			return MessageFormat.format(props.getProperty(TIME_FORMAT), new Object[]{this.getHours(),this.getMinutes()});
+		else
+			return props.getProperty(EMPTY_TIME);
+    }
+    
+    public String getAsFormattedString(Properties props){
+		if(this.hasValue())
+			return MessageFormat.format(props.getProperty(TIME_FORMAT), new Object[]{this.getHours(),this.getMinutes()});
+		else
+			return props.getProperty(MS_TIME_NON);
     }
     
 	public boolean isValid() {

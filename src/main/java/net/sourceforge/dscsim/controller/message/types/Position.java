@@ -78,9 +78,9 @@ public class Position implements Cloneable, CompositeUserType
     }
 
     public Position(Position other){   
-		this.latitude = other.latitude.clone();
-		this.longitude = other.longitude.clone();
-		this.time = other.time.clone();
+		this.latitude = other.latitude != null ? other.latitude.clone() : null;
+		this.longitude = other.longitude != null ? other.longitude.clone() : null;
+		this.time = other.time != null ? other.time.clone() : null;
     }
     
     /**

@@ -18,6 +18,8 @@ public abstract class Coordinate {
 	protected int degrees;
 	protected int minutes;
 		
+    private static final String MIN_FORMAT = "{0,number,00}";
+
 	public Coordinate(){}
 
 	public Coordinate(int degrees, int minutes){
@@ -67,7 +69,8 @@ public abstract class Coordinate {
 	}
 
 	public String getMinutesAsString() {
-	    return String.valueOf(getMinutes());
+		MessageFormat mf = new MessageFormat(MIN_FORMAT);
+	    return mf.format(new Object[]{getMinutes()});
 	}
 	
 	/**

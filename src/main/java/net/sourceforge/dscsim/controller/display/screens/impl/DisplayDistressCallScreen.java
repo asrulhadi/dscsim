@@ -61,7 +61,7 @@ public class DisplayDistressCallScreen extends MenuScreen {
 		this.setTextBox("from", selected.getFrom());
 		this.setTextBox("nature", props.getProperty(selected.getNatureCd()));
 		
-		this.setTextBox("time", selected.getPosition().getTime().toString());
+		this.setTextBox("time", selected.getPosition().getTime().getAsFormattedString(props));
 		
 		Position pos = selected.getPosition();
 		if(pos != null){

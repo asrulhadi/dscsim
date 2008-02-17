@@ -66,13 +66,6 @@ public class MultiContentManager implements BusListener, Constants {
 	// cache for lists
 	private ArrayList _oSessionCache = new ArrayList();
 
-	// session distress calls
-	private ArrayList _oIncomingDistressCalls = new ArrayList();
-	private ArrayList _oIncomingDistressAcks = new ArrayList();
-
-	private HashMap _oBeanListSession = new HashMap();
-	private HashMap _oBeanListPersist = new HashMap();
-
 	// persistant list
 	private HashMap _oSessionLists = new HashMap();
 
