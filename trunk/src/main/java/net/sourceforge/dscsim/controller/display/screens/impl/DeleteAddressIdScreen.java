@@ -22,13 +22,14 @@
  
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntryType;
 import net.sourceforge.dscsim.controller.screens.Screen;
 
 
@@ -75,20 +76,13 @@ public class DeleteAddressIdScreen extends JEditBoxInputScreen {
 		
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<AddressIdEntry>beanList = oMCmgr.getAddressIdList();
+			List<AddressIdEntry>beanList = oMCmgr.getAddressIdList();
 			
 			String entMmsi = this.ebMmsi.getValue();
 			String entAddr = this.ebAddress.getValue();
-
-			for(AddressIdEntry address:beanList){	
-				if(entMmsi.equals(address.getId()) && entAddr.equals(address.getName())){
-					beanList.remove(address);
-					oMCmgr.storeListAddressIdList();
-					break;
-				} else {
-					address = null;
-				}
-			}	
+			
+			oMCmgr.removeAddressIdEntry(new AddressIdEntry(entMmsi, entAddr, AddressIdEntryType.IN));
+	
 		}
 	
 	}

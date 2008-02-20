@@ -22,15 +22,14 @@
  
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Screen;
 /**
@@ -53,7 +52,7 @@ public class DisplayAddressIdsScreen extends MenuScreen {
 		
 		JMenu menu = (JMenu)this.getComponentByName("menu", 0);			
 		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-		ArrayList<AddressIdEntry>beanList = oMCmgr.getAddressIdList();	
+		List<AddressIdEntry>beanList = oMCmgr.getAddressIdList();	
 		
 		if(beanList.size()<1){
 			this.remove(menu);
@@ -77,7 +76,7 @@ public class DisplayAddressIdsScreen extends MenuScreen {
 		String selectedKey = menu.getSelectedKey();
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT) && selectedKey != null){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<AddressIdEntry>beanList = oMCmgr.getAddressIdList();
+			List<AddressIdEntry>beanList = oMCmgr.getAddressIdList();
 			for(AddressIdEntry address: beanList){		
 				if(selectedKey.equals(address.getName())){
 					oMCmgr.setSelectedAddressId(address);

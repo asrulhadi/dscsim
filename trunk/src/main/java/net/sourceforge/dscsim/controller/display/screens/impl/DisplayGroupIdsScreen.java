@@ -25,12 +25,12 @@ package net.sourceforge.dscsim.controller.display.screens.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
 /**
  * @author katharina
  *

@@ -22,10 +22,10 @@
  
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
@@ -60,7 +60,7 @@ public class SelectAddressIdScreen extends MenuScreen {
 	public void enter(Object msg) {
 		super.enter(msg);		
 		JMenu m = (JMenu)this.getComponentByName("address_ids_list", 0);
-		ArrayList<AddressIdEntry>addresses = this.getInstanceContext().getContentManager().getAddressIdList();
+		List<AddressIdEntry>addresses = this.getInstanceContext().getContentManager().getAddressIdList();
 		for(AddressIdEntry addr: addresses){
 			m.addItem(addr.getName(), "select_category", addr.getId());
 		}		

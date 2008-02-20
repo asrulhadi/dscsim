@@ -65,12 +65,7 @@ public class JMainScreen extends ActionScreen
 		
 		Position pos = oMngr.getInfoStore().getPosition();
 		Time time = pos.getTime();
-		
-		if(!time.hasValue()){
-			this.tbTime.setText(props.getProperty("MS_TIME_NON"));
-		} else{
-			this.tbTime.setText(props.getProperty("MS_TIME_PREF") + time.getHours() + ":" + time.getMinutes());
-		}
+		this.tbTime.setText(time.getAsFormattedString(props));
 		
 		Latitude lat = pos.getLatitude();
 		Longitude lon = pos.getLongitude();
@@ -81,17 +76,6 @@ public class JMainScreen extends ActionScreen
 		} else {
 			this.tbLat.setText(lat.getAsFromattedString(props));
 			this.tbLon.setText(lon.getAsFromattedString(props));
-			/*
-			this.tbLat.setText(props.getProperty("MS_LAT_PREF")
-					+ lat.getDegrees() + props.getProperty("DEGREE_SYMBOL")
-					+ lat.getMinutes() + props.getProperty("MINUTE_SYMBOL")
-					+ lat.getHemisphere());
-			
-			this.tbLon.setText(props.getProperty("MS_LON_PREF")
-					+ lon.getDegrees() + props.getProperty("DEGREE_SYMBOL")
-					+ lon.getMinutes() + props.getProperty("MINUTE_SYMBOL")
-					+ lon.getHemisphere());
-			*/
 		}
 		
 
