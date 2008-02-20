@@ -39,6 +39,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import net.sourceforge.dscsim.controller.data.types.ActiveField;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntryType;
 import net.sourceforge.dscsim.controller.message.types.MMSI;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
@@ -776,17 +778,26 @@ public class MultiContentManager implements BusListener, Constants {
 		return null;
 	}
 
-	public ArrayList<AddressIdEntry> getAddressIdList() {
+	public List<AddressIdEntry> getAddressIdList() {
 
-		if (this.addressIdList == null) {
-			this.addressIdList = readList(this.getStoreExtension(),
-					getStorePrefix() + ADDRESS_BOOK_FNAME);
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction().begin();
+		List<AddressIdEntry>list = session.createCriteria(AddressIdEntry.class)
+		.add(Restrictions.eq(PROP_TYPE_CD, AddressIdEntryType.IN))
+		.addOrder(Order.desc(PROP_ID))
+		.list();
+		
+		return list;
+		
+	}
+	
+	public void removeAddressIdEntry(AddressIdEntry entry) {
 
-			if (this.addressIdList == null) {
-				this.addressIdList = new ArrayList<AddressIdEntry>();
-			}
-		}
-		return addressIdList;
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction().begin();
+		session.delete(entry);
+		session.getTransaction().commit();
+
 	}
 
 	public ArrayList<AddressIdEntry> getGroupIdList() {
@@ -806,6 +817,13 @@ public class MultiContentManager implements BusListener, Constants {
 		this.storeList(ADDRESS_BOOK_FNAME, this.addressIdList);
 	}
 
+	public void addAddressIdEntry(AddressIdEntry entry) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		session.save(entry);
+		session.getTransaction().commit();		
+	}
+	
 	public void storeListGroupIdList() {
 		this.storeList(GROUP_BOOK_FNAME, this.groupIdList);
 	}

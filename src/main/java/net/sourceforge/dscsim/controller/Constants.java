@@ -510,4 +510,10 @@ public interface Constants {
 	public static final String PROP_COMPLIANCE_REASON_CD = "complianceReasonCd";
 	public static final String PROP_ACKD_TIME = "ackdTime";
 	
+	public static final String PROP_ID = "id";
+	public static final String PROP_NAME = "name";
+	public static final String PROP_TYPE_CD= "type";
+	
+	
+	
 }

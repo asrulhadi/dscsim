@@ -23,15 +23,17 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntryType;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Screen;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -77,9 +79,8 @@ public class EnterNewAddressIdScreen extends JEditBoxInputScreen {
 		
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<AddressIdEntry>list = oMCmgr.getAddressIdList();
-			list.add(new AddressIdEntry(this.ebMmsi.getValue(), this.ebAddress.getValue()));					
-			oMCmgr.storeListAddressIdList();		
+			AddressIdEntry entry = new AddressIdEntry(this.ebMmsi.getValue(), this.ebAddress.getValue(), AddressIdEntryType.IN);					
+			oMCmgr.addAddressIdEntry(entry);		
 		}
 	
 	}

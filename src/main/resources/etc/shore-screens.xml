@@ -256,11 +256,11 @@
 					<dscsim:choice  link="system_not_implemented">Brightness</dscsim:choice>		
 					<dscsim:choice  link="system_not_implemented">Contrast</dscsim:choice>				
 				</dscsim:menubox>	
-				<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>	
-				<dscsim:actions>
-					<dscsim:action event="PRSD" source="FK_CLR" forward="main_entry_screen"/>
-				</dscsim:actions>	
+				<dscsim:textbox row="7" column="1" width="19" height="1">CLR->Exit / ENT->OK</dscsim:textbox>		
 			</dscsim:fields>
+			<dscsim:actions>
+				<dscsim:action event="PRSD" source="FK_CLR" forward="main_entry_screen"/>
+			</dscsim:actions>
 		</dscsim:screen>	
 		
 		<dscsim:screen name="setup_address_info" implementation="net.sourceforge.dscsim.controller.display.screens.framework.MenuScreen">

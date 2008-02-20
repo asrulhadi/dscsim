@@ -54,15 +54,41 @@
 		</taskdef>
 
 		<mkdir dir="generated" />
-		<xjc source="1.0" schema="./src/main/resources/etc/device.xsd" package="net.sourceforge.dscsim.controller.panels" target="generated">
+		<xjc source="2.0" schema="./src/main/resources/etc/device.xsd"  destdir="generated">
 			<produces dir="" includes="**/*.java" />
 		</xjc>
 
-		<xjc source="1.0" schema="./src/main/resources/etc/infostore.xsd" package="net.sourceforge.dscsim.controller.infostore" target="generated">
+		<xjc source="2.0" schema="./src/main/resources/etc/infostore.xsd"  destdir="generated">
 			<produces dir="" includes="**/*.java" />
 		</xjc>
-
+		
+		<!--
+				<xjc source="1.0" schema="./src/main/resources/etc/device.xsd" package="net.sourceforge.dscsim.controller.panels" target="generated">
+			<produces dir="" includes="**/*.java" />
+		</xjc>
+		
+		<xjc source="1.0" schema="./src/main/resources/etc/infostore.xsd" package="net.sourceforge.dscsim.controller.data" target="generated">
+			<produces dir="" includes="**/*.java" />
+		</xjc>
+		-->
 	</target>
 
-
+	  <target name="gen-hibernate-classes">    
+		<taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask">
+			<classpath>
+				<fileset dir="${basedir}">
+				   <include name="lib/*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+		  
+	    <hibernatetool destdir="${basedir}/generated">
+	      <jdbcconfiguration configurationfile="${basedir}/src/main/resources/etc/hibernate.cfg.xml" packagename="net.sourceforge.dscsim.controller.message.types" revengfile="${basedir}/src/main/resources/etc/hibernate.reveng.xml"/>
+	    	<hbm2java jdk5="true" ejb3="true"/>
+	    	<hbm2hbmxml/>
+	    </hibernatetool>
+	   
+	    
+	  </target>
+	  
 </project>

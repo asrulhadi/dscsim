@@ -23,11 +23,11 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 
-import net.sourceforge.dscsim.controller.AddressIdEntry;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Screen;
 

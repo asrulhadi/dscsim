@@ -4,7 +4,14 @@
 		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
+    
+      <!-- 
         <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
+       -->
+      
+        <property name="hibernate.connection.url">jdbc:hsqldb:file:data/dscsim_db</property>        
+       
+        
         <property name="hibernate.connection.url">jdbc:hsqldb:hsql://localhost</property>
         <property name="hibernate.connection.username">sa</property>
         <property name="hibernate.connection.password"></property> 
@@ -25,8 +32,7 @@
         <property name="show_sql">true</property>
         
         <mapping resource="etc/Dscmessage.hbm.xml"/>
-        <mapping class="net.sourceforge.dscsim.controller.message.types.CodeText"/>
-        <mapping class="net.sourceforge.dscsim.controller.message.types.AddressBook"/>
+        <mapping resource="etc/AddressIdEntry.hbm.xml"/>
                 
     </session-factory>
 </hibernate-configuration>

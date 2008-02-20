@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 08.02.2008 17:23:08 by Hibernate Tools 3.2.0.beta8 -->
+<hibernate-mapping>
+    <class name="net.sourceforge.dscsim.controller.message.types.AddressIdEntry" table="ADDRESS_BOOK">
+        <composite-id>
+            <key-property name="id" type="string">
+                <column name="ID" length="9" />
+            </key-property>
+            <key-property name="name" type="string">
+                <column name="NAME" length="15" />
+            </key-property>
+        </composite-id>
+        <property name="type" type="net.sourceforge.dscsim.controller.message.types.AddressIdEntryType">
+            <column name="TYPE_CD" length="2" />
+        </property>
+    </class>
+</hibernate-mapping>

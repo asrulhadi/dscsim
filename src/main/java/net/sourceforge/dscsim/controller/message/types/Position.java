@@ -55,7 +55,8 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
     "longitude",
     "time"
 })
-public class Position implements Cloneable, CompositeUserType
+public class Position 
+	implements Cloneable, CompositeUserType
 {
 
     @XmlElement(required = true)
@@ -273,7 +274,6 @@ public class Position implements Cloneable, CompositeUserType
 	}
 
 	public boolean isMutable() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
