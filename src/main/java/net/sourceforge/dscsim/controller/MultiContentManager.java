@@ -27,34 +27,28 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import net.sourceforge.dscsim.controller.data.types.ActiveField;
+import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
+import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
+import net.sourceforge.dscsim.controller.display.screens.framework.JScreenFactory;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
+import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.message.types.MMSI;
+import net.sourceforge.dscsim.controller.persistence.HibernateUtil;
+import net.sourceforge.dscsim.controller.screens.ActionMapping;
+import net.sourceforge.dscsim.controller.screens.Device;
+import net.sourceforge.dscsim.controller.settings.InfoStoreFactory;
+import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
-import net.sourceforge.dscsim.controller.data.types.ActiveField;
-import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
-import net.sourceforge.dscsim.controller.message.types.AddressIdEntryType;
-import net.sourceforge.dscsim.controller.message.types.MMSI;
-import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
-import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
-import net.sourceforge.dscsim.controller.display.screens.framework.JScreen;
-import net.sourceforge.dscsim.controller.display.screens.framework.JScreenFactory;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreFactory;
-import net.sourceforge.dscsim.controller.settings.*;
-import net.sourceforge.dscsim.controller.data.types.*;
-import net.sourceforge.dscsim.controller.screens.ActionMapping;
-import net.sourceforge.dscsim.controller.screens.Device;
-import net.sourceforge.dscsim.controller.utils.AppLogger;
-import net.sourceforge.dscsim.controller.screens.Screen;
-import net.sourceforge.dscsim.controller.message.types.Dscmessage;
-import net.sourceforge.dscsim.controller.persistence.HibernateUtil;
 
 
 public class MultiContentManager implements BusListener, Constants {
@@ -783,10 +777,10 @@ public class MultiContentManager implements BusListener, Constants {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction().begin();
 		List<AddressIdEntry>list = session.createCriteria(AddressIdEntry.class)
-		.add(Restrictions.eq(PROP_TYPE_CD, AddressIdEntryType.IN))
-		.addOrder(Order.desc(PROP_ID))
+		//.add(Restrictions.eq(PROP_TYPE_CD, AddressIdEntryType.IN))
+		//.addOrder(Order.desc(PROP_ID))
 		.list();
-		
+		session.flush();
 		return list;
 		
 	}

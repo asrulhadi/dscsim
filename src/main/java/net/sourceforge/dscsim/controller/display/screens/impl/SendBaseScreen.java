@@ -30,13 +30,13 @@ import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
-import net.sourceforge.dscsim.controller.settings.InfoStoreType;
 import net.sourceforge.dscsim.controller.message.types.Latitude;
 import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
 import net.sourceforge.dscsim.controller.network.DscRadioTransmitter;
 import net.sourceforge.dscsim.controller.screens.Screen;
+import net.sourceforge.dscsim.controller.settings.InfoStoreType;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 

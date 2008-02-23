@@ -22,10 +22,10 @@ import java.util.Map;
  * implementation.</p>
  *
  * <p><code>
- * $Id: PersistentEnum.java,v 1.1 2008-02-20 22:53:58 dscsim Exp $
+ * $Id: PersistentEnum.java,v 1.2 2008-02-23 00:02:54 dscsim Exp $
  * </pre></p>
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @author &Oslash;rjan Nygaard Austvold
  */
 abstract class PersistentEnum implements Comparable, Serializable, UserType {
@@ -265,22 +265,4 @@ abstract class PersistentEnum implements Comparable, Serializable, UserType {
 		}
 	}
 
-	/**
-	 * @see net.sf.hibernate.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)
-	 */
-	/*
-	public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
-	    // make sure the received value is of the right type
-	    if ((value != null) && !returnedClass().isAssignableFrom(value.getClass())) {
-	        throw new IllegalArgumentException("Received value is not a [" +
-	                returnedClass().getName() + "] but [" + value.getClass() + "]");
-	    }
-
-	    // convert the enum into its persistence format
-	    Serializable enumCode = ((PersistentEnum) value).getEnumCode();
-
-	    // set the value into the resultset
-	    st.setObject(index, enumCode, getNullableType().sqlType());
-	}
-	 */
 }
