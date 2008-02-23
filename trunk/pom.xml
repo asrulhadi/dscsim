@@ -314,7 +314,6 @@
 							<schemaDirectory>src/main/resources/etc</schemaDirectory>
 							<schemaIncludes>
 								<include>device.xsd</include>
-								<include>infostore.xsd</include>
 							</schemaIncludes>
 							<removeOldOutput>false</removeOldOutput>
 							<forceRegenerate>true</forceRegenerate>

@@ -35,8 +35,8 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.controller.InstanceContext;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreFactory;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.settings.InfoStoreFactory;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.radio.core.RadioEventListener;
 import net.sourceforge.dscsim.radio.core.VHFChannel;

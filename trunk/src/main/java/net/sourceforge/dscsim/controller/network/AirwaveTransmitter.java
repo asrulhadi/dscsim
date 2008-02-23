@@ -36,8 +36,8 @@ import javax.xml.bind.Marshaller;
 
 import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.RadioCoreController;
-import net.sourceforge.dscsim.controller.infostore.InfoStoreFactory;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
+import net.sourceforge.dscsim.controller.settings.InfoStoreFactory;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.util.ByteConverter;
 

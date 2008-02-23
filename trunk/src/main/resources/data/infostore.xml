@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<infostore xmlns="http://dscsim.sourcefore.net/xml/ns/dscsim">
+<infostore xmlns="http://dscsim.sourceforge.net/controller/settings">
 	<position>
 		<latitude>
 			<degrees />
