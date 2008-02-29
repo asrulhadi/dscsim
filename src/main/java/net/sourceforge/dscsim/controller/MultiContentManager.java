@@ -21,6 +21,7 @@ package net.sourceforge.dscsim.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -37,9 +38,9 @@ import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreenFactory;
 import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntryType;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.message.types.MMSI;
-import net.sourceforge.dscsim.controller.persistence.HibernateUtil;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Device;
 import net.sourceforge.dscsim.controller.settings.InfoStoreFactory;
@@ -47,27 +48,32 @@ import net.sourceforge.dscsim.controller.settings.InfoStoreType;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-
 public class MultiContentManager implements BusListener, Constants {
 
-	private static String cDISTRESS_CALL_PERSISTANCE = STORE_BASE
-			+ "distresscalls";
+	/*
+	 * MMSI for this instance of dscsmim.
+	 */
 	private MMSI mmsi = null;
 
+	/*
+	 * 
+	 */
 	private InstanceContext _oInstanceContext = null;
 
-	// cache for lists
-	private ArrayList _oSessionCache = new ArrayList();
+	/**
+	 * Hibernate session factory.
+	 */
+	private SessionFactory sessionFactory = null;
 
-	// persistant list
-	private HashMap _oSessionLists = new HashMap();
-
-	// persistant properties
-	private HashMap _oSessionProperties = null;
-	private String _sessionPropFilename = "settings";
+	/*
+	 * Cache for screens
+	 */
+	private ArrayList<ActionScreen> _oSessionCache = new ArrayList<ActionScreen>();
 
 	private static Properties _appProperties = null;
 	private static Properties _appSettings = null;
@@ -79,25 +85,15 @@ public class MultiContentManager implements BusListener, Constants {
 	private Dscmessage incomingDscmessage = new Dscmessage();
 
 	private AddressIdEntry selectedAddressId = null;
-	private ArrayList<AddressIdEntry> addressIdList = null;
 
 	private AddressIdEntry selectedGroupId = null;
-	private ArrayList<AddressIdEntry> groupIdList = null;
 
-	private ArrayList<Dscmessage> incomingOtherCalls = null;
 	private Dscmessage selectedIncomingOtherCall = null;
 
-	private ArrayList<Dscmessage> incomingDistressCalls = null;
 	private Dscmessage selectedIncomingDistressCall = null;
 
-	static {
-		try {
-			HibernateUtil.getSessionFactory().getCurrentSession();			
-		}catch(Exception e){
-			AppLogger.error(e);
-		}
-	}
-	public static MultiContentManager getInstance(InstanceContext oCtx) { 
+
+	public static MultiContentManager getInstance(InstanceContext oCtx) {
 		return new MultiContentManager(oCtx.getContentManager().getMMSI(), oCtx);
 	}
 
@@ -113,14 +109,58 @@ public class MultiContentManager implements BusListener, Constants {
 			this.screenFactory = new JScreenFactory(new JDisplay(
 					DISPLAY_X - 11, DISPLAY_Y + 1, 273, 160, 8, 21), dataInput);
 
-			this.infostoreFactory = new InfoStoreFactory(mmsi);
+			initHibernate(mmsi);
 
+			this.infostoreFactory = new InfoStoreFactory(mmsi);
+			
 		} catch (Exception oEx) {
 			AppLogger.error(oEx);
 		}
 
 	}
+	/**
+	 * Initialize hibernate and create database file if one doesn't already exist.
+	 * @param mmsi
+	 * @throws Exception
+	 */
+	private void initHibernate(String mmsi) throws Exception{
+		
+		String uid = null;
+		if(mmsi == null || mmsi.length()==0){
+			uid = "000000000";
+		}else{
+			uid = mmsi;			
+		}
+		
+		String CONN_URL_PATH = STORE_BASE + uid + "_" + HSQLDB_NAME;
+		String HSQL_SCRIPT =  STORE_BASE + HSQLDB_NAME + ".script";
+		String HSQL_MMSI_SCRIPT = CONN_URL_PATH + ".script";
+		
+		File dbFile = new File(HSQL_MMSI_SCRIPT);	
+		if(!dbFile.exists()){
+			/*No file for mmsi. Copy the template*/
+			FileInputStream is = new FileInputStream(HSQL_SCRIPT);			
+			FileOutputStream os = new FileOutputStream(HSQL_MMSI_SCRIPT); 			
+			byte buff[] = new byte[1024];
+			int read = 0;
+			while((read = is.read(buff))>0){
+				os.write(buff, 0, read);
+			}					
+			is.close();
+			os.close();
+		}	
+		
+		/*configure hibernate with hsql database*/
+		Configuration conf = new Configuration();
+		conf.setProperty("hibernate.connection.url", "jdbc:hsqldb:file:"+ CONN_URL_PATH);
+		conf.configure("etc/hibernate.cfg.xml");
+		sessionFactory = conf.buildSessionFactory();
+	}
 
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+	
 	public MMSI getAsMMSI() {
 		return mmsi;
 	}
@@ -159,7 +199,7 @@ public class MultiContentManager implements BusListener, Constants {
 		ActionScreen oScreen = null;
 		for (int i = 0; i < this._oSessionCache.size(); i++) {
 			oScreen = (ActionScreen) _oSessionCache.get(i);
-			name = ((ActionScreen)oScreen).getName();
+			name = ((ActionScreen) oScreen).getName();
 
 			if (name.equals(srchName))
 				return oScreen;
@@ -176,14 +216,16 @@ public class MultiContentManager implements BusListener, Constants {
 		return this.infostoreFactory.persistInfoStore();
 	}
 
-	public ActionScreen getScreenContent(String strScreenName, InstanceContext oCtx) {
+	public ActionScreen getScreenContent(String strScreenName,
+			InstanceContext oCtx) {
 		ActionScreen oRet = getCache(strScreenName);
 
 		if (oRet != null)
 			return oRet;
 
 		try {
-			ActionScreen screen = this.screenFactory.getScreen(strScreenName, oCtx);
+			ActionScreen screen = this.screenFactory.getScreen(strScreenName,
+					oCtx);
 
 			String scope = screen.getScreenBindings().getScope();
 
@@ -257,11 +299,9 @@ public class MultiContentManager implements BusListener, Constants {
 	 * oAttr.getValue() : null;
 	 * 
 	 * if(strValue != null && strValue.equals(strId)) return oTarget; else
-	 * oTarget = null;
-	 *  }
+	 * oTarget = null; }
 	 * 
-	 * return oTarget;
-	 *  }
+	 * return oTarget; }
 	 */
 
 	public String getCodeString(String strId) {
@@ -269,7 +309,6 @@ public class MultiContentManager implements BusListener, Constants {
 		return getProperties().get(strId).toString();
 
 	}
-
 
 	public boolean isIncomingOtherRequest(Dscmessage oMessage) {
 
@@ -290,23 +329,23 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 
 	public void storeCallMessage(Dscmessage message) {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.save(message);
 		session.getTransaction().commit();
 	}
 
 	public void removeCallMessage(Dscmessage message) {
-		
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.delete(message);
 		session.getTransaction().commit();
 		/*
-		ArrayList<Dscmessage> calls = this.getIncomingDistressCalls();
-		calls.remove(oMessage);
-		this.storeList(INCOMING_DISTRESS_CALLS, calls);
-		*/
+		 * ArrayList<Dscmessage> calls = this.getIncomingDistressCalls();
+		 * calls.remove(oMessage); this.storeList(INCOMING_DISTRESS_CALLS,
+		 * calls);
+		 */
 	}
 
 	public List getStorageList(String storageName) {
@@ -325,7 +364,7 @@ public class MultiContentManager implements BusListener, Constants {
 		Dscmessage oFound = null;
 		for (int i = 0; i < oCalls.size(); i++) {
 			oFound = (Dscmessage) oCalls.get(i);
-			
+
 			if (oFound.getUid() == oTarget.getUid()) {
 				break;
 			} else {
@@ -338,53 +377,49 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 
 	public List<Dscmessage> getIncomingOtherCalls() {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();		
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		
-		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
-		.add(Restrictions.ne(this.PROP_SENDER, this.getMMSI()))
-		.add(Restrictions.ne(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
-		.addOrder(Order.desc(PROP_UID))
-		.list();
-	
+
+		List<Dscmessage> list = session.createCriteria(Dscmessage.class).add(
+				Restrictions.ne(this.PROP_SENDER, this.getMMSI())).add(
+				Restrictions.ne(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
+				.addOrder(Order.desc(PROP_UID)).list();
+
 		return list;
 	}
 
 	public List<Dscmessage> getIncomingDistressCalls() {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction().begin();
-		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
-		.add(Restrictions.ne(PROP_SENDER, this.getMMSI()))
-		.add(Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
-		.addOrder(Order.desc(PROP_UID))
-		.list();
-		
+		List<Dscmessage> list = session.createCriteria(Dscmessage.class).add(
+				Restrictions.ne(PROP_SENDER, this.getMMSI())).add(
+				Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
+				.addOrder(Order.desc(PROP_UID)).list();
+
 		return list;
 	}
 
 	public List<Dscmessage> getIncomingDistressAcks() {
-		
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction().begin();
-		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
-		.add(Restrictions.ne(PROP_SENDER, this.getMMSI()))
-		.add(Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS_ACK))
-		.addOrder(Order.desc(PROP_UID))
-		.list();
-		
+		List<Dscmessage> list = session.createCriteria(Dscmessage.class).add(
+				Restrictions.ne(PROP_SENDER, this.getMMSI())).add(
+				Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS_ACK))
+				.addOrder(Order.desc(PROP_UID)).list();
+
 		return list;
-		
+
 	}
 
 	public List fetchDistressCalls() {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		List<Dscmessage>list = session.createCriteria(Dscmessage.class)
-		.add(Restrictions.ne(PROP_SENDER, this.getMMSI()))
-		.add(Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
-		.addOrder(Order.desc(PROP_UID))
-		.list();
-		
+		List<Dscmessage> list = session.createCriteria(Dscmessage.class).add(
+				Restrictions.ne(PROP_SENDER, this.getMMSI())).add(
+				Restrictions.eq(PROP_NATURE_CD, this.CALL_TYPE_DISTRESS))
+				.addOrder(Order.desc(PROP_UID)).list();
+
 		return list;
 	}
 
@@ -400,6 +435,7 @@ public class MultiContentManager implements BusListener, Constants {
 	public String getStorePrefix() {
 		return Constants.STORE_BASE;
 	}
+
 	/**
 	 * -----------------------------------------------------------------------------
 	 * 
@@ -510,94 +546,6 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 
 
-	public void reloadProperties() {
-
-		_oSessionProperties = this.loadProperties();
-
-	}
-
-	public HashMap loadProperties() {
-
-		String storeExt = getStoreExtension();
-		String storeName = getStorePrefix() + _sessionPropFilename + storeExt;
-
-		// AppLogger.debug("MulticontentManager.loadProperties:" + storeName);
-
-		HashMap oProperties = null;
-
-		try {
-
-			FileInputStream fis = new FileInputStream(storeName);
-
-			ObjectInputStream ois = new ObjectInputStream(fis);
-
-			oProperties = (HashMap) ois.readObject();
-
-		} catch (java.io.FileNotFoundException oNoFileEx) {
-			AppLogger.debug(oNoFileEx.toString());
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-		return oProperties;
-	}
-
-	public void saveProperties() {
-
-		String storeExt = getStoreExtension();
-		String storeName = getStorePrefix() + _sessionPropFilename + storeExt;
-
-		AppLogger.debug("MultiContentManager.saveProperites " + storeName);
-
-		try {
-
-			FileOutputStream fos = new FileOutputStream(storeName);
-
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-			oos.writeObject(_oSessionProperties);
-
-			// refreshBeanListCache(oList);
-
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-	}
-
-	public synchronized HashMap getPropertyMap() {
-
-		if (_oSessionProperties == null)
-			_oSessionProperties = loadProperties();
-
-		if (_oSessionProperties == null)
-			_oSessionProperties = new HashMap();
-
-		return _oSessionProperties;
-
-	}
-
-	public void replaceProperty(String key, ActiveField oValue) {
-
-		HashMap oMap = getPropertyMap();
-
-		oMap.remove(key);
-
-		oMap.put(key, oValue);
-
-	}
-
-	public void resetProperty(String key) throws Exception {
-
-		HashMap oMap = getPropertyMap();
-
-		ActiveField oValue = (ActiveField) _oSessionProperties.get(key);
-
-		if (oValue != null) {
-			oValue.reset();
-		}
-
-	}
 
 	public static Properties getProperties() {
 
@@ -696,7 +644,7 @@ public class MultiContentManager implements BusListener, Constants {
 		}
 
 	}
-	
+
 	public boolean isCondition(String conditionName) {
 
 		boolean retVal = false;
@@ -774,89 +722,41 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public List<AddressIdEntry> getAddressIdList() {
 
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction().begin();
-		List<AddressIdEntry>list = session.createCriteria(AddressIdEntry.class)
-		//.add(Restrictions.eq(PROP_TYPE_CD, AddressIdEntryType.IN))
-		//.addOrder(Order.desc(PROP_ID))
-		.list();
+		List<AddressIdEntry> list = session
+				.createCriteria(AddressIdEntry.class).add(
+						Restrictions.eq(PROP_TYPE_CD, AddressIdEntryType.IN))
+				.addOrder(Order.desc(PROP_ID)).list();
 		session.flush();
 		return list;
-		
+
 	}
-	
+
 	public void removeAddressIdEntry(AddressIdEntry entry) {
 
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction().begin();
 		session.delete(entry);
 		session.getTransaction().commit();
 
 	}
 
-	public ArrayList<AddressIdEntry> getGroupIdList() {
-
-		if (this.groupIdList == null) {
-			this.groupIdList = readList(this.getStoreExtension(),
-					getStorePrefix() + GROUP_BOOK_FNAME);
-
-			if (this.groupIdList == null) {
-				this.groupIdList = new ArrayList<AddressIdEntry>();
-			}
-		}
-		return groupIdList;
-	}
-
-	public void storeListAddressIdList() {
-		this.storeList(ADDRESS_BOOK_FNAME, this.addressIdList);
+	public List<AddressIdEntry> getGroupIdList() {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction().begin();
+		List<AddressIdEntry> list = session
+				.createCriteria(AddressIdEntry.class).add(
+						Restrictions.eq(PROP_TYPE_CD, AddressIdEntryType.GR))
+				.addOrder(Order.desc(PROP_ID)).list();
+		return list;
 	}
 
 	public void addAddressIdEntry(AddressIdEntry entry) {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.save(entry);
-		session.getTransaction().commit();		
-	}
-	
-	public void storeListGroupIdList() {
-		this.storeList(GROUP_BOOK_FNAME, this.groupIdList);
-	}
-
-	public <T> void storeList(String listName, ArrayList<T> objList) {
-
-		String storeExt = getStoreExtension();
-
-		try {
-			FileOutputStream fos = new FileOutputStream(getStorePrefix()
-					+ listName + storeExt);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(objList);
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-	}
-
-	public static <T> ArrayList<T> readList(String listContext, String listName) {
-
-		ArrayList<T> list = null;
-
-		T m = null;
-		try {
-
-			FileInputStream fis = new FileInputStream(listName + listContext);
-
-			ObjectInputStream ois = new ObjectInputStream(fis);
-
-			list = (ArrayList<T>) ois.readObject();
-
-		} catch (java.io.FileNotFoundException oNoFileEx) {
-			AppLogger.debug(oNoFileEx.toString());
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-		}
-
-		return list;
+		session.getTransaction().commit();
 	}
 
 	public Dscmessage getSelectedIncomingOtherCall() {
@@ -876,5 +776,5 @@ public class MultiContentManager implements BusListener, Constants {
 			Dscmessage selectedIncomingDistressCall) {
 		this.selectedIncomingDistressCall = selectedIncomingDistressCall;
 	}
-	
+
 }

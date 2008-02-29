@@ -28,6 +28,7 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JEditBox;
 import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
+import net.sourceforge.dscsim.controller.message.types.AddressIdEntryType;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Screen;
 
@@ -77,9 +78,8 @@ public class EnterNewGroupIdScreen extends JEditBoxInputScreen {
 		
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<AddressIdEntry>beanList = getInstanceContext().getContentManager().getGroupIdList();
-			beanList.add(new AddressIdEntry(this.ebMmsi.getValue(), this.ebAddress.getValue()));					
-			oMCmgr.storeListGroupIdList();			
+			AddressIdEntry entry = new AddressIdEntry(this.ebMmsi.getValue(), this.ebAddress.getValue(), AddressIdEntryType.GR);					
+			oMCmgr.addAddressIdEntry(entry);	
 		}
 	
 	}

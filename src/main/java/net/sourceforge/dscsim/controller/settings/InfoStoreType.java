@@ -8,48 +8,18 @@
 
 package net.sourceforge.dscsim.controller.settings;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+
 import net.sourceforge.dscsim.controller.message.types.Position;
 
-
-/**
- * <p>Java class for InfoStoreType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="InfoStoreType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="position" type="{http://dscsim.sourceforge.net/controller/message/types}Position"/>
- *         &lt;element name="nature" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InfoStoreType", propOrder = {
-    "position",
-    "nature"
-})
-@XmlRootElement(name = "infostore")
 public class InfoStoreType {
 
-    @XmlElement(required = true)
     protected Position position;
-    @XmlElement(required = true, defaultValue = "NATURE_DISTR_UNDESIG")
-    protected String nature;
 
-    /**
+    protected String nature;
+    
+    private String clazz = "GPS_POS";
+    
+  /**
      * Gets the value of the position property.
      * 
      * @return
@@ -96,5 +66,13 @@ public class InfoStoreType {
     public void setNature(String value) {
         this.nature = value;
     }
+
+	public String getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(String clazz) {
+		this.clazz = clazz;
+	}
 
 }

@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.Marshaller;
 
+import org.hibernate.Session;
 
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
@@ -42,7 +43,7 @@ public class InfoStoreFactory implements net.sourceforge.dscsim.controller.Const
 	public InfoStoreFactory(String mmsi){
 		this.mmsi = mmsi;
 		this.storeName = STORE_BASE + mmsi + "_" + INFO_STORE_XML;
-
+			
 		try {
 			this.loadStore(this.storeName);	
 			

@@ -108,7 +108,7 @@ public class AddressIdEntry
 	 * @param id
 	 */
 	public void setId(String id){
-		id = id;
+		this.id = id;
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public class AddressIdEntry
 	 * @param name
 	 */
 	public void setName(String name){
-		name = name;
+		this.name = name;
 	}
 	
 	/**

@@ -12,10 +12,8 @@
                 <column name="NAME" length="15" />
             </key-property>
         </composite-id>
-        <!--
-        <property name="type" type="string">
+        <property name="type" type="net.sourceforge.dscsim.controller.message.types.AddressIdEntryType">
             <column name="TYPE_CD" length="2" />
         </property>
-        -->
     </class>
 </hibernate-mapping>

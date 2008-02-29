@@ -31,7 +31,6 @@ import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.persistence.HibernateUtil;
 import net.sourceforge.dscsim.controller.screens.Screen;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
@@ -124,7 +123,7 @@ public class SendAckActionScreen extends ActionScreen {
 				DscIACManager.getTransmitter().transmit(outGoing);
 
 				inComing.setAckdTime(java.util.Calendar.getInstance().getTime());				
-				Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+				Session session = mngr.getSessionFactory().getCurrentSession();
 				session.beginTransaction();
 				session.update(inComing);
 				session.getTransaction().commit();
