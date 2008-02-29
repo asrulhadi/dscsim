@@ -52,7 +52,7 @@ public class DisplayGroupIdsScreen extends MenuScreen {
 		
 		JMenu menu = (JMenu)this.getComponentByName("menu", 0);			
 		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-		ArrayList<AddressIdEntry>beanList = oMCmgr.getGroupIdList();	
+		List<AddressIdEntry>beanList = oMCmgr.getGroupIdList();	
 		
 		if(beanList.size()<1){
 			this.remove(menu);
@@ -76,7 +76,7 @@ public class DisplayGroupIdsScreen extends MenuScreen {
 		String selectedKey = menu.getSelectedKey();
 		if(msg.getButtonEvent().getKeyId().equals(FK_ENT) && selectedKey != null){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<AddressIdEntry>beanList = oMCmgr.getGroupIdList();
+			List<AddressIdEntry>beanList = oMCmgr.getGroupIdList();
 			for(AddressIdEntry address: beanList){		
 				if(selectedKey.equals(address.getName())){
 					oMCmgr.setSelectedGroupId(address);

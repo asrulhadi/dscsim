@@ -44,6 +44,8 @@ public class DeleteAddressIdScreen extends JEditBoxInputScreen {
 	private JEditBox ebMmsi = null;
 	private JEditBox ebAddress = null;
 	
+	private AddressIdEntry selectedAddress = null;
+	
 	public DeleteAddressIdScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 	}
@@ -55,16 +57,16 @@ public class DeleteAddressIdScreen extends JEditBoxInputScreen {
 	public void enter(Object msg) {
 		super.enter(msg);
 		
-		AddressIdEntry addr = this.getInstanceContext().getContentManager().getSelectedAddressId();	
-		if(addr == null)
+		selectedAddress = this.getInstanceContext().getContentManager().getSelectedAddressId();	
+		if(selectedAddress == null)
 			return;
 		
 		ebMmsi = (JEditBox) this.getComponentByName("mmsi",0);
-		ebMmsi.setValue(addr.getId());
+		ebMmsi.setValue(selectedAddress.getId());
 		ebMmsi.setEditMode(false);
 		
 		ebAddress = (JEditBox) this.getComponentByName("addressid",0);
-		ebAddress.setValue(addr.getName());
+		ebAddress.setValue(selectedAddress.getName());
 		ebAddress.setEditMode(false);
 
 	}
@@ -74,14 +76,15 @@ public class DeleteAddressIdScreen extends JEditBoxInputScreen {
 	 */
 	public void exit(BusMessage msg) throws Exception {		
 		
-		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
+		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)
+				&& selectedAddress != null){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
 			List<AddressIdEntry>beanList = oMCmgr.getAddressIdList();
 			
 			String entMmsi = this.ebMmsi.getValue();
 			String entAddr = this.ebAddress.getValue();
 			
-			oMCmgr.removeAddressIdEntry(new AddressIdEntry(entMmsi, entAddr, AddressIdEntryType.IN));
+			oMCmgr.removeAddressIdEntry(selectedAddress);
 	
 		}
 	

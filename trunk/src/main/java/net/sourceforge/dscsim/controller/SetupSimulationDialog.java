@@ -120,9 +120,9 @@ public class SetupSimulationDialog extends  JDialog implements ActionListener, C
     	   			MultiContentManager oMngr = _oCtx.getContentManager();
         			
         			try{
-            			oMngr.resetProperty("Longitude");
-            			oMngr.resetProperty("Latitude");
-            			oMngr.resetProperty("Time");
+            			//oMngr.resetProperty("Longitude");
+            			//oMngr.resetProperty("Latitude");
+            			//oMngr.resetProperty("Time");
             			//oMngr.saveProperties();
     		       		DscString mode = new DscString("POS_MNL");
     		       	   	//oMngr.getSetting("PositionType").setValue(mode);		
@@ -154,7 +154,7 @@ public class SetupSimulationDialog extends  JDialog implements ActionListener, C
     			}
     		
   	   		MultiContentManager oMngr = _oCtx.getContentManager();
-  	   		oMngr.saveProperties();
+  	   		//oMngr.saveProperties();
   	   		    			
     			closeDialog(null);
     	

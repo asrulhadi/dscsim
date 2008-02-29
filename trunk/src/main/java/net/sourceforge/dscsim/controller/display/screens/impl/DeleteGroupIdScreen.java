@@ -23,6 +23,7 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
@@ -44,6 +45,8 @@ public class DeleteGroupIdScreen extends JEditBoxInputScreen {
 	private JEditBox ebMmsi = null;
 	private JEditBox ebAddress = null;
 	
+	private AddressIdEntry selectedAddr = null;
+	
 	public DeleteGroupIdScreen(JDisplay display, Screen screen) {
 		super(display, screen);
 	}
@@ -55,16 +58,16 @@ public class DeleteGroupIdScreen extends JEditBoxInputScreen {
 	public void enter(Object msg) {
 		super.enter(msg);
 		
-		AddressIdEntry addr = this.getInstanceContext().getContentManager().getSelectedGroupId();	
-		if(addr == null)
+		selectedAddr = this.getInstanceContext().getContentManager().getSelectedGroupId();	
+		if(selectedAddr == null)
 			return;
 		
 		ebMmsi = (JEditBox) this.getComponentByName("mmsi",0);
-		ebMmsi.setValue(addr.getId());
+		ebMmsi.setValue(selectedAddr.getId());
 		ebMmsi.setEditMode(false);
 		
 		ebAddress = (JEditBox) this.getComponentByName("addressid",0);
-		ebAddress.setValue(addr.getName());
+		ebAddress.setValue(selectedAddr.getName());
 		ebAddress.setEditMode(false);
 
 	}
@@ -74,22 +77,16 @@ public class DeleteGroupIdScreen extends JEditBoxInputScreen {
 	 */
 	public void exit(BusMessage msg) throws Exception {		
 		
-		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)){
+		if(msg.getButtonEvent().getKeyId().equals(FK_ENT)
+				&& selectedAddr != null){
 			MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
-			ArrayList<AddressIdEntry>beanList = oMCmgr.getGroupIdList();
+			List<AddressIdEntry>beanList = oMCmgr.getAddressIdList();
 			
 			String entMmsi = this.ebMmsi.getValue();
 			String entAddr = this.ebAddress.getValue();
-
-			for(AddressIdEntry address:beanList){	
-				if(entMmsi.equals(address.getId()) && entAddr.equals(address.getName())){
-					beanList.remove(address);
-					oMCmgr.storeListGroupIdList();
-					break;
-				} else {
-					address = null;
-				}
-			}	
+			
+			oMCmgr.removeAddressIdEntry(selectedAddr);
+	
 		}
 	
 	}

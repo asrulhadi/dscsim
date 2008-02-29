@@ -9,11 +9,11 @@
         <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
 
       <!--       
-        <property name="hibernate.connection.url">jdbc:hsqldb:file:data/dscsim_db</property>        
+        <property name="hibernate.connection.url">jdbc:hsqldb:file:data/dscsim_db</property>  
+        <property name="hibernate.connection.url">jdbc:hsqldb:hsql://localhost</property>
        -->       
         
-        <property name="hibernate.connection.url">jdbc:hsqldb:hsql://localhost</property>
-        <property name="hibernate.connection.username">sa</property>
+         <property name="hibernate.connection.username">sa</property>
         <property name="hibernate.connection.password"></property> 
         <property name="hibernate.default_schema">PUBLIC</property>
         <property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
@@ -33,6 +33,7 @@
         
         <mapping resource="etc/Dscmessage.hbm.xml"/>
         <mapping resource="etc/AddressIdEntry.hbm.xml"/>
+        <mapping resource="etc/InfoStoreType.hbm.xml"/>
                 
     </session-factory>
 </hibernate-configuration>

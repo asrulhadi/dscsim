@@ -23,6 +23,7 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.message.types.AddressIdEntry;
@@ -60,7 +61,7 @@ public class SelectGroupIdScreen extends MenuScreen {
 	public void enter(Object msg) {
 		super.enter(msg);		
 		JMenu m = (JMenu)this.getComponentByName("group_ids_list", 0);
-		ArrayList<AddressIdEntry>addresses = this.getInstanceContext().getContentManager().getGroupIdList();
+		List<AddressIdEntry>addresses = this.getInstanceContext().getContentManager().getGroupIdList();
 		for(AddressIdEntry addr: addresses){
 			m.addItem(addr.getName(), "select_category", addr.getId());
 		}		

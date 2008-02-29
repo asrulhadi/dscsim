@@ -121,47 +121,6 @@ public class MMSI implements Constants {
 		
 		return result;
 	}
-	public int signal(BusMessage oMessage) {	
-		
-		if(_oKeySet.contains(oMessage.getButtonEvent().getKeyId())){
-			
-			if(_strActualValue.length() < _strFormat.length()){
-				
-				String newValue = DscUtils.getKeyStringValue(oMessage.getButtonEvent().getKeyId());
-				
-				if(validateMMSI(_strActualValue + newValue)){		
-					_strActualValue += newValue;
-					_strActualValueDisplay = _strActualValue + INPUT_PATTERN.substring(_strActualValue.length(), _strFormat.length());
-				}
-
-			}
-			
-		}else if(MV_LEFT.equals(oMessage.getButtonEvent().getKeyId())
-				|| KP_BS.equals(oMessage.getButtonEvent().getKeyId())){
-			
-			int len = _strActualValue.length();
-			if(len > 0){
-				_strActualValue = _strActualValue.substring(0, len-1);
-				_strActualValueDisplay = _strActualValue + INPUT_PATTERN.substring(_strActualValue.length(), _strFormat.length());
-		
-			}
-		}
-		 
-		
-		int focus = 0;
-		if(_strFormat.length() == _strActualValue.length()){
-			focus = 1;
-			setValue(_strActualValue);
-		}else if(_strActualValue.length()==0){
-			focus = -1;
-			setValue(_strActualValue);
-		}else{
-			focus = 0;
-		}
-				
-		return focus;
-
-	}
 
 	public boolean isValid() {	
 		return validateMMSI(_strActualValue);
