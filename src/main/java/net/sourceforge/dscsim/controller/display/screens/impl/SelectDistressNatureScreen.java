@@ -27,6 +27,7 @@ import net.sourceforge.dscsim.controller.message.types.Position;
 import net.sourceforge.dscsim.controller.message.types.Latitude;
 import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.screens.Screen;
+import net.sourceforge.dscsim.controller.settings.DistressSettings;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
@@ -51,9 +52,10 @@ public class SelectDistressNatureScreen extends MenuScreen{
 			MultiContentManager oMCmgr = getInstanceContext()
 					.getContentManager();
 
-			String nature = this.getMenu().getSelectedData().getCode();			
-			oMCmgr.getInfoStore().setNature(nature);						
-			oMCmgr.persistInfoStore();
+			String nature = this.getMenu().getSelectedData().getCode();		
+			DistressSettings settings = oMCmgr.getInfoStore();
+			settings.setNature(nature);						
+			oMCmgr.persistInfoStore(settings);
 			
 			Dscmessage outGoing  = this.getInstanceContext().getContentManager().getOutGoingDscmessage();
 			outGoing.setNatureCd(nature);		

@@ -34,6 +34,7 @@ import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Screen;
+import net.sourceforge.dscsim.controller.settings.DistressSettings;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -161,7 +162,8 @@ public class JTimeEntryScreen extends JEditBoxInputScreen {
 			MultiContentManager oMCmgr = getInstanceContext()
 					.getContentManager();
 			
-			Position position = oMCmgr.getInfoStore().getPosition();
+			DistressSettings settings = oMCmgr.getInfoStore();
+			Position position = settings.getPosition();
 			
 			Time time = position.getTime();
 			
@@ -172,7 +174,7 @@ public class JTimeEntryScreen extends JEditBoxInputScreen {
 				time.setMinutes(this.ebMinutes.getValue());
 			}
 			
-			oMCmgr.persistInfoStore();
+			oMCmgr.persistInfoStore(settings);
 		}
 
 	}

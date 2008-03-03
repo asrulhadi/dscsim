@@ -25,15 +25,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import net.sourceforge.dscsim.controller.data.types.ActiveField;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JScreenFactory;
@@ -43,8 +39,7 @@ import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.message.types.MMSI;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Device;
-import net.sourceforge.dscsim.controller.settings.InfoStoreFactory;
-import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.settings.DistressSettings;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 import org.hibernate.Session;
@@ -79,7 +74,6 @@ public class MultiContentManager implements BusListener, Constants {
 	private static Properties _appSettings = null;
 
 	private JScreenFactory screenFactory = null;
-	private InfoStoreFactory infostoreFactory = null;
 
 	private Dscmessage outGoingDscmessage = new Dscmessage();
 	private Dscmessage incomingDscmessage = new Dscmessage();
@@ -110,8 +104,6 @@ public class MultiContentManager implements BusListener, Constants {
 					DISPLAY_X - 11, DISPLAY_Y + 1, 273, 160, 8, 21), dataInput);
 
 			initHibernate(mmsi);
-
-			this.infostoreFactory = new InfoStoreFactory(mmsi);
 			
 		} catch (Exception oEx) {
 			AppLogger.error(oEx);
@@ -208,12 +200,27 @@ public class MultiContentManager implements BusListener, Constants {
 		return null;
 	}
 
-	public InfoStoreType getInfoStore() {
-		return this.infostoreFactory.getInfoStore();
+	public DistressSettings getInfoStore() {
+		
+		DistressSettings setting = null;
+
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		setting = (DistressSettings)session.get(DistressSettings.class, this.getMMSI());
+		if(setting == null){
+			setting = new DistressSettings();
+			setting.setSender(this.getMMSI());
+		}
+		
+		return setting;
 	}
 
-	public InfoStoreType persistInfoStore() {
-		return this.infostoreFactory.persistInfoStore();
+	public void persistInfoStore(DistressSettings settings) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		settings.setEnteredTime(java.util.Calendar.getInstance().getTime());
+		session.update(settings);
+		session.getTransaction().commit();
 	}
 
 	public ActionScreen getScreenContent(String strScreenName,
@@ -281,28 +288,6 @@ public class MultiContentManager implements BusListener, Constants {
 
 		return retValue != null ? retValue : "";
 	}
-
-	/*
-	 * public Element getCodeString(String strId){
-	 * 
-	 * Element oRoot = m_oDocument.getRootElement();
-	 * 
-	 * Element oScreens = oRoot.getChild("strings");
-	 * 
-	 * Iterator oIter = oScreens.getChildren().iterator();
-	 * 
-	 * Element oTarget = null; Attribute oAttr = null;
-	 * 
-	 * while(oIter.hasNext()) { oTarget =(Element)oIter.next();
-	 * 
-	 * oAttr = oTarget.getAttribute("code"); String strValue = oAttr != null ?
-	 * oAttr.getValue() : null;
-	 * 
-	 * if(strValue != null && strValue.equals(strId)) return oTarget; else
-	 * oTarget = null; }
-	 * 
-	 * return oTarget; }
-	 */
 
 	public String getCodeString(String strId) {
 

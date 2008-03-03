@@ -26,6 +26,7 @@ import net.sourceforge.dscsim.controller.MultiContentManager;
 import net.sourceforge.dscsim.controller.display.screens.framework.JDisplay;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.screens.Screen;
+import net.sourceforge.dscsim.controller.settings.DistressSettings;
 import net.sourceforge.dscsim.controller.display.screens.framework.ActionScreen;
 import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.message.types.Position;
@@ -63,7 +64,8 @@ public class JMainScreen extends ActionScreen
 		
 		this.tbSource.setText(props.getProperty("MS_SOURCE_GPS", "NA"));
 		
-		Position pos = oMngr.getInfoStore().getPosition();
+		DistressSettings settings = oMngr.getInfoStore();
+		Position pos = settings.getPosition();
 		Time time = pos.getTime();
 		this.tbTime.setText(time.getAsFormattedString(props));
 		

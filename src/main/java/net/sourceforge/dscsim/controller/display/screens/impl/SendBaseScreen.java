@@ -36,7 +36,7 @@ import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
 import net.sourceforge.dscsim.controller.network.DscRadioTransmitter;
 import net.sourceforge.dscsim.controller.screens.Screen;
-import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.settings.DistressSettings;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 
@@ -126,7 +126,7 @@ public abstract class SendBaseScreen extends ActionScreen  {
 			this.message.setCatagoryCd(CALL_CAT_DISTRESS);
 			this.message.setChannel(iCH_16);		
 			
-			InfoStoreType store = this.getInstanceContext().getContentManager().getInfoStore();
+			DistressSettings store = this.getInstanceContext().getContentManager().getInfoStore();
 			Position pos = store.getPosition();
 			Latitude lat = pos.getLatitude();
 			Longitude lon = pos.getLongitude();

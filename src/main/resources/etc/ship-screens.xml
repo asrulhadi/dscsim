@@ -2,7 +2,7 @@
 
 <dscsim:device xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:dscsim="http://dscsim.sourceforge.net/controller/screens"
-  xsi:schemaLocation="http://dscsim.sourceforge.net/controller/screens D:\\Projekte\\sourceforge\\dscsim\\src\\main\\resources\\etc\\device.xsd">
+  xsi:schemaLocation="http://dscsim.sourceforge.net/controller/screens device.xsd">
 
 	<dscsim:screens>
 					
