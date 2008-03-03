@@ -241,15 +241,15 @@ public interface Constants {
 	/**
 	 * Call type individual.
 	 */
-	public static final String CALL_TYPE_INDIVIDUAL = "CALL_TYPE_INDIVIDUAL";
+	public static final String CALL_TYPE_INDIVIDUAL = "TYPE_INDIVIDUAL";
 	/**
 	 * Call type individual acknowlege.
 	 */
-	public static final String CALL_TYPE_INDIVIDUAL_ACK = "CALL_TYPE_INDIVIDUAL_ACK";
+	public static final String CALL_TYPE_INDIVIDUAL_ACK = "TYPE_INDIVIDUAL_ACK";
 	/**
 	 * Call type group.
 	 */
-	public static final String CALL_TYPE_GROUP = "CALL_TYPE_GROUP";
+	public static final String CALL_TYPE_GROUP = "TYPE_GROUP";
 
 	/**
 	 * Call type group acknowledge.

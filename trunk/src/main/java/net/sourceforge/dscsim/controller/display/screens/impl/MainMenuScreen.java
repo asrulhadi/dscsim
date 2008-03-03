@@ -30,7 +30,7 @@ import net.sourceforge.dscsim.controller.message.types.Latitude;
 import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.message.types.Time;
 import net.sourceforge.dscsim.controller.screens.Screen;
-import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.settings.DistressSettings;
 
 /**
  * @author wnpr
@@ -71,7 +71,7 @@ public class MainMenuScreen extends MenuScreen {
 				Dscmessage outGoing = new Dscmessage();
 				this.getInstanceContext().getContentManager()
 						.setOutGoingDscmessage(outGoing);
-				InfoStoreType store = this.getInstanceContext()
+				DistressSettings store = this.getInstanceContext()
 						.getContentManager().getInfoStore();
 				Position pos = store.getPosition();
 				Latitude lat = pos.getLatitude();

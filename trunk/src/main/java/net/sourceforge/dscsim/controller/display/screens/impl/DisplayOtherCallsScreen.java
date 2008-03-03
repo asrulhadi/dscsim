@@ -23,6 +23,7 @@
 package net.sourceforge.dscsim.controller.display.screens.impl;
 
 import java.util.List;
+import java.util.Properties;
 
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.MultiContentManager;
@@ -66,7 +67,7 @@ public class DisplayOtherCallsScreen extends MenuScreen {
 		
 		MultiContentManager oMCmgr = getInstanceContext().getContentManager();		
 		List<Dscmessage>callsList = oMCmgr.getIncomingOtherCalls();	
-		
+		Properties props = oMCmgr.getProperties();
 		/*in case screen was cached.*/
 		if(callsList.size()<1){
 			if(m!=null)
@@ -86,7 +87,7 @@ public class DisplayOtherCallsScreen extends MenuScreen {
 		}
 		int count = 1;
 		for(Dscmessage call: callsList){	
-			menu.addItem(count + ":" + call.getCallTypeCd(), "show_other_call_detail", "");
+			menu.addItem(count + ":" + call.getCallTypeText(props), "show_other_call_detail", "");
 			count++;
 		}	
 	}

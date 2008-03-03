@@ -20,15 +20,8 @@
 package net.sourceforge.dscsim.controller.network;
 
 
-import java.net.MulticastSocket;
-import java.net.InetAddress;
-import java.net.DatagramPacket;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.xml.bind.JAXBContext;
@@ -37,7 +30,6 @@ import javax.xml.bind.Marshaller;
 import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
-import net.sourceforge.dscsim.controller.settings.InfoStoreFactory;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.util.ByteConverter;
 

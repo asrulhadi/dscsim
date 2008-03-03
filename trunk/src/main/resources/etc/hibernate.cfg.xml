@@ -33,7 +33,7 @@
         
         <mapping resource="etc/Dscmessage.hbm.xml"/>
         <mapping resource="etc/AddressIdEntry.hbm.xml"/>
-        <mapping resource="etc/InfoStoreType.hbm.xml"/>
+        <mapping resource="etc/DistressSettings.hbm.xml"/>
                 
     </session-factory>
 </hibernate-configuration>

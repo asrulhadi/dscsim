@@ -77,7 +77,7 @@ public class Dscmessage
     @XmlElement(required = true)
 	private String complianceCd;
     @XmlElement(required = true)
-	private String complianceReasonCd;
+	private String complianceReasonCd = "";
     @XmlElement(required = true)
 	private Date ackdTime;
 
@@ -142,6 +142,10 @@ public class Dscmessage
 		this.recipient = recipient;
 	}
 
+	public String getCallTypeText(Properties props) {
+		return props.getProperty(this.getCallTypeCd(), this.getCallTypeCd());
+	}
+
 	public String getCallTypeCd() {
 		return this.callTypeCd;
 	}
@@ -160,6 +164,11 @@ public class Dscmessage
 
 	public void setNatureCd(String natureCd) {
 		this.natureCd = natureCd;
+	}
+
+	public String getCatagoryText(Properties props) {
+		String cd = this.getCatagoryCd()+ "_" + this.getCallTypeCd();
+		return props.getProperty(cd, cd);
 	}
 
 	public String getCatagoryCd() {

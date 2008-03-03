@@ -46,7 +46,7 @@
             <column name="COMPLIANCE_REASON_CD" length="2" />
         </property>
         <property name="ackdTime" type="timestamp">
-            <column name="ACKD_TIME" length="6" />
+            <column name="ACKD_TIME"/>
         </property>
     </class>
 </hibernate-mapping>

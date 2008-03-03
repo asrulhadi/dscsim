@@ -34,7 +34,7 @@ import net.sourceforge.dscsim.controller.display.screens.framework.JMenu;
 import net.sourceforge.dscsim.controller.display.screens.framework.JTextBox;
 import net.sourceforge.dscsim.controller.screens.ActionMapping;
 import net.sourceforge.dscsim.controller.screens.Screen;
-import net.sourceforge.dscsim.controller.settings.InfoStoreType;
+import net.sourceforge.dscsim.controller.settings.DistressSettings;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.message.types.Position;
 import net.sourceforge.dscsim.controller.message.types.Latitude;
@@ -185,12 +185,12 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 			MultiContentManager oMCmgr = getInstanceContext()
 					.getContentManager();
 
-			Position position = oMCmgr.getInfoStore().getPosition();
-
+				
+			DistressSettings settings = oMCmgr.getInfoStore();			
+			Position position = settings.getPosition();		
 			Latitude lat = position.getLatitude();
 			Longitude lon = position.getLongitude();
-
-			
+		
 			if(NULL.compareToIgnoreCase(this.ebLatNull.getText())== 0){
 				lat.setHemisphere(Latitude.Hemisphere.X);
 				lon.setHemisphere(Longitude.Hemisphere.X);
@@ -205,7 +205,7 @@ public class JPositionEntryScreen extends JEditBoxInputScreen {
 			}
 			
 
-			oMCmgr.persistInfoStore();
+			oMCmgr.persistInfoStore(settings);
 		}
 
 	}

@@ -9,16 +9,21 @@
 package net.sourceforge.dscsim.controller.settings;
 
 
+import java.util.Date;
+
 import net.sourceforge.dscsim.controller.message.types.Position;
 
-public class InfoStoreType {
+public class DistressSettings {
+	
+	private String sender = "";
+	
+	private Date enteredTime = null;
 
-    protected Position position;
+    protected Position position = new Position();
 
-    protected String nature;
+    protected String nature = "";
     
-    private String clazz = "GPS_POS";
-    
+  
   /**
      * Gets the value of the position property.
      * 
@@ -67,12 +72,21 @@ public class InfoStoreType {
         this.nature = value;
     }
 
-	public String getClazz() {
-		return clazz;
+	public String getSender() {
+		return sender;
 	}
 
-	public void setClazz(String clazz) {
-		this.clazz = clazz;
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
+
+	public Date getEnteredTime() {
+		return enteredTime;
+	}
+
+	public void setEnteredTime(Date enteredTime) {
+		this.enteredTime = enteredTime;
+	}
+
 
 }
