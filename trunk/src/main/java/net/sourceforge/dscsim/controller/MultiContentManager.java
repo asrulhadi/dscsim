@@ -210,6 +210,8 @@ public class MultiContentManager implements BusListener, Constants {
 		if(setting == null){
 			setting = new DistressSettings();
 			setting.setSender(this.getMMSI());
+			setting.setEnteredTime(java.util.Calendar.getInstance().getTime());
+			session.save(setting);
 		}
 		
 		return setting;
