@@ -31,26 +31,23 @@ public interface Constants {
 	/**
 	 * Base location for resources.
 	 */
-	public static final String RESOURCE_BASE = "etc" + File.separatorChar;
+	public static final String RESOURCE_BASE = "etc/";
+
 
 	/**
 	 * Base location for controller runtime data.
 	 */
-	public static final String STORE_BASE = "data" + File.separatorChar;
+	public static final String STORE_BASE = "data/";
 
 	/**
 	 * Full name of screen file for ship stations.
 	 */
-	public static final String SCREEN_FILE = RESOURCE_BASE + "ship.xml";
 	public static final String DEVICE_SHIP_XML = RESOURCE_BASE + "ship-screens.xml";
 
 	/**
 	 * Full name of screen file for coastal stations.
 	 */
-	public static final String SCREEN_FILE_COAST = RESOURCE_BASE + "shore.xml";
 	public static final String DEVICE_SHORE_XML = RESOURCE_BASE + "shore-screens.xml";
-
-	public static final String INFO_STORE_XML = "infostore.xml";
 
 	public static final String HSQLDB_NAME = "dscsim_db";
 
@@ -63,14 +60,12 @@ public interface Constants {
 	/**
 	 * Name of properities file for storing application specific information.
 	 */
-	public static final String APPL_STRINGS = RESOURCE_BASE
-			+ "string.properties";
+	public static final String APPL_STRINGS = RESOURCE_BASE + "string.properties";
 
 	/**
 	 * Name of properties file for setup information.
 	 */
-	public static final String SETUP_STRINGS = RESOURCE_BASE
-			+ "setup.properties";
+	public static final String SETUP_STRINGS = RESOURCE_BASE + "setup.properties";
 
 	/**
 	 * Default for maximum list length.

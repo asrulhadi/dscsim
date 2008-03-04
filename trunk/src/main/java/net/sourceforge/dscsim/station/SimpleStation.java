@@ -272,9 +272,9 @@ public class SimpleStation implements Constants, ApplicationContext {
 		if(strParam == null || strParam.length()==0){						
 			MMSI mmsi = new MMSI(getIndividualMmsi());			
 			if(mmsi.isCoastal()){
-				strParam = SCREEN_FILE_COAST;
+				strParam = DEVICE_SHORE_XML;
 			}else{
-				strParam = SCREEN_FILE;
+				strParam = DEVICE_SHIP_XML;
 			}			
 		}
 				

@@ -298,7 +298,7 @@ public class MultiDscApplet extends JApplet implements Constants, ApplicationCon
 		String strParam = getParameter(KEY_SCREEN_FILE);
 		
 		if(strParam == null || strParam.length()==0)
-			strParam = SCREEN_FILE;
+			strParam = DEVICE_SHIP_XML;
 				
 		return strParam;
 	}

@@ -70,8 +70,8 @@ public class MultiContentManager implements BusListener, Constants {
 	 */
 	private ArrayList<ActionScreen> _oSessionCache = new ArrayList<ActionScreen>();
 
-	private static Properties _appProperties = null;
-	private static Properties _appSettings = null;
+	private static Properties appProperties = null;
+	private static Properties appSettings = null;
 
 	private JScreenFactory screenFactory = null;
 
@@ -86,7 +86,6 @@ public class MultiContentManager implements BusListener, Constants {
 
 	private Dscmessage selectedIncomingDistressCall = null;
 
-
 	public static MultiContentManager getInstance(InstanceContext oCtx) {
 		return new MultiContentManager(oCtx.getContentManager().getMMSI(), oCtx);
 	}
@@ -98,53 +97,58 @@ public class MultiContentManager implements BusListener, Constants {
 
 			String xmlName = oInstanceContext.getApplicationContext()
 					.getDeviceXmlName();
-			DataInputStream dataInput = new DataInputStream(getResourceStream(
-					xmlName, this.getClass()));
+
+			DataInputStream dataInput = new DataInputStream(ClassLoader.getSystemResourceAsStream(xmlName));
+
 			this.screenFactory = new JScreenFactory(new JDisplay(
 					DISPLAY_X - 11, DISPLAY_Y + 1, 273, 160, 8, 21), dataInput);
 
 			initHibernate(mmsi);
-			
+
 		} catch (Exception oEx) {
 			AppLogger.error(oEx);
 		}
 
 	}
+
 	/**
-	 * Initialize hibernate and create database file if one doesn't already exist.
+	 * Initialize hibernate and create database file if one doesn't already
+	 * exist.
+	 * 
 	 * @param mmsi
 	 * @throws Exception
 	 */
-	private void initHibernate(String mmsi) throws Exception{
-		
+	private void initHibernate(String mmsi) throws Exception {
+
 		String uid = null;
-		if(mmsi == null || mmsi.length()==0){
+		if (mmsi == null || mmsi.length() == 0) {
 			uid = "000000000";
-		}else{
-			uid = mmsi;			
+		} else {
+			uid = mmsi;
 		}
-		
+
 		String CONN_URL_PATH = STORE_BASE + uid + "_" + HSQLDB_NAME;
-		String HSQL_SCRIPT =  STORE_BASE + HSQLDB_NAME + ".script";
+		String HSQL_SCRIPT = STORE_BASE + HSQLDB_NAME + ".script";
 		String HSQL_MMSI_SCRIPT = CONN_URL_PATH + ".script";
-		
-		File dbFile = new File(HSQL_MMSI_SCRIPT);	
-		if(!dbFile.exists()){
-			/*No file for mmsi. Copy the template*/
-			FileInputStream is = new FileInputStream(HSQL_SCRIPT);			
-			FileOutputStream os = new FileOutputStream(HSQL_MMSI_SCRIPT); 			
+
+		File dbFile = new File(HSQL_MMSI_SCRIPT);
+		if (!dbFile.exists()) {
+			/* No file for mmsi. Copy the template */
+			InputStream is = ClassLoader.getSystemResourceAsStream(HSQL_SCRIPT);
+			FileOutputStream os = new FileOutputStream(HSQL_MMSI_SCRIPT);
 			byte buff[] = new byte[1024];
 			int read = 0;
-			while((read = is.read(buff))>0){
+			while ((read = is.read(buff)) > 0) {
 				os.write(buff, 0, read);
-			}					
+			}
 			is.close();
 			os.close();
-		}	
-		
-		/*configure hibernate with hsql database*/
+		}
+
+		/* configure hibernate with hsql database */
 		Configuration conf = new Configuration();
-		conf.setProperty("hibernate.connection.url", "jdbc:hsqldb:file:"+ CONN_URL_PATH);
+		conf.setProperty("hibernate.connection.url", "jdbc:hsqldb:file:"
+				+ CONN_URL_PATH);
 		conf.configure("etc/hibernate.cfg.xml");
 		sessionFactory = conf.buildSessionFactory();
 	}
@@ -152,7 +156,7 @@ public class MultiContentManager implements BusListener, Constants {
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
-	
+
 	public MMSI getAsMMSI() {
 		return mmsi;
 	}
@@ -201,19 +205,20 @@ public class MultiContentManager implements BusListener, Constants {
 	}
 
 	public DistressSettings getInfoStore() {
-		
+
 		DistressSettings setting = null;
 
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		setting = (DistressSettings)session.get(DistressSettings.class, this.getMMSI());
-		if(setting == null){
+		setting = (DistressSettings) session.get(DistressSettings.class, this
+				.getMMSI());
+		if (setting == null) {
 			setting = new DistressSettings();
 			setting.setSender(this.getMMSI());
 			setting.setEnteredTime(java.util.Calendar.getInstance().getTime());
 			session.save(setting);
 		}
-		
+
 		return setting;
 	}
 
@@ -423,97 +428,6 @@ public class MultiContentManager implements BusListener, Constants {
 		return Constants.STORE_BASE;
 	}
 
-	/**
-	 * -----------------------------------------------------------------------------
-	 * 
-	 * @method {
-	 * @name
-	 * @description method from Paulo Soares psoares@consiste.pt }
-	 *              ------------------------------------------------------------------------------
-	 */
-	public static InputStream getResourceStream(String key, Class oTarget) {
-		AppLogger.debug2("ContentManager.getResourceStream - called key=" + key
-				+ " target=" + oTarget.getName());
-
-		InputStream is = null;
-		// Try to use Context Class Loader to load the properties file.
-		try {
-			java.lang.reflect.Method getCCL = Thread.class.getMethod(
-					"getContextClassLoader", new Class[0]);
-
-			if (getCCL != null) {
-
-				AppLogger
-						.debug("ContentManager.getResourceStream - found getContextClassLoader.");
-
-				ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(
-						Thread.currentThread(), new Object[0]);
-
-				AppLogger
-						.debug("ContentManager.getResourceStream - invoked getContextClassLoader.");
-
-				is = contextClassLoader.getResourceAsStream(key);
-
-				AppLogger
-						.debug("ContentManager.getResourceStream -  getContextClassLoader is="
-								+ is);
-
-			}
-		} catch (Exception oEx) {
-			AppLogger.error("ContentManager.getResourceStream - Exception="
-					+ oEx.getMessage());
-		}
-
-		if (is == null) {
-			is = oTarget.getResourceAsStream(key);
-		}
-
-		if (is == null) {
-			String sMessage = "Exception in getResourceStream: Unable to load resource "
-					+ key + " as stream.";
-			AppLogger.error("ContentManager.getResourceStream " + sMessage);
-			throw new RuntimeException(sMessage);
-		}
-
-		return is;
-	}
-
-	/**
-	 * -----------------------------------------------------------------------------
-	 * 
-	 * @method {
-	 * @name
-	 * @description
-	 * @signature }
-	 *            ------------------------------------------------------------------------------
-	 */
-	public static byte[] getResource(String sKey, Class oClass) {
-
-		AppLogger.debug("ContentManager.getResource - called.");
-
-		InputStream oIs = getResourceStream(sKey, oClass);
-
-		ByteArrayOutputStream oByteArray = new ByteArrayOutputStream();
-
-		AppLogger.debug("ContentManager.getResource - ByteArrayOutputStream.");
-
-		try {
-			byte buf[] = new byte[1024];
-			while (true) {
-				int size = oIs.read(buf);
-				if (size < 0)
-					break;
-				oByteArray.write(buf, 0, size);
-			}
-			oIs.close();
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-			throw new RuntimeException(oEx.toString());
-		}
-
-		return oByteArray.toByteArray();
-	}
-
 	public InstanceContext getInstanceContext() {
 		return _oInstanceContext;
 	}
@@ -532,69 +446,47 @@ public class MultiContentManager implements BusListener, Constants {
 		oInstance.removeProperties();
 	}
 
-
-
 	public static Properties getProperties() {
 
-		if (_appProperties == null) {
+		if (appProperties == null) {
 
 			try {
-
 				synchronized (MultiContentManager.class) {
-
-					if (_appProperties == null) {
-						_appProperties = new Properties();
-						InputStream propInput = new DataInputStream(
-								getResourceStream(APPL_STRINGS,
-										MultiContentManager.class));
-						// FileInputStream oStream = new
-						// FileInputStream(m_inFile);
-						_appProperties.load(propInput);
+					if (appProperties == null) {
+						appProperties = new Properties();
+						InputStream is = ClassLoader.getSystemResourceAsStream(APPL_STRINGS);
+						InputStream propInput = new DataInputStream(is);
+						appProperties.load(propInput);
 					}
-
 				}
 
 			} catch (Exception oEx) {
 				AppLogger.error(oEx);
 			}
-
 		}
 
-		return _appProperties;
+		return appProperties;
 
 	}
 
 	public static Properties getAppSettings() {
-
-		if (_appSettings == null) {
-
+		if (appSettings == null) {
 			try {
-
 				synchronized (MultiContentManager.class) {
-
-					if (_appSettings == null) {
-
-						_appSettings = new Properties();
-
+					if (appSettings == null) {
+						appSettings = new Properties();
 						InputStream propInput = new DataInputStream(
-								getResourceStream(SETUP_STRINGS,
-										MultiContentManager.class));
-						// FileInputStream oStream = new
-						// FileInputStream(m_inFile);
-
-						_appSettings.load(propInput);
-
+								ClassLoader.getSystemResourceAsStream(SETUP_STRINGS));
+						appSettings.load(propInput);
 					}
-
 				}
 
 			} catch (Exception oEx) {
 				AppLogger.error(oEx);
 			}
-
 		}
 
-		return _appSettings;
+		return appSettings;
 
 	}
 
@@ -603,7 +495,7 @@ public class MultiContentManager implements BusListener, Constants {
 		try {
 
 			synchronized (MultiContentManager.class) {
-				_appSettings = newProperties;
+				appSettings = newProperties;
 
 				storeAppSettings();
 			}
@@ -616,14 +508,12 @@ public class MultiContentManager implements BusListener, Constants {
 
 	public static void storeAppSettings() {
 
-		if (_appSettings != null) {
+		if (appSettings != null) {
 
 			try {
 				FileOutputStream oFile = new FileOutputStream(SETUP_STRINGS);
 				OutputStream setupOutput = new DataOutputStream(oFile);
-				_appSettings.store(setupOutput, "");
-				// FileInputStream oStream = new FileInputStream(m_inFile);
-
+				appSettings.store(setupOutput, "");
 			} catch (Exception oEx) {
 				AppLogger.error(oEx);
 			}
