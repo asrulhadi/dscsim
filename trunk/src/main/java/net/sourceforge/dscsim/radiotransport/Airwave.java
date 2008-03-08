@@ -56,5 +56,12 @@ public abstract class Airwave {
 	 * @return an Antenna object in the context of this Airwave
 	 */
 	public abstract Antenna createAntenna();
+	
+	/**
+	 * Shutdown this Airwave.
+	 * The airwave will stop working. Trying to communicate via this airwave
+	 * might throw an {@IllegalStateException}
+	 */
+	public abstract void shutdown();
 
 }

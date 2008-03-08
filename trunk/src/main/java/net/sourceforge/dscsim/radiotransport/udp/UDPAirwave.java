@@ -220,6 +220,11 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	private String _statusString;
 	
 	/**
+	 * Flag which indicates if the Airwave is already shut down
+	 */
+	private boolean _shutDown;
+	
+	/**
 	 * Thread for handling the incoming data packets
 	 */
 	private class SocketThread implements Runnable {
@@ -234,7 +239,12 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	        	try {
 	            	_udpSocket.receive(packet);
 	        	} catch( Exception e ) {
-	        		e.printStackTrace();
+	        		if( _udpSocket.isClosed() ) {
+		        		_logger.info("UDP Receiver Socket closed");
+	        		} else {
+	        			_logger.warn("UDP Receive failed", e);
+	        		}
+	        		continue;
 	        	}
 	        	byte[] data = new byte[packet.getLength()];
 	        	System.arraycopy(packet.getData(), 0, data, 0, data.length);
@@ -317,6 +327,7 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 		_remoteAirwaves = new HashMap();
 		_networkStatus = STATUS_RED;
 		_statusString = "(X/X/X)";
+		_shutDown = false;
 		_networkStatusListeners = new HashSet();
 		_remoteAirwaveStatusChanged = true;
 		_asynchronousCommands = new LinkedList();
@@ -504,7 +515,11 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
             		try {
                 		_udpSocket.send(dPacket);
             		} catch( IOException e ) {
-            			e.printStackTrace();
+                		if( _udpSocket.isClosed() ) {
+                    		_logger.info("UDP Socket closed");
+                		} else {
+                			_logger.warn("UDP Send failed", e);
+                		}
             		}
         		}
         	}
@@ -527,7 +542,11 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
             		try {
                 		_udpSocket.send(dPacket);
             		} catch( IOException e ) {
-            			e.printStackTrace();
+                		if( _udpSocket.isClosed() ) {
+                    		_logger.info("UDP Socket closed");
+                		} else {
+                			_logger.warn("UDP Send failed", e);
+                		}
             		}
         		}
         	}
@@ -546,7 +565,11 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 		try {
     		_udpSocket.send(dPacket);
 		} catch( IOException e ) {
-			e.printStackTrace();
+    		if( _udpSocket.isClosed() ) {
+        		_logger.info("UDP Socket closed");
+    		} else {
+    			_logger.warn("UDP Send failed", e);
+    		}
 		}
     }
 
@@ -588,8 +611,12 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 		try {
     		_udpSocket.send(dPacket);
 		} catch( IOException e ) {
-			e.printStackTrace();
-		}
+    		if( _udpSocket.isClosed() ) {
+        		_logger.info("UDP Socket closed");
+    		} else {
+    			_logger.warn("UDP Send failed", e);
+    		}
+ 		}
     }
 
     /**
@@ -757,6 +784,18 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	 */
 	public String getStatusString() {
 		return _statusString;
+	}
+
+	@Override
+	public void shutdown() {
+		_shutDown = true;
+		_socketThread = null;
+		_handshakeThread = null;
+		if( _udpSocket != null ) {
+			_udpSocket.close();
+		}
+		_logger.info("UDP Airwave shut down");
+		
 	}
 	
 }

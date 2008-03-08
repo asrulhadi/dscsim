@@ -31,7 +31,12 @@ public class AirwaveTest extends TestCase {
 	 * Test method for {@link net.sourceforge.dscsim.radiotransport.Airwave#getInstance()}.
 	 */
 	public void testGetInstance() {
-		assert( Airwave.getInstance() instanceof UDPAirwave );
+		Airwave aW = Airwave.getInstance();
+		try {
+			assert( aW instanceof UDPAirwave );
+		} finally {
+			aW.shutdown();
+		}
 	}
 
 }
