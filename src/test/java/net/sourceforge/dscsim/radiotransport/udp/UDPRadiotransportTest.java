@@ -36,6 +36,7 @@ public class UDPRadiotransportTest extends RadiotransportTest {
 	 */
 	@Override
 	public Airwave createAirwave() {
+		System.setProperty("parameter.dscsim.udp_airwave."+"peerhost", "localhost");
 		UDPAirwave aw = new UDPAirwave();
 		return aw;
 	}

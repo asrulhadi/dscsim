@@ -81,4 +81,86 @@ public abstract class RadiotransportTest extends TestCase {
 		assertTrue("Transmitted data corrupted", Arrays.equals(testData, demodulator.getSignal()) );
 	}
 
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.radiotransport.Airwave#createAntenna()}.
+	 */
+	public void testSimpleTransmissionSameAirwaveDifferentAntenna() {
+		Antenna transmitAntenna = testAirwave.createAntenna();
+		Antenna receiveAntenna = testAirwave.createAntenna();
+		Transmitter transmitter = transmitAntenna.createTransmitter();
+		Receiver receiver = receiveAntenna.createReceiver();
+		MockDemodulator demodulator = new MockDemodulator();
+		receiver.addDemodulator(demodulator);
+		byte[] testData = new byte[100];
+		for( int i=0; i<testData.length; i++ ) {
+			testData[i] = (byte) (i % 11);
+		}
+		transmitter.transmit(testData, new Hint() );
+		assertEquals(demodulator.getCallCounter(), 1);
+		assertTrue("Transmitted data corrupted", Arrays.equals(testData, demodulator.getSignal()) );
+	}
+
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.radiotransport.Airwave#createAntenna()}.
+	 */
+	public void testSimpleTransmissionDifferentAirwave() throws Exception {
+		Airwave receiveAirwave = createAirwave();
+		Thread.sleep(3000);
+		try {
+			Antenna transmitAntenna = testAirwave.createAntenna();
+			Antenna receiveAntenna = receiveAirwave.createAntenna();
+			Transmitter transmitter = transmitAntenna.createTransmitter();
+			Receiver receiver = receiveAntenna.createReceiver();
+			MockDemodulator demodulator = new MockDemodulator();
+			receiver.addDemodulator(demodulator);
+			byte[] testData = new byte[100];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = (byte) (i % 11);
+			}
+			transmitter.transmit(testData, new Hint());
+			assertEquals(demodulator.getCallCounter(), 1);
+			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
+					demodulator.getSignal()));
+		} finally {
+			receiveAirwave.shutdown();
+			Thread.sleep(1000);
+		}
+	}
+
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.radiotransport.Airwave#createAntenna()}.
+	 */
+	public void testSimpleTransmission2DifferentAirwave() throws Exception {
+		Airwave receiveAirwave = createAirwave();
+		Airwave receiveAirwave2 = createAirwave();
+		Thread.sleep(6000);
+		try {
+			Antenna transmitAntenna = testAirwave.createAntenna();
+			Antenna receiveAntenna = receiveAirwave.createAntenna();
+			Antenna receiveAntenna2 = receiveAirwave2.createAntenna();
+			Transmitter transmitter = transmitAntenna.createTransmitter();
+			Receiver receiver = receiveAntenna.createReceiver();
+			Receiver receiver2 = receiveAntenna2.createReceiver();
+			MockDemodulator demodulator = new MockDemodulator();
+			MockDemodulator demodulator2 = new MockDemodulator();
+			receiver.addDemodulator(demodulator);
+			receiver2.addDemodulator(demodulator2);
+			byte[] testData = new byte[100];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = (byte) (i % 11);
+			}
+			transmitter.transmit(testData, new Hint());
+			assertEquals(demodulator.getCallCounter(), 1);
+			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
+					demodulator.getSignal()));
+			assertEquals(demodulator2.getCallCounter(), 1);
+			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
+					demodulator2.getSignal()));
+		} finally {
+			receiveAirwave.shutdown();
+			receiveAirwave2.shutdown();
+			Thread.sleep(1000);
+		}
+	}
+
 }
