@@ -36,7 +36,8 @@ public class UDPRadiotransportTest extends RadiotransportTest {
 	 */
 	@Override
 	public Airwave createAirwave() {
-		return new UDPAirwave();
+		UDPAirwave aw = new UDPAirwave();
+		return aw;
 	}
 
 }

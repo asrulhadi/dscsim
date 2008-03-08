@@ -60,6 +60,7 @@ public abstract class RadiotransportTest extends TestCase {
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		testAirwave.shutdown();
 	}
 
 	/**
