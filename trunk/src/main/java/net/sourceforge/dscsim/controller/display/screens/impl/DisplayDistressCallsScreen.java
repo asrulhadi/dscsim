@@ -94,8 +94,7 @@ public class DisplayDistressCallsScreen extends MenuScreen {
 		String strTime = null;
 		for (Dscmessage call : callsList) {
 			text = call.getCallTypeCd();
-			text = props.getProperty(text);
-			text = props.getProperty(text);
+			text = props.getProperty("ALT1."+text);
 			strTime = call.getPosition().getTime().getAsFormattedString2(props);
 
 			menu.addItem(count + ":" + text + " " + strTime,

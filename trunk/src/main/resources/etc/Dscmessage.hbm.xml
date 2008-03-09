@@ -36,9 +36,12 @@
            	<column name="POS_TIME_MIN" sql-type="INTEGER"/>
         </property>
         
-        <property name="channel" type="java.lang.Integer">
-            <column name="CHANNEL" />
-        </property>
+        <component name="channel" class="net.sourceforge.dscsim.controller.message.types.Channel">
+        	<property name="channel" type="integer">
+            	<column name="CHANNEL" />
+        	</property>
+        </component>
+
         <property name="complianceCd" type="string">
             <column name="COMPLIANCE_CD" length="2" />
         </property>

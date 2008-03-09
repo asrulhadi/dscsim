@@ -1,8 +1,7 @@
 package net.sourceforge.dscsim.controller.message.types;
 
 import java.text.MessageFormat;
-import java.text.NumberFormat;
-import java.util.Properties;
+
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -61,9 +61,9 @@ public class DisplayOtherCallScreen extends MenuScreen {
 			return;
 	
 		Properties props = oMngr.getProperties();
-		this.setTextBox("descr", selected.getCatagoryText(props));
+		this.setTextBox("descr", selected.getCatagoryTypeText(props));
 		this.setTextBox("from", selected.getSender());
-		this.setTextBox("channel", selected.getChannel().toString());
+		this.setTextBox("channel", selected.getChannelStr());
 		
 		
 	}

@@ -58,8 +58,10 @@ public class MultiController extends Thread implements MouseListener,
 	private static final int _width_distrkey = 60, _height_distrkey = 55;
 
 	private ArrayList<Button> _oButtons = null;
-	private static final Button _oNoButton = new Button();
-	private Button _oLastPressed = _oNoButton;
+	private static final Button noButton = new Button();
+	private Button lastKeyPressed = noButton;
+	private Button callButton = noButton;
+	private Button lastClick = noButton;
 
 	public String _text = "N/A";
 
@@ -148,6 +150,7 @@ public class MultiController extends Thread implements MouseListener,
 		}
 
 		_oButtons = createButtons();
+		this.callButton = this.getButton(FK_CALL);
 
 		AppLogger.debug("MultiController.init - end");
 
@@ -320,7 +323,7 @@ public class MultiController extends Thread implements MouseListener,
 
 		}
 
-		return _oNoButton;
+		return noButton;
 	}
 
 	/* (non-Javadoc)
@@ -329,29 +332,31 @@ public class MultiController extends Thread implements MouseListener,
 	public void mousePressed(MouseEvent arg0) {
 
 		Button oButton = getButtonPressed(arg0);
-		
-		//if button already pressed the do nothing.
 		String keyId = oButton.getKeyId();
-		if(keyId.equals(FK_CALL)){
-			
+		
+		/*
+		 * last clicked is anything including non-key or buttons.
+		 * */
+		this.lastClick = oButton;
+		
+		//if call button already pressed, then do nothing.
+		if((keyId.equals(FK_CALL))){
 			if(oButton.getAction().equals(PRESSED)){
 				return;				
-			} else if(arg0.getButton() != 1){
+			} else if(arg0.getButton() != MouseEvent.BUTTON1){
 				oButton.setPressed();
-				_oLastPressed = oButton;
+				this.lastKeyPressed = oButton;
 				/*send out a no button event to cause a repaint*/
 				this._oContainer.repaint();
 				return;
-			}
-
+			}	
 		}
 		
 		oButton.setPressed();
 		if (NO_KEY.equals(keyId) == false) {
 			_oContext.getBus().publish(new BusMessage(null, oButton));
-			_oLastPressed = oButton;
+			this.lastKeyPressed = oButton;
 		}
-
 	}
 
 	/* (non-Javadoc)
@@ -360,18 +365,24 @@ public class MultiController extends Thread implements MouseListener,
 	public void mouseReleased(MouseEvent arg0) {
 
 		Button oButton = getButtonPressed(arg0);
-
-		if (!oButton.getKeyId().equals(FK_CALL)
-				|| oButton.getKeyId().equals(FK_CALL) && arg0.getButton()==1){
-			
-			getButton(FK_CALL).setRelease();
-			
-			oButton.setRelease();
-			
-			_oContext.getBus().publish(new BusMessage(null, oButton));
-			_oLastPressed = _oNoButton;
+		String keyId = oButton.getKeyId();
+		int button = arg0.getButton();
+		
+		if (NO_KEY.equals(keyId) == false
+				&& FK_CALL.equals(lastKeyPressed.getKeyId())==true
+				&& button != MouseEvent.BUTTON1) {		
+			return;
+		} 
+					
+		this.callButton.setRelease();
+		this.lastKeyPressed.setRelease();	
+		
+		if(this.lastClick.getKeyId().equals(NO_KEY)==false){
+			_oContext.getBus().publish(new BusMessage(null, lastClick));	
 		}
 		
+		return;
+
 	}
 
 	/* (non-Javadoc)
@@ -412,7 +423,7 @@ public class MultiController extends Thread implements MouseListener,
 				this.setLcdOn(this.lcd);
 			}
 
-			_oLastPressed = oMessage.getButtonEvent();
+			lastKeyPressed = oMessage.getButtonEvent();
 			_oContainer.repaint();
 
 		}
@@ -493,10 +504,10 @@ public class MultiController extends Thread implements MouseListener,
 
 						if (KeyEvent.KEY_PRESSED == action) {
 							oButton.setPressed();
-							_oLastPressed = oButton;
+							lastKeyPressed = oButton;
 						} else {
 							oButton.setRelease();
-							_oLastPressed = _oNoButton;
+							lastKeyPressed = noButton;
 						}
 
 						_oContext.getBus().publish(

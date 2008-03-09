@@ -654,7 +654,7 @@
 			</dscsim:fields>
 			<dscsim:actions>
 				<dscsim:action event="PRSD" source="FK_CLR" forward="welcome"/>
-				<dscsim:action event="PRSD" source="FK_ENT" forward="null"/>				
+				<dscsim:action event="PRSD" source="FK_ENT" forward="welcome"/>				
 			</dscsim:actions>		
 		</dscsim:screen>
 		

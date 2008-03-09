@@ -50,28 +50,32 @@ implements Constants {
 		JTextBox tb = (JTextBox)this.getComponentByName("mmsi", 0);			
 		MultiContentManager mngr = getInstanceContext().getContentManager();		
 		tb.setText(this.getIncomingDscmessage().getSender());
-		
-		Dscmessage inComing = this.getIncomingDscmessage();
-		if(inComing != null){
-			RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
-			oRadio.setChannel(inComing.getChannelStr());					
-		}
-
-		
+			
 	}
 	
 	@Override
 	public void exit(BusMessage msg) throws Exception {
 
 		String keyID = msg.getButtonEvent().getKeyId();
-				
-		if (keyID.equals(FK_ENT) || keyID.equals(FK_CALL)) {
+		String keyAction = msg.getButtonEvent().getAction();
+		
+		if (keyAction.equals(PRESSED)
+				&& (keyID.equals(FK_ENT) || keyID.equals(FK_CALL))) {
 			MultiContentManager mngr = getInstanceContext()
 					.getContentManager();
+
 			mngr.setIncomingDscmessage(this.getIncomingDscmessage());
-			Dscmessage outGoing  = new Dscmessage();
+			
+			RadioCoreController oRadio = getInstanceContext().getRadioCoreController();
+			oRadio.setChannel(this.getIncomingDscmessage().getChannelStr());
+	
+			/*
+			 not really need as acknowledgement are not possible
+			 for all ship calls
+			 */
+			Dscmessage outGoing  = new Dscmessage(this.getIncomingDscmessage());
 			outGoing.setRecipient(this.getIncomingDscmessage().getSender());
-			outGoing.setCallTypeCd(CALL_TYPE_INDIVIDUAL_ACK);
+			outGoing.setCallTypeCd(CALL_TYPE_ALL_SHIPS_ACK);
 			mngr.setOutGoingDscmessage(outGoing);
 		}
 	}

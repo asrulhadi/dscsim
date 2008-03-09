@@ -55,12 +55,14 @@ implements Constants {
 	public void exit(BusMessage msg) throws Exception {
 
 		String keyID = msg.getButtonEvent().getKeyId();
+		String keyAction = msg.getButtonEvent().getAction();
 				
-		if (keyID.equals(FK_ENT) || keyID.equals(FK_CALL)) {
+		if (keyAction.equals(PRESSED)
+				&&(keyID.equals(FK_ENT) || keyID.equals(FK_CALL))) {
 			MultiContentManager mngr = getInstanceContext()
 					.getContentManager();
 			mngr.setIncomingDscmessage(this.getIncomingDscmessage());
-			Dscmessage outGoing  = new Dscmessage();
+			Dscmessage outGoing  = new Dscmessage(this.getIncomingDscmessage());
 			outGoing.setRecipient(this.getIncomingDscmessage().getSender());
 			outGoing.setCallTypeCd(CALL_TYPE_INDIVIDUAL_ACK);
 			mngr.setOutGoingDscmessage(outGoing);
