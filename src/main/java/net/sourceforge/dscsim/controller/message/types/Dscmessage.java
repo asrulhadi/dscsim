@@ -73,7 +73,7 @@ public class Dscmessage
     @XmlElement(required = true)
 	private String catagoryCd;
     @XmlElement(required = true)
-	private Integer channel;
+	private Channel channel;
     @XmlElement(required = true)
 	private String complianceCd;
     @XmlElement(required = true)
@@ -103,7 +103,7 @@ public class Dscmessage
 
 	/** full constructor */
 	public Dscmessage(Date uid, String sender, String recipient, String callTypeCd, String natureCd,
-			String catagoryCd,Integer channel, String complianceCd, String complianceReasonCd,
+			String catagoryCd,Channel channel, String complianceCd, String complianceReasonCd,
 			Date ackdTime) {
 		this.uid = uid;
 		this.sender = sender;
@@ -145,7 +145,16 @@ public class Dscmessage
 	public String getCallTypeText(Properties props) {
 		return props.getProperty(this.getCallTypeCd(), this.getCallTypeCd());
 	}
+	
+	public String getCallTypeExtText(String subkey, Properties props) {
+		return props.getProperty(subkey + this.getCallTypeCd(), this.getCallTypeCd());
+	}
 
+	public String getCatagoryTypeText(Properties props) {
+		String compoundCode = this.getCatagoryCd() + "_" +  this.getCallTypeCd();
+		return props.getProperty(compoundCode, compoundCode);
+	}
+	
 	public String getCallTypeCd() {
 		return this.callTypeCd;
 	}
@@ -167,7 +176,7 @@ public class Dscmessage
 	}
 
 	public String getCatagoryText(Properties props) {
-		String cd = this.getCatagoryCd()+ "_" + this.getCallTypeCd();
+		String cd = this.getCallTypeCd();
 		return props.getProperty(cd, cd);
 	}
 
@@ -179,15 +188,30 @@ public class Dscmessage
 		this.catagoryCd = catagoryCd;
 	}
 
-	public Integer getChannel() {
+	public Channel getChannel() {
 		return this.channel;
 	}
 	
+	public boolean hasChannel(){
+		if(this.channel == null)
+			return false;
+		else
+			return true;
+	}
+	
 	public String getChannelStr() {
-		return String.valueOf(this.channel);
+		if(this.hasChannel()){
+			return this.channel.toString();
+		}else{
+			return BLANK;
+		}
 	}
 
-	public void setChannel(Integer channel) {
+	public void setChannel(int channel) {
+		this.channel = Channel.valueOf(channel);
+	}
+	
+	public void setChannel(Channel channel) {
 		this.channel = channel;
 	}
 
@@ -281,6 +305,10 @@ public class Dscmessage
 
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+	
+	public boolean hasRecipient(){
+		return MMSI.isValidMMSI(this.recipient);
 	}
 
 }

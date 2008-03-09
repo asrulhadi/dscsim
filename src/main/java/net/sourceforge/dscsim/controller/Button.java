@@ -54,6 +54,11 @@ public class Button
 	private String _action = RELEASED;
 
 	/**
+	 * 
+	 */
+	private boolean sticky = false;
+	
+	/**
 	 * Button Constructor.
 	 */
 	public Button() {
@@ -285,6 +290,20 @@ public class Button
 			}
 
 		}
+	}
+
+	/**
+	 * @return the sticky
+	 */
+	public boolean isSticky() {
+		return sticky;
+	}
+
+	/**
+	 * @param sticky the sticky to set
+	 */
+	public void setSticky(boolean sticky) {
+		this.sticky = sticky;
 	}
 
 }

@@ -80,7 +80,7 @@ public class SendAckActionScreen extends ActionScreen {
 						.getContentManager();
 				Dscmessage outGoing = mngr.getOutGoingDscmessage();
 
-				if (outGoing.getRecipient().length() < 1) {
+				if (outGoing.hasRecipient()==false) {
 					outGoing.setRecipient(mngr.getIncomingDscmessage()
 							.getSender());
 				}

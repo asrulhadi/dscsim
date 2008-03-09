@@ -105,7 +105,7 @@ public class IncomingDistressAlertScreen extends ActionScreen {
 		if (mngr.getAsMMSI().isCoastal() && keyID.equals(FK_ENT)
 				|| keyID.equals(FK_CALL)) {
 				mngr.setIncomingDscmessage(this.getIncomingDscmessage());
-			Dscmessage outGoing = new Dscmessage();
+			Dscmessage outGoing = new Dscmessage(this.getIncomingDscmessage());
 			outGoing.setRecipient(this.getIncomingDscmessage().getSender());
 			outGoing.setCallTypeCd(CALL_TYPE_DISTRESS_ACK);
 			mngr.setOutGoingDscmessage(outGoing);
