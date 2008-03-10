@@ -116,6 +116,14 @@ http://www.tritonus.org
 JSpeex (Audio data compression)
 http://jspeex.sourceforge.net
 
+hibernate (Relational Persistence)
+http://hibernate.org
+
+HSQLDB (relational database)
+http://hsqldb.org
+
+JAXB framework (XML/Java processing)
+https://jaxb.dev.java.net/
 
 The build process of dscsim is performed by Maven
 http://maven.apache.org
