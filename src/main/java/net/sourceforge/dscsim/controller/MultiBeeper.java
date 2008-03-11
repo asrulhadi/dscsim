@@ -24,15 +24,14 @@ import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 
-
-
 public class MultiBeeper implements Runnable, BusListener, Constants {
-			
-	
+
 	public final static String BEEP_SIMPLE = RESOURCE_BASE + "beep_simple.wav";
 	public final static String BEEP_ALARM = RESOURCE_BASE + "beep_alarm.wav";
-	public final static String BEEP_DISTRESS_COUNTDOWN = RESOURCE_BASE + "beep_countdown.wav";
-	public final static String BEEP_TRANSMITTING = RESOURCE_BASE + "beep_transmitting.wav";
+	public final static String BEEP_DISTRESS_COUNTDOWN = RESOURCE_BASE
+			+ "beep_countdown.wav";
+	public final static String BEEP_TRANSMITTING = RESOURCE_BASE
+			+ "beep_transmitting.wav";
 
 	private Object _oBeeperSemaphor = new Object();
 	private String _strCurrentNextTone = null;
@@ -40,79 +39,76 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 	private boolean _powerOn = false;
 	private InstanceContext _ctx = null;
 
-	private MultiBeeper(InstanceContext ctx){
+	private MultiBeeper(InstanceContext ctx) {
 		_ctx = ctx;
 		init();
 	}
 
 	private void init() {
-		
-		
+
 		//Thread oThread = new Thread(this);
 		//oThread.start();
-		
+
 		AppletSoundList oSoundList = AppletSoundList.getInstance();
-		
+
 		oSoundList.load(BEEP_SIMPLE);
 		oSoundList.load(BEEP_ALARM);
 		oSoundList.load(BEEP_DISTRESS_COUNTDOWN);
 		oSoundList.load(BEEP_TRANSMITTING);
-				
+
 		Thread oThread = new Thread(this);
 		oThread.setName("Controller.MultiBeeper");
 		oThread.start();
-				
+
 	}
-	
-	
-	
-	public static MultiBeeper getInstance(InstanceContext ctx){		
-		return new MultiBeeper(ctx);		
+
+	public static MultiBeeper getInstance(InstanceContext ctx) {
+		return new MultiBeeper(ctx);
 	}
 
 	public void run() {
 		// TODO Auto-generated method stub
-		
+
 		boolean bContinue = true;
-		while(bContinue){
+		while (bContinue) {
 			_strCurrentTone = null;
 
 			try {
-				synchronized (_oBeeperSemaphor){
-					
-					if(_strCurrentNextTone == null){
+				synchronized (_oBeeperSemaphor) {
+
+					if (_strCurrentNextTone == null) {
 						_oBeeperSemaphor.wait();
-					} 					
+					}
 				}
-							
-				synchronized (_oBeeperSemaphor){
-					
-					if(_strCurrentNextTone != null){
+
+				synchronized (_oBeeperSemaphor) {
+
+					if (_strCurrentNextTone != null) {
 						_strCurrentTone = _strCurrentNextTone;
-		
-					}else{
+
+					} else {
 						continue;
 					}
-				}			
-				
-			}catch(InterruptedException oEx){
+				}
+
+			} catch (InterruptedException oEx) {
 				AppLogger.error(oEx);
 				bContinue = false;
 				continue;
 			}
-			
-			for(int i = 0; _strCurrentTone != null && i< 1 ;i++){
+
+			for (int i = 0; _strCurrentTone != null && i < 1; i++) {
 				beepSync(_strCurrentTone);
-				try{
+				try {
 					Thread.sleep(500);
-				}catch(InterruptedException oEx){
+				} catch (InterruptedException oEx) {
 					AppLogger.error(oEx);
 					bContinue = false;
 					continue;
 				}
-			}						
+			}
 		}
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -120,110 +116,105 @@ public class MultiBeeper implements Runnable, BusListener, Constants {
 	 */
 	public void signal(BusMessage oMessage) {
 		// TODO Auto-generated method stub
-		
+
 		//this could be configured in xml mappings
 		String msgType = oMessage.getType();
-		if(_powerOn && msgType.equals(BusMessage.MSGTYPE_NETWORK) == true){
-			
-			Dscmessage oDscMessage = (Dscmessage)oMessage.getDscmessage();
-			
-			if(CALL_CAT_DISTRESS.equals(oDscMessage.getCatagoryCd())){
+		if (_powerOn && msgType.equals(BusMessage.MSGTYPE_NETWORK) == true) {
+
+			Dscmessage oDscMessage = (Dscmessage) oMessage.getDscmessage();
+
+			if (CALL_CAT_DISTRESS.equals(oDscMessage.getCatagoryCd())) {
 				soundIncomingDistressAlarm();
 			} else {
 				beepSync(BEEP_TRANSMITTING);
 			}
-						
-		} else if(_powerOn 
-				&& BusMessage.MSGTYPE_KEY.equals(msgType)){
+
+		} else if (_powerOn && BusMessage.MSGTYPE_KEY.equals(msgType)) {
 			Button oBut = oMessage.getButtonEvent();
 			String keyId = oBut.getKeyId();
 			String action = oBut.getAction();
-			if(FK_CLR.equals(keyId) && action.equals(PRESSED)
-				/*|| FK_ENT.equals(keyId) && action.equals(PRESSED)*/) {
+			if (FK_CLR.equals(keyId) && action.equals(PRESSED)
+			/*|| FK_ENT.equals(keyId) && action.equals(PRESSED)*/) {
 				clearBeeper();
-			} 
-			
-			if(oBut.getAction().equals(PRESSED)){	
-				beepSync(BEEP_SIMPLE);				
-			}
-			
-			/*turn off*/
-			if(DSC_POWERED_OFF.equals(keyId)){
-					_powerOn = false;
-					clearBeeper();
 			}
 
-		} 
-		
-		if(!_powerOn && BusMessage.MSGTYPE_KEY.equals(msgType)){
+			if (oBut.getAction().equals(PRESSED)) {
+				beepSync(BEEP_SIMPLE);
+			}
+
+			/*turn off*/
+			if (DSC_POWERED_OFF.equals(keyId)) {
+				_powerOn = false;
+				clearBeeper();
+			}
+
+		}
+
+		if (!_powerOn && BusMessage.MSGTYPE_KEY.equals(msgType)) {
 			Button oBut = oMessage.getButtonEvent();
-			String keyId = oBut.getKeyId();			
-		    if(DSC_POWERED_ON.equals(keyId)){
-		    	_powerOn = true;
-		    	beepSync(BEEP_SIMPLE);
-		    }
-		}		
-		
+			String keyId = oBut.getKeyId();
+			if (DSC_POWERED_ON.equals(keyId)) {
+				_powerOn = true;
+				beepSync(BEEP_SIMPLE);
+			}
+		}
+
 	}
-	
+
 	/**
 	 * stop the current beeping
 	 *
 	 */
-	public void clearBeeper(){
+	public void clearBeeper() {
 		try {
-			synchronized (_oBeeperSemaphor){
-				
+			synchronized (_oBeeperSemaphor) {
+
 				_strCurrentNextTone = null;
 
 				_oBeeperSemaphor.notify();
 			}
-		}catch(Exception oEx){
+		} catch (Exception oEx) {
 			AppLogger.error(oEx);
 		}
-			
+
 	}
-	
-	public void soundIncomingDistressAlarm(){
-		if(!_ctx.getClu().isDistressCallInprogress()){
+
+	public void soundIncomingDistressAlarm() {
+		if (!_ctx.getClu().isDistressCallInprogress()) {
 			beepAysnc(BEEP_ALARM);
 		}
 	}
-	
-	public void beepAysnc(String strBeepId){
-		
-		if(BEEP_ALARM.equals(strBeepId) &&
-				BEEP_SIMPLE.equals(strBeepId)){
+
+	public void beepAysnc(String strBeepId) {
+
+		if (BEEP_ALARM.equals(strBeepId) && BEEP_SIMPLE.equals(strBeepId)) {
 			return;
 		}
-		
+
 		try {
-			synchronized (_oBeeperSemaphor){
-				
+			synchronized (_oBeeperSemaphor) {
+
 				_strCurrentNextTone = strBeepId;
 
 				_oBeeperSemaphor.notify();
 			}
-		}catch(Exception oEx){
+		} catch (Exception oEx) {
 			AppLogger.error(oEx);
 		}
-		
-		
+
 	}
-	
-	public void beepSync(String strBeepId){
-	
-		try{
+
+	public void beepSync(String strBeepId) {
+
+		try {
 			AppletSoundList oSoundList = AppletSoundList.getInstance();
 			Clip oClip = oSoundList.getRealClip(strBeepId);
 			oClip.setMicrosecondPosition(0);
 			oClip.start();
-		}catch(Exception oEx){
+		} catch (Exception oEx) {
 			AppLogger.error(oEx);
 		}
-		
-	}
-	
 
-	
+	}
+
 }

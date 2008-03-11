@@ -18,29 +18,26 @@
  */
 package net.sourceforge.dscsim.controller;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-
 public class DscUtils implements Constants {
-	
-	
+
 	public static int getKeyIntValue(String keyID) {
-		
+
 		return Integer.parseInt(keyID.substring(3, keyID.length()));
-		
+
 	}
 
 	public static String getKeyStringValue(String keyID) {
-	
+
 		return keyID.substring(3, keyID.length());
-	}	
-	
-	public static SortedSet createKeySet()  {
-		
+	}
+
+	public static SortedSet createKeySet() {
+
 		SortedSet oSet = new TreeSet();
-		
+
 		oSet.add(KP_0);
 		oSet.add(KP_1);
 		oSet.add(KP_2);
@@ -51,8 +48,7 @@ public class DscUtils implements Constants {
 		oSet.add(KP_7);
 		oSet.add(KP_8);
 		oSet.add(KP_9);
-	
+
 		return oSet;
 	}
-}	
-
+}

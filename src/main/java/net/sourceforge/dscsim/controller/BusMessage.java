@@ -22,8 +22,6 @@ import java.io.Serializable;
 
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 
-
-
 /**
  * The BusMessage is used for communication between the controller's subcomponents.
  * @author katharina
@@ -31,22 +29,22 @@ import net.sourceforge.dscsim.controller.message.types.Dscmessage;
  */
 
 public class BusMessage implements Serializable, Constants {
-	
+
 	/**
 	 * The message contains a message, which originated from the network.
 	 */
-	public static final String MSGTYPE_NETWORK 		= "NETWORK_MSG";
-	
+	public static final String MSGTYPE_NETWORK = "NETWORK_MSG";
+
 	/**
 	 * The message is an internal message such as a key stroke.
 	 */
-	public static final String MSGTYPE_KEY				= "KEY";
-	
+	public static final String MSGTYPE_KEY = "KEY";
+
 	/**
 	 * Mesage Type is either MSGTYPE_NETWORK or MSGTYPE_KEY.
 	 */
 	private String _msgType = "N/A";
-	
+
 	/**
 	 * Memory address of sender.
 	 */
@@ -61,29 +59,29 @@ public class BusMessage implements Serializable, Constants {
 	 * @param from is the memory address of the sender.
 	 * @param oDscMessage is the message specific information.
 	 */
-	public BusMessage(Object from, Dscmessage oDscMessage){
+	public BusMessage(Object from, Dscmessage oDscMessage) {
 		_from = from;
 		_content = oDscMessage;
 		_msgType = MSGTYPE_NETWORK;
-		
+
 	}
-	
+
 	/**
 	 * Constructor for instances containing button events.
 	 * @param from is the Memory address of the sender.
 	 * @param oButton is the button that was pushed.
 	 */
-	public BusMessage(Object from, Button oButton){
-		_from = from;	
+	public BusMessage(Object from, Button oButton) {
+		_from = from;
 		_content = oButton;
 		_msgType = MSGTYPE_KEY;
 	}
-	
+
 	/**
 	 * The sender of the message.
 	 * @return Object.
 	 */
-	public Object getFrom(){
+	public Object getFrom() {
 		return _from;
 	}
 
@@ -91,16 +89,16 @@ public class BusMessage implements Serializable, Constants {
 	 * Get message specific information.
 	 * @return DscMessage.
 	 */
-	public Dscmessage getDscmessage(){
-		return (Dscmessage)_content;
+	public Dscmessage getDscmessage() {
+		return (Dscmessage) _content;
 	}
-	
+
 	/**
 	 * If the message type is of type MSGTYPE_KEY, then return the button.
 	 * @return Button.
 	 */
-	public Button getButtonEvent(){
-		return (Button)_content;
+	public Button getButtonEvent() {
+		return (Button) _content;
 	}
 
 	/**
@@ -109,12 +107,12 @@ public class BusMessage implements Serializable, Constants {
 	 * @param msgType one of the two constants.
 	 * @param oContent is the message specific information.
 	 */
-	public BusMessage(Object from, String msgType, Object oContent){
+	public BusMessage(Object from, String msgType, Object oContent) {
 		_from = from;
 		_msgType = msgType;
-		_content = oContent;	
+		_content = oContent;
 	}
-	
+
 	/**
 	 * Get the type of the message.
 	 * @return String.
@@ -122,29 +120,27 @@ public class BusMessage implements Serializable, Constants {
 	public String getType() {
 		return _msgType;
 	}
-	
+
 	/**
 	 * Get the special information related to the message.
 	 * 
 	 * @return
 	 */
-	public Object getContent(){
+	public Object getContent() {
 		return _content;
 	}
-	
+
 	/**
 	 * Convert message to a string.
 	 * @return String.
 	 */
-	public String toString(){
-		
+	public String toString() {
+
 		String strFrom = _from != null ? _from.getClass().getName() : null;
-		
-		return "[" + getType() + 
-		":" + strFrom +
-		":" + _content.getClass().getName() + "]";
-		
+
+		return "[" + getType() + ":" + strFrom + ":"
+				+ _content.getClass().getName() + "]";
+
 	}
 
-	
 }

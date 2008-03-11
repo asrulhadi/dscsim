@@ -190,9 +190,6 @@ public class MultiClu implements BusListener, Constants {
 
 		ActionScreen oScreen = null;
 
-		DscIACManager.getSyncPublisher().sendSync(
-				_oContext.getContentManager().getMMSI(), oMessage);
-
 		try {
 
 			/* if the power is off then ingnore all other type except keyboard. */

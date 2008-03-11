@@ -25,82 +25,85 @@ package net.sourceforge.dscsim.controller;
  *
  */
 public interface ApplicationContext {
-	
+
 	/**
 	 * Get the inter-application communication method - UDP, AIRWAVE.
 	 * @return String.
 	 */
 	String getIACMethod();
-	
+
 	/**
 	 * Get the ip address ofthe master.
 	 * @return
 	 */
 	String getMasterIPAddress();
+
 	/**
 	 * Get the port of the master.
 	 * @return String.
 	 */
 	String getMasterPort();
-	
+
 	/**
 	 * Get user for the provider.
 	 * @return String.
 	 */
 	String getProviderUser();
+
 	/**
 	 * Get the User's password.
 	 * @return String.
 	 */
 	String getProviderPassword();
-	
+
 	/**
 	 * Get the mode, which is either slave or master.
 	 * @return
 	 */
 	String getMode();
-	
+
 	/**
 	 * Get inter-application sychronization method.
 	 * @return String.
 	 */
 	String getIACSync();
-	
+
 	/**
 	 * Get provider URL.
 	 * @return String.
 	 */
 	String getProviderUrl();
-	
+
 	/**
 	 * Get provider subject.
 	 * @return String.
 	 */
 	String getProviderSubject();
-	
+
 	/**
 	 * Get the session's MMSI.
 	 * @return String.
 	 */
 	String getIndividualMmsi();
-	
+
 	/**
 	 * Get the session's group MMSI.
 	 * @return String.
 	 */
 	String getGroupMmsi();
-	
+
 	/**
 	 * Get the xml file's name containing the screen information.
 	 * @return String.
 	 */
 	String getScreenFileName();
-	
+
 	/**
 	 * Get the xml file's name containing the screen information.
 	 * @return String.
 	 */
 	String getDeviceXmlName();
+
 	/**
 	 * Get the IP address for AIRWAVE.
 	 * @return String.

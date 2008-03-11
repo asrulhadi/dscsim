@@ -18,21 +18,26 @@
  */
 package net.sourceforge.dscsim.controller;
 
+public interface InstanceContext {
 
-public interface InstanceContext{
-	
 	public MultiClu getClu();
+
 	public MultiContentManager getContentManager();
+
 	public MultiBus getBus();
+
 	public MultiController getController();
+
 	public MultiBeeper getBeeper();
+
 	public RadioCoreController getRadioCoreController();
+
 	public ApplicationContext getApplicationContext();
-	
+
 	public Object getProperty(String key);
+
 	public void setProperty(String key, Object value);
+
 	public void removeProperties();
-	
 
 }
-

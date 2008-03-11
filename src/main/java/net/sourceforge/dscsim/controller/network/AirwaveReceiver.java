@@ -38,9 +38,6 @@ import net.sourceforge.dscsim.util.ByteConverter;
 import org.apache.log4j.Logger;
 
 
-
-
-
 public class AirwaveReceiver implements Demodulator, DscsimReceiver {
 
 	private static Logger logger = Logger.getLogger(AirwaveReceiver.class);

@@ -19,7 +19,7 @@
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  */
- 
+
 package net.sourceforge.dscsim.controller.display.screens.framework;
 
 import java.awt.AlphaComposite;
@@ -39,21 +39,19 @@ import javax.xml.bind.JAXBElement;
 import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.screens.*;
 
-
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
- * @author katharina
- * Screen is a display on which object can be displayed.
+ * @author katharina Screen is a display on which object can be displayed.
  */
-public class JScreen extends Container
- implements net.sourceforge.dscsim.controller.Constants{
-	
+public class JScreen extends Container implements
+		net.sourceforge.dscsim.controller.Constants {
+
 	/*
 	 * 
 	 */
 	private InstanceContext instanceContext = null;
-	
+
 	/*
 	 * jaxb representation of screen as described in the xml file.
 	 */
@@ -65,275 +63,297 @@ public class JScreen extends Container
 	private Device deviceBindings = null;
 
 	private Color background = Color.YELLOW;
-		
+
 	/**
 	 * used for blending text over background.
 	 */
-	AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
+	AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+			1.0f);
 
 	/**
 	 * Perimeter outline of screen.
 	 */
 	private RoundRectangle2D.Float perim = null;
-		
+
 	/**
 	 * 
 	 */
 	private BasicStroke stroke = new BasicStroke(1.0f);
-	
-		
 
 	/**
 	 * 
 	 */
 	private JDisplay display = null;
-	
 
 	public JScreen(JDisplay display, Screen screen) {
 		super();
-		//this.setLayout(null);
-		//this.setBounds(display.getX(), display.getY(), display.getWidth(), display.getHeight());
+		// this.setLayout(null);
+		// this.setBounds(display.getX(), display.getY(), display.getWidth(),
+		// display.getHeight());
 		this.display = display;
 		this.screenBindings = screen;
 		this.setName(screen.getName());
-		//this.setLayout(null);
+		// this.setLayout(null);
 		this.setBounds(0, 0, display.getWidth(), display.getHeight());
-				
-		//this.setBounds(display.getX(), display.getY(), display.getWidth()+1, display.getHeight()+1);		
-		//AppLogger.debug2("Screen count=" + (++count) + ";width="+ width + "; height="+ height);
-		perim = new RoundRectangle2D.Float(display.getX(), display.getY(), display.getWidth(), display.getHeight(), 20, 20);	
+
+		// this.setBounds(display.getX(), display.getY(), display.getWidth()+1,
+		// display.getHeight()+1);
+		// AppLogger.debug2("Screen count=" + (++count) + ";width="+ width + ";
+		// height="+ height);
+		perim = new RoundRectangle2D.Float(display.getX(), display.getY(),
+				display.getWidth(), display.getHeight(), 20, 20);
 		Font theFont = new Font("Courier", Font.PLAIN, 14);
-	 	this.setFont(theFont);
-	 	//AppLogger.debug2("Screen.Screen parent=" + this.getParent());
-	 	
-	 	//handle jaxb.
-		List<Object>fields = screen.getFields().getAny();
-		
-		
-		for(Object field: fields){
+		this.setFont(theFont);
+		// AppLogger.debug2("Screen.Screen parent=" + this.getParent());
+
+		// handle jaxb.
+		List<Object> fields = screen.getFields().getAny();
+
+		for (Object field : fields) {
 			System.out.println(field.getClass().getName());
-			
-			Object kid = ((JAXBElement<Object>)field).getValue();
-			
-	
-			//for(Object kid: kids){
-				System.out.println(kid.getClass().getName());	
-		
-				if(kid instanceof TextBoxType){
-					TextBoxType b = (TextBoxType)kid;
-					JTextBox item = new JTextBox(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
-					item.setText(b.getValue());
-					item.setName(b.getName());
-					item.setBlink(b.getBlink());
-					this.add(item);
-				}else if(kid instanceof EditBoxType){
-					EditBoxType b = (EditBoxType)kid;
-					JEditBox item = new JEditBox(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
-					item.setValue(b.getValue());
-					item.setName(b.getName());
-					item.setTabOn(JEditBox.TAB_EVENT.asEnum(b.getTabon()));
-					this.add(item);				
-				}else if(kid instanceof MenuType){					
-					MenuType b = (MenuType)kid;
-					JMenu item = new JMenu(b.getRow(), b.getColumn(), b.getWidth(), b.getHeight());
-					item.setName(b.getName());
-					List<MenuType.Choice> choices = b.getChoice();					
-					for(MenuType.Choice c: choices){
-						item.addItem(c.getValue(), c.getLink(), c.getCode());
-					}
-					this.add(item);						
-				}			
+
+			Object kid = ((JAXBElement<Object>) field).getValue();
+
+			// for(Object kid: kids){
+			System.out.println(kid.getClass().getName());
+
+			if (kid instanceof TextBoxType) {
+				TextBoxType b = (TextBoxType) kid;
+				JTextBox item = new JTextBox(b.getRow(), b.getColumn(), b
+						.getWidth(), b.getHeight());
+				item.setText(b.getValue());
+				item.setName(b.getName());
+				item.setBlink(b.getBlink());
+				this.add(item);
+			} else if (kid instanceof EditBoxType) {
+				EditBoxType b = (EditBoxType) kid;
+				JEditBox item = new JEditBox(b.getRow(), b.getColumn(), b
+						.getWidth(), b.getHeight());
+				item.setValue(b.getValue());
+				item.setName(b.getName());
+				item.setTabOn(JEditBox.TAB_EVENT.asEnum(b.getTabon()));
+				this.add(item);
+			} else if (kid instanceof MenuType) {
+				MenuType b = (MenuType) kid;
+				JMenu item = new JMenu(b.getRow(), b.getColumn(), b.getWidth(),
+						b.getHeight());
+				item.setName(b.getName());
+				List<MenuType.Choice> choices = b.getChoice();
+				for (MenuType.Choice c : choices) {
+					item.addItem(c.getValue(), c.getLink(), c.getCode());
+				}
+				this.add(item);
 			}
-		//}
-	 
+		}
+		// }
+
 	}
+
 	/**
 	 * 
 	 */
-	public void removeNotify(){
+	public void removeNotify() {
 		AppLogger.debug2("Screen.remveNotify getBounds=" + this.toString());
 	}
-	
-	public void addNotify(){
+
+	public void addNotify() {
 		super.addNotify();
-		//this.setBounds(display.getX(), display.getY(), display.getWidth()+1, display.getHeight()+1);		
-		this.setBounds(0, 0, display.getWidth()+150, display.getHeight()+150);		
+		// this.setBounds(display.getX(), display.getY(), display.getWidth()+1,
+		// display.getHeight()+1);
+		this.setBounds(0, 0, display.getWidth() + 150,
+				display.getHeight() + 150);
 
 		AppLogger.debug2("Screen.addNotify after getBounds=" + this.toString());
 		Component children[] = this.getComponents();
-		for(int i = 0; i<children.length;i++){
-			synchronized(children[i]){
-				children[i].addNotify();		
+		for (int i = 0; i < children.length; i++) {
+			synchronized (children[i]) {
+				children[i].addNotify();
 			}
-		
+
 		}
-		
+
 	}
-	
+
 	/**
-	 * add Component to Container and
-	 * set container of parent..
+	 * add Component to Container and set container of parent..
 	 */
-	public Component add(JScreenComponent com){
+	public Component add(JScreenComponent com) {
 		com.setScreen(display);
 		super.add(com);
 		return this;
-		
+
 	}
+
 	/**
 	 * overriden paint method.
-	*/
+	 */
 	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g; 
-        Composite original = g2d.getComposite();       
-        		
-		/*first paint the background*/
-        g2d.setComposite(this.ac);
+		Graphics2D g2d = (Graphics2D) g;
+		Composite original = g2d.getComposite();
+
+		/* first paint the background */
+		g2d.setComposite(this.ac);
 		g2d.setColor(this.background);
 		g2d.fill(perim);
-		
-		/*draw the grid perimeter*/
+
+		/* draw the grid perimeter */
 		g2d.setComposite(original);
 		g2d.setStroke(stroke);
 		g2d.setColor(Color.yellow);
 		g2d.draw(perim);
 
-		/*draw horizontal lines*/
-		for(int r=1; r<display.getRows();r++){
-			g2d.drawLine(display.getX(),  display.getY()+display.getYScale()*r, display.getX()+display.getWidth(),  display.getY()+display.getYScale()*r);
+		/* draw horizontal lines */
+		for (int r = 1; r < display.getRows(); r++) {
+			g2d.drawLine(display.getX(), display.getY() + display.getYScale()
+					* r, display.getX() + display.getWidth(), display.getY()
+					+ display.getYScale() * r);
 		}
-		/*draw vertical lines*/
-		for(int c=1; c<display.getCols();c++){
-			g2d.drawLine(display.getX()+display.getXScale()*c, display.getY(), display.getX()+display.getXScale()*c, display.getY()+display.getHeight());
+		/* draw vertical lines */
+		for (int c = 1; c < display.getCols(); c++) {
+			g2d.drawLine(display.getX() + display.getXScale() * c, display
+					.getY(), display.getX() + display.getXScale() * c, display
+					.getY()
+					+ display.getHeight());
 		}
-	
-		super.paint(g);	
+
+		super.paint(g);
 
 	}
+
 	public Screen getScreenBindings() {
 		return screenBindings;
 	}
+
 	public void setScreenBindings(Screen screenBindings) {
 		this.screenBindings = screenBindings;
 	}
-	
+
 	public Device getDeviceBindings() {
 		return deviceBindings;
 	}
+
 	public void setDeviceBindings(Device deviceBindings) {
 		this.deviceBindings = deviceBindings;
 	}
 
 	/**
 	 * look for action mapping relative to the screen.
+	 * 
 	 * @param event
 	 * @param source
 	 * @return
 	 */
-	protected ActionMapping findScreenActionMapping(String event, String source){
-		if(this.screenBindings.getActions()!= null)
-			return findActionMapping(this.screenBindings.getActions().getAction(), event, source);
-		
+	protected ActionMapping findScreenActionMapping(String event, String source) {
+		if (this.screenBindings.getActions() != null)
+			return findActionMapping(this.screenBindings.getActions()
+					.getAction(), event, source);
+
 		return null;
 	}
-	
+
 	/**
 	 * look for action mapping relative to the device.
+	 * 
 	 * @param event
 	 * @param source
 	 * @return
 	 */
-	public ActionMapping findGlobalActionMapping(String event, String source){	
-		if(this.deviceBindings.getActions()!= null)
-			return findActionMapping(this.deviceBindings.getActions().getAction(), event, source);
-		
+	public ActionMapping findGlobalActionMapping(String event, String source) {
+		if (this.deviceBindings.getActions() != null)
+			return findActionMapping(this.deviceBindings.getActions()
+					.getAction(), event, source);
+
 		return null;
 	}
 
 	/**
 	 * search utility for mappings.
+	 * 
 	 * @param actions
 	 * @param event
 	 * @param source
 	 * @return
 	 */
-	public static ActionMapping findActionMapping(List<ActionMapping>actions, String event, String source){
-		for(ActionMapping act: actions){
-			if(act.getEvent().equals(event)
-					&& act.getSource().equals(source)){
+	public static ActionMapping findActionMapping(List<ActionMapping> actions,
+			String event, String source) {
+		for (ActionMapping act : actions) {
+			if (act.getEvent().equals(event) && act.getSource().equals(source)) {
 				return act;
 			}
-		}	
-		return null;		
-		
+		}
+		return null;
+
 	}
-	
+
 	/**
 	 * Search first for screen and then for global.
+	 * 
 	 * @param event
 	 * @param source
 	 * @return
 	 */
-	protected ActionMapping findActionMapping(String event, String source){	
-	
-		ActionMapping mapping = null;		
-		if((mapping = findScreenActionMapping(event, source)) != null)
+	protected ActionMapping findActionMapping(String event, String source) {
+
+		ActionMapping mapping = null;
+		if ((mapping = findScreenActionMapping(event, source)) != null)
 			return mapping;
 		else
-			return findGlobalActionMapping(event, source);		
+			return findGlobalActionMapping(event, source);
 	}
-	
+
 	/**
 	 * get a sceen element by its name.
 	 * 
 	 * @author katharina
 	 * 
 	 */
-	public JScreenComponent getComponentByName(String name, int start){
+	public JScreenComponent getComponentByName(String name, int start) {
 		JScreenComponent sc = null;
 		Component all[] = this.getComponents();
 		String targ = null;
-		for(int i=0; i<all.length;i++){
-			sc = (JScreenComponent)all[i];			
+		for (int i = 0; i < all.length; i++) {
+			sc = (JScreenComponent) all[i];
 			targ = sc.getComponentName();
-			if(i>=start && targ != null && targ.equals(name))
+			if (i >= start && targ != null && targ.equals(name))
 				break;
-			else 
+			else
 				sc = null;
 		}
-		
+
 		return sc;
-		
+
 	}
-	
-	public boolean forceRefresh(){
+
+	public boolean forceRefresh() {
 		return false;
 	}
-	
-	public void repaintChildren(){
-		
+
+	public void repaintChildren() {
+
 	}
-	
+
 	public void setInstanceContext(InstanceContext instanceContext) {
 		this.instanceContext = instanceContext;
-		
+
 	}
+
 	public InstanceContext getInstanceContext() {
 		return this.instanceContext;
 	}
-	
-	public void setTextBox(String name, String text){
+
+	public void setTextBox(String name, String text) {
 		setTextBox(name, text, null);
 	}
-	public void setTextBox(String name, String text, String alt){
-		
-		JTextBox tb = (JTextBox)this.getComponentByName(name, 0);
-		if(tb != null && text != null){
+
+	public void setTextBox(String name, String text, String alt) {
+
+		JTextBox tb = (JTextBox) this.getComponentByName(name, 0);
+		if (tb != null && text != null) {
 			tb.setText(text);
-		}else if(alt != null){
+		} else if (alt != null) {
 			tb.setText(alt);
 		}
-		
+
 	}
 
 }

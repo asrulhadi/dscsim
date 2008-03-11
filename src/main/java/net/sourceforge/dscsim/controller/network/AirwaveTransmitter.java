@@ -19,7 +19,6 @@
 
 package net.sourceforge.dscsim.controller.network;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,9 +31,6 @@ import net.sourceforge.dscsim.controller.RadioCoreController;
 import net.sourceforge.dscsim.controller.message.types.Dscmessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.util.ByteConverter;
-
-
-
 
 
 public class AirwaveTransmitter extends DscRadioTransmitter implements Runnable {

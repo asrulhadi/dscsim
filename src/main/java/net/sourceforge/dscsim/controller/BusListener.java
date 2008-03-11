@@ -24,10 +24,10 @@ package net.sourceforge.dscsim.controller;
  *
  */
 public interface BusListener {
-	
+
 	/**
 	 * Method called by MultiBus for intra-controller communication.
 	 * @param oMessage
 	 */
-	public void signal(BusMessage oMessage);	
+	public void signal(BusMessage oMessage);
 }

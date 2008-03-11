@@ -19,7 +19,7 @@
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
  */
- 
+
 package net.sourceforge.dscsim.controller;
 
 import java.awt.BorderLayout;
@@ -40,34 +40,36 @@ import net.sourceforge.dscsim.controller.network.DscIACManager;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 import net.sourceforge.dscsim.radio.core.RadioCore;
+
 /**
  * Implements the Controllers in the dscsim.
  * 
  * @author William Pennoyer.
  *
  */
-public class BasicControllerFrame extends AppFrame implements  ItemListener, ActionListener, Constants {
-	
+public class BasicControllerFrame extends AppFrame implements ItemListener,
+		ActionListener, Constants {
+
 	/**
 	 * The Panel of the controller.
 	 */
 	private DscAppPanel _oAppPanel = null;
-	
+
 	/**
 	 * Reference to ApplicationContext.
 	 */
 	private ApplicationContext _applCtx = null;
-	
+
 	/**
 	 * Reference to RadioCore.
 	 */
 	private RadioCore _radioCore = null;
-	
+
 	/**
 	 * URL for loading properties.
 	 */
 	private URL _url = null;
-	
+
 	/**
 	 * Constructor.
 	 * @param appCtx Application Context for configuration parameters.
@@ -75,21 +77,21 @@ public class BasicControllerFrame extends AppFrame implements  ItemListener, Act
 	 * @throws Exception
 	 */
 	public BasicControllerFrame(ApplicationContext appCtx, RadioCore radioCore)
-		throws Exception {
-		super();	
+			throws Exception {
+		super();
 		_applCtx = appCtx;
 		_radioCore = radioCore;
-		
+
 		String userHome = "file:/"
-			+ System.getProperties().getProperty("user.dir") 
-			+ File.separator;
+				+ System.getProperties().getProperty("user.dir")
+				+ File.separator;
 
 		AppLogger.debug2("BasicControllerFrame.ctor " + userHome);
-		
-		_url = new URL(userHome);   
-    
+
+		_url = new URL(userHome);
+
 	}
-	
+
 	/**
 	 * Instantiate internal parts of Controller.
 	 * @see MultiBus, MultiBeeper, MultiClu, MultiController.
@@ -98,109 +100,108 @@ public class BasicControllerFrame extends AppFrame implements  ItemListener, Act
 
 		AppletSoundList.createSingleton(_url);
 		//getContentPane().setLayout(new BorderLayout());
-		
+
 		//getContentPane().add(createMenuBar(), BorderLayout.NORTH);
 		getContentPane().add(createMenuBar());
-		        
+
 		String strMMSI = _applCtx.getIndividualMmsi();
 		_oAppPanel = new DscAppPanel(strMMSI, _applCtx);
 		//getContentPane().add(_oAppPanel, BorderLayout.CENTER);
 		getContentPane().add(_oAppPanel);
-			
-		_oAppPanel.setRadioCoreController(new RadioCoreController(_radioCore, getInstanceContext()));
 
-		String strIAC = _applCtx.getIACMethod();       
+		_oAppPanel.setRadioCoreController(new RadioCoreController(_radioCore,
+				getInstanceContext()));
+
+		String strIAC = _applCtx.getIACMethod();
 		DscIACManager.initIAC(_oAppPanel, strIAC, _oAppPanel);
-		DscIACManager.initSyncPublisher(_applCtx);
-		
+
 		_oAppPanel.init(this);
-		
+
 		//allow incoming messages to control radio channels.
-//		_oAppPanel.setRadioCoreController(new RadioCoreController(_radioCore));
+		//		_oAppPanel.setRadioCoreController(new RadioCoreController(_radioCore));
 		_oAppPanel.getBus().putOnline(_oAppPanel.getRadioCoreController());
 
 		this.addKeyListener(this.getInstanceContext().getController());
-		
-		getInstanceContext().getBus().putOnline(getInstanceContext().getContentManager());
-		
+
+		getInstanceContext().getBus().putOnline(
+				getInstanceContext().getContentManager());
+
 		super.init();
 	}
-	
 
 	/**
 	 * 
 	 */
 	public void itemStateChanged(ItemEvent e) {
 		//AppLogger.debug("DscMainPanel.itemStateChange called.");
-		
+
 	}
-	
+
 	/**
 	 * Create frame's menubar.
 	 */
-    private JMenuBar createMenuBar() {
+	private JMenuBar createMenuBar() {
 
-    	
-        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
-        JMenuBar menuBar = new JMenuBar();
+		JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+		JMenuBar menuBar = new JMenuBar();
 
-        JMenu oMenu = new JMenu("File");
-        JMenu options = (JMenu) menuBar.add(oMenu);
-        
-        oMenu = new JMenu("Session");
-        JMenuItem oMenuItem = new JMenuItem("Network");
-        oMenuItem.setActionCommand(MENU_ACT_NETWORK_SETUP);
-        oMenuItem.addActionListener(this);        
-        oMenu.add(oMenuItem);
-       
-        oMenuItem = new JMenuItem("Simulation");
-        oMenuItem.setActionCommand(MENU_ACT_SIM_SETUP);
-        oMenuItem.addActionListener(this);
-        
-        oMenu.add(oMenuItem);
-     
-        JMenu session = (JMenu) menuBar.add(oMenu);
-                  
-        return menuBar;
-    }
-    
-	
+		JMenu oMenu = new JMenu("File");
+		JMenu options = (JMenu) menuBar.add(oMenu);
+
+		oMenu = new JMenu("Session");
+		JMenuItem oMenuItem = new JMenuItem("Network");
+		oMenuItem.setActionCommand(MENU_ACT_NETWORK_SETUP);
+		oMenuItem.addActionListener(this);
+		oMenu.add(oMenuItem);
+
+		oMenuItem = new JMenuItem("Simulation");
+		oMenuItem.setActionCommand(MENU_ACT_SIM_SETUP);
+		oMenuItem.addActionListener(this);
+
+		oMenu.add(oMenuItem);
+
+		JMenu session = (JMenu) menuBar.add(oMenu);
+
+		return menuBar;
+	}
+
 	/**
 	 * 
 	 */
 	public void keyReleased(String keyId) {
-		
+
 	}
 
 	/**
 	 * show setup dialogs in menu bar.
 	 */
 	public void actionPerformed(ActionEvent arg0) {
-		
-		//AppLogger.debug2("action command is:" + arg0.getActionCommand());
-			
-		if(MENU_ACT_NETWORK_SETUP.equals(arg0.getActionCommand())){
-			SetupNetWorkDialog d = new SetupNetWorkDialog(this, _applCtx);			
-			d.setModal(true);			
-			d.setVisible( true );
-									
-		}else if(MENU_ACT_SIM_SETUP.equals(arg0.getActionCommand())){		
-			SetupSimulationDialog dlg = new SetupSimulationDialog(this, getInstanceContext());			
-			dlg.setVisible( true );
 
-		}		
+		//AppLogger.debug2("action command is:" + arg0.getActionCommand());
+
+		if (MENU_ACT_NETWORK_SETUP.equals(arg0.getActionCommand())) {
+			SetupNetWorkDialog d = new SetupNetWorkDialog(this, _applCtx);
+			d.setModal(true);
+			d.setVisible(true);
+
+		} else if (MENU_ACT_SIM_SETUP.equals(arg0.getActionCommand())) {
+			SetupSimulationDialog dlg = new SetupSimulationDialog(this,
+					getInstanceContext());
+			dlg.setVisible(true);
+
+		}
 
 	}
-	
+
 	/**
 	 * get InstanceContext.
 	 * @return InstanceContext.
 	 */
-	public InstanceContext getInstanceContext(){
+	public InstanceContext getInstanceContext() {
 		return _oAppPanel;
 	}
-	
-	public void paint(java.awt.Graphics g){
+
+	public void paint(java.awt.Graphics g) {
 		super.paint(g);
 	}
 }
