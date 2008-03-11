@@ -1,8 +1,20 @@
 /*
- * Created on 25.02.2007
+ * The contents of this file are subject to the Mozilla Public License Version 1.0
+ * (the "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.mozilla.org/MPL/
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the License.
+ *
+ * The Original Code is 'dscsim'.
+ *
+ * The Initial Developer of the Original Code is William Pennoyer. Portions created by
+ * the Initial Developer are Copyright (C) 2006, 2007.
+ * All Rights Reserved.
+ *
+ * Contributor(s): all the names of the contributors are added in the source code
+ * where applicable.
  */
 package net.sourceforge.dscsim.controller.display.screens.framework;
 
@@ -22,9 +34,9 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
 
 /**
  * @author Administrator
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 
+ * TODO To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Style - Code Templates
  */
 public class JEditBox extends JScreenComponent {
 
@@ -56,7 +68,7 @@ public class JEditBox extends JScreenComponent {
 
 	private ArrayList<String> pickList = null;
 	private ArrayList<String> keys = null;
-	
+
 	private static final String KEY2UPPER[][] = { { "0000" }, { "1ABC" },
 			{ "2DEF" }, { "3GHI" }, { "4JKL" }, { "5MNO" }, { "6PQR" },
 			{ "7STU" }, { "8VWY" }, { "9YZY" }, };
@@ -124,7 +136,9 @@ public class JEditBox extends JScreenComponent {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
 	public void doAlphaMode(BusMessage oMessage) {
@@ -178,7 +192,9 @@ public class JEditBox extends JScreenComponent {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
 	public void doDigitMode(BusMessage oMessage) {
@@ -205,12 +221,14 @@ public class JEditBox extends JScreenComponent {
 				value = value.substring(0, len - 1);
 			}
 		}
-	
+
 		return;
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
 	public void doPickMode(BusMessage oMessage) {
@@ -224,12 +242,13 @@ public class JEditBox extends JScreenComponent {
 		if (MV_UP.equals(oMessage.getButtonEvent().getKeyId())) {
 			value = this.pickList.get((idx + 1) % this.pickList.size());
 		} else if (MV_DOWN.equals(oMessage.getButtonEvent().getKeyId())) {
-			value = this.pickList.get((idx-1+this.pickList.size()) % this.pickList.size());
+			value = this.pickList.get((idx - 1 + this.pickList.size())
+					% this.pickList.size());
 		}
-		
-		if(this.keys != null && keys.contains(keyID)){
+
+		if (this.keys != null && keys.contains(keyID)) {
 			idx = keys.indexOf(keyID);
-			if(idx < this.pickList.size()){
+			if (idx < this.pickList.size()) {
 				value = this.pickList.get(idx);
 			}
 		}
@@ -240,6 +259,7 @@ public class JEditBox extends JScreenComponent {
 
 	/**
 	 * set contents of editbox.
+	 * 
 	 * @param value
 	 */
 	public void setValue(String value) {
@@ -248,6 +268,7 @@ public class JEditBox extends JScreenComponent {
 
 	/**
 	 * get the contents of the editbox.
+	 * 
 	 * @return
 	 */
 	public String getValue() {
@@ -256,6 +277,7 @@ public class JEditBox extends JScreenComponent {
 
 	/**
 	 * for edit input boxes and menus.
+	 * 
 	 * @return
 	 */
 	public void setCursor(boolean onoff) {
@@ -269,7 +291,7 @@ public class JEditBox extends JScreenComponent {
 	public void addNotify() {
 		super.addNotify();
 		JDisplay scr = this.getScreen();
-		/*setbound of menu*/
+		/* setbound of menu */
 		Rectangle rec = scr.getBounds();
 		int xscale = scr.getXScale();
 		int yscale = scr.getYScale();
@@ -278,8 +300,8 @@ public class JEditBox extends JScreenComponent {
 		int w = xscale * getWidthInColumns();
 		int h = yscale * getHeightInRows();
 
-		/*coordinates are relative to the Screen.*/
-		/*make room for cursor at end*/
+		/* coordinates are relative to the Screen. */
+		/* make room for cursor at end */
 		this.setBounds(x, y, w + xscale, h);
 
 	}
@@ -305,22 +327,21 @@ public class JEditBox extends JScreenComponent {
 		g2d.setFont(this.getParent().getFont());
 
 		for (int p = 0; p < value.length(); p++) {
-			g2d.drawString(Character.toString(value.charAt(p)), (p*xscale)+4,
-					yscale - 5);
+			g2d.drawString(Character.toString(value.charAt(p)),
+					(p * xscale) + 4, yscale - 5);
 		}
 
-		/*underline it*/
+		/* underline it */
 		Stroke tmp = g2d.getStroke();
 		g2d.setStroke(new BasicStroke(3));
 		g2d.drawLine(0, yscale, x * xscale, yscale);
 		g2d.setStroke(tmp);
 		/*
-		for(int j=0; j< x; j++){
-			g2d.drawLine(j*xscale,yscale, j*xscale+xscale, yscale);
-		}
+		 * for(int j=0; j< x; j++){ g2d.drawLine(j*xscale,yscale,
+		 * j*xscale+xscale, yscale); }
 		 */
 
-		//AppLogger.debug2("EditBox - cursor " + updateCnt);
+		// AppLogger.debug2("EditBox - cursor " + updateCnt);
 		if (cursorOn && (++updateCnt % 5 > 1)) {
 			int[] xx = new int[4];
 			int[] yy = new int[4];
@@ -351,6 +372,7 @@ public class JEditBox extends JScreenComponent {
 
 	/**
 	 * set validator according to type of box.
+	 * 
 	 * @param validator
 	 */
 	public void setValidator(Validator validator) {
@@ -359,7 +381,7 @@ public class JEditBox extends JScreenComponent {
 
 	/**
 	 * is the box done according to validation rules.
-	 *
+	 * 
 	 */
 	public boolean isComplete() {
 		if (this.validator != null)
@@ -370,14 +392,15 @@ public class JEditBox extends JScreenComponent {
 
 	/**
 	 * returns position of cursor in character offset.
+	 * 
 	 * @return
 	 */
 	public int getCursorPos() {
-		if(Mode.Pick.equals(this.mode)){
+		if (Mode.Pick.equals(this.mode)) {
 			return 0;
-		}else{
+		} else {
 			return value.length();
-		}	
+		}
 	}
 
 	/**
@@ -531,7 +554,9 @@ public class JEditBox extends JScreenComponent {
 
 	public static class MMSIValidator implements Validator {
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see net.sourceforge.dscsim.controller.screen.EditBox.Validator#validate(java.lang.String)
 		 */
 		public boolean validate(String strMMSI) {
@@ -561,7 +586,9 @@ public class JEditBox extends JScreenComponent {
 
 	public static class AddressIdValidator implements Validator {
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see net.sourceforge.dscsim.controller.screen.EditBox.Validator#validate(java.lang.String)
 		 */
 		public boolean validate(String strMMSI) {
@@ -620,7 +647,9 @@ public class JEditBox extends JScreenComponent {
 
 	public static class PickListValidator implements Validator {
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see net.sourceforge.dscsim.controller.screen.EditBox.Validator#validate(java.lang.String)
 		 */
 		public boolean validate(String value) {
@@ -637,7 +666,7 @@ public class JEditBox extends JScreenComponent {
 		return pickList;
 	}
 
-	public void setPickList(ArrayList<String> pickList, ArrayList<String>keys) {
+	public void setPickList(ArrayList<String> pickList, ArrayList<String> keys) {
 		this.pickList = pickList;
 		this.keys = keys;
 		this.value = this.pickList.get(0);

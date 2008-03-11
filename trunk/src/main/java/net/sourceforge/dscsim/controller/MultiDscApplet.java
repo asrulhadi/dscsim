@@ -18,7 +18,6 @@
  */
 package net.sourceforge.dscsim.controller;
 
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
@@ -35,16 +34,10 @@ import javax.swing.border.EtchedBorder;
 
 import net.sourceforge.dscsim.controller.message.types.MMSI;
 import net.sourceforge.dscsim.controller.network.DscIACManager;
-import net.sourceforge.dscsim.controller.network.SyncListenerSubscriber;
-import net.sourceforge.dscsim.controller.network.SyncMessage;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 import net.sourceforge.dscsim.controller.utils.AppletSoundList;
 
-
-
-
-
-class DscMainPanel extends JPanel implements  ItemListener, SyncListenerSubscriber {
+class DscMainPanel extends JPanel implements  ItemListener {
 	
 	private HashMap _Mmsi2PanelMap =new HashMap();
 	
@@ -72,10 +65,7 @@ class DscMainPanel extends JPanel implements  ItemListener, SyncListenerSubscrib
         
         //add panel collection to main.
         add(tabbedPane, BorderLayout.CENTER);
-        
-        DscIACManager.initSyncListener(oAppPanel);
-        DscIACManager.getSyncListener().addSubscriber(this);
-        
+              
         //SyncListenerDispatcher.getInstance().addSubscriber(this);
 
         String strIAC = MultiDscApplet._oInstance.getIACMethod();
@@ -102,26 +92,6 @@ class DscMainPanel extends JPanel implements  ItemListener, SyncListenerSubscrib
         return menuBar;
     }
     
-	/* (non-Javadoc)
-	 * @see network.SyncListenerSubscriber#notifySycMessage(network.SyncMessage)
-	 */
-	public void notifySycMessage(SyncMessage oMessage) {
-		// TODO Auto-generated method stub
-		
-		String incomingMmsi = oMessage.getMMSI();
-		
-		DscAppPanel oPanel = (DscAppPanel)_Mmsi2PanelMap.get(incomingMmsi);
-		
-		if(oPanel != null){
-			
-			 oPanel.getBus().publish((BusMessage)oMessage.getBusMessage());		 
-			 
-		}
-		
-		
-		
-	}
-	
 }
 
 
@@ -133,7 +103,6 @@ public class MultiDscApplet extends JApplet implements Constants, ApplicationCon
 	public void init() {
 
 		AppLogger.debug("applet.MultiDscApplet initiating AppletSoundList");	
-		DscIACManager.initSyncPublisher(this);
 		AppletSoundList.createSingleton(getCodeBase());
 
 		DscMainPanel oMainPanel = new DscMainPanel();

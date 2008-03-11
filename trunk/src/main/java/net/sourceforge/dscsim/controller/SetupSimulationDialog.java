@@ -8,14 +8,11 @@ package net.sourceforge.dscsim.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Properties;
 
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 
-import net.sourceforge.dscsim.controller.data.types.DscString;
 import net.sourceforge.dscsim.controller.message.types.Latitude;
 import net.sourceforge.dscsim.controller.message.types.Longitude;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
@@ -124,7 +121,7 @@ public class SetupSimulationDialog extends  JDialog implements ActionListener, C
             			//oMngr.resetProperty("Latitude");
             			//oMngr.resetProperty("Time");
             			//oMngr.saveProperties();
-    		       		DscString mode = new DscString("POS_MNL");
+    		       		//DscString mode = new DscString("POS_MNL");
     		       	   	//oMngr.getSetting("PositionType").setValue(mode);		
    				
         			}catch(Exception oEx){
@@ -144,7 +141,7 @@ public class SetupSimulationDialog extends  JDialog implements ActionListener, C
 			       	   	//Time time = new Time("12", "30");
 			       	   	//oMngr.setSetting("Time", time);
 			       	   	
-			       		DscString mode = new DscString("POS_GPS");
+			       		//DscString mode = new DscString("POS_GPS");
 			       	   	//oMngr.setSetting("PositionType", mode);		
 		       	   		
 		       	   	}catch(Exception oEx){

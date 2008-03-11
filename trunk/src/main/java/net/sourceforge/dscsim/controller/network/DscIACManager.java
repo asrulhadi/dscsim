@@ -22,7 +22,6 @@
  
 package net.sourceforge.dscsim.controller.network;
 
-import net.sourceforge.dscsim.controller.ApplicationContext;
 import net.sourceforge.dscsim.controller.Constants;
 import net.sourceforge.dscsim.controller.InstanceContext;
 import net.sourceforge.dscsim.controller.utils.AppLogger;
@@ -36,62 +35,18 @@ import net.sourceforge.dscsim.controller.utils.AppLogger;
 public class DscIACManager implements Constants {
 	
 	/*DscMessage message transport layer*/
-	private static String _strIACMethod = null;
 	private static DscsimReceiver _receiver = null;
 	private static DscsimTransmitter _transmitter = null;
-	
-	/*SyncMessage message transport layer*/
-	private static SyncPublisherInterface _syncPublisher= null;
-	private static SyncListenerInterface _syncListener= null;
-	
 	
 	
 	private DscIACManager(){}
 	
-	public static synchronized void initIAC(InstanceContext oInstCtx, String strIACMethod, InternalBusListener oListener){
-	
-		if(_strIACMethod != null)
-			return;
-		
-		//if the mode is master then all message will arrive via the synchronization handler.
-		if(OP_MODE_MASTER.equals(oInstCtx.getApplicationContext().getMode())){			
-			NullTransmitterReceiver oNTransRec = new NullTransmitterReceiver();			
-			_transmitter = oNTransRec;
-			_receiver = oNTransRec;	
-		} else if(IAC_YIMSG.equals(strIACMethod)){
-			
-			/*
-			AppLogger.debug2("DscIACManager.init - YIMSGReceiverTransmitter");
-			YIMSGReceiverTransmitter oIAC = new YIMSGReceiverTransmitter(oInstCtx, oListener);
-			_receiver = oIAC;
-			_receiver.addDependent(oListener);
-			_transmitter = oIAC;			
-			_receiver.turnon();
-			*/
-		} else if(IAC_JMS.equals(strIACMethod)){
-			/*
-			AppLogger.debug2("DscIACManager.init - JMSReceiverTransmitter");
-			JMSReceiverTransmitter oIAC = new JMSReceiverTransmitter(oInstCtx, oListener);
-			_receiver = oIAC;
-			_receiver.addDependent(oListener);
-			_transmitter = oIAC;			
-			_receiver.turnon();
-			*/
-		} else if(IAC_AIRWAVE.equals(strIACMethod)){
-			
-			//stand alone slave
-			AppLogger.debug2("DscIACManager.init - AirwaveReceiver");
-		
-			_strIACMethod = IAC_UDP;
-			_receiver = new AirwaveReceiver(oInstCtx);
-			_receiver.addDependent(oListener);
-			_receiver.turnon();
-			_transmitter = AirwaveTransmitter.getInstance(oInstCtx);
-		}
-		
-	
+	public static synchronized void initIAC(InstanceContext oInstCtx, String strIACMethod, InternalBusListener oListener){	
+		_receiver = new AirwaveReceiver(oInstCtx);
+		_receiver.addDependent(oListener);
+		_receiver.turnon();
+		_transmitter = AirwaveTransmitter.getInstance(oInstCtx);	
 	}
-	
 	
 	public static DscsimReceiver getReceiver(){
 		if(_receiver == null)
@@ -107,60 +62,5 @@ public class DscIACManager implements Constants {
 		return _transmitter;
 	}
 	
-	 public static synchronized void initSyncPublisher(ApplicationContext oAppCtx){
-
-		 if(OP_MODE_SLAVE.equals(oAppCtx.getMode())){
-			 
-			if(IACS_TCP.equals(oAppCtx.getIACSync())){
-			
-				//slave only needs a publisher
-				_syncPublisher = SyncPublisher.getInstance();
-				if(!SyncPublisher.getInstance().connect("localhost", 8777)){
-					AppLogger.error("MultiClu.ctor -unable to connect.");
-				} 	
-				//slave doesn't need a listerner.
-				_syncListener = new NullSyncPublisherListener();
-				
-			} else {	
-				
-				_syncPublisher = (SyncPublisherInterface)DscIACManager.getTransmitter();
-				
-				if(_syncPublisher == null)
-					throw new RuntimeException("IAC transport must be intialized before Sync.");
-	
-	
-			}
-		 } else {
-		 	//master or stand alone don't publish however give a dummy impl.
-			 _syncPublisher = new NullSyncPublisherListener();
-		 }
-	
-	 }
-	 
-	 public static synchronized void initSyncListener(InstanceContext oInstCtx){
-			 
-	 	ApplicationContext oAppCtx = oInstCtx.getApplicationContext();
-	 	if(OP_MODE_STANDALONE.equals(oAppCtx.getMode())==false){
-	 			 	
-			 if(IACS_TCP.equals(oAppCtx.getIACSync())){				 
-				 _syncListener = SyncListenerDispatcher.getInstance();
-			 } else {
-			 	//_syncListener = new YIMSGReceiverTransmitter(oInstCtx, null);
-				 
-			 }	
-	 	} else {
-	 		
-	 		_syncListener = new NullSyncPublisherListener();
-	 	}
-
-	 }
-	 
-	 public static SyncListenerInterface getSyncListener(){
-		 return _syncListener;
-	 }
-	 
-	 public static SyncPublisherInterface getSyncPublisher(){
-		 return _syncPublisher;
-	 }
 
 }

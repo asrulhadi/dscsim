@@ -27,12 +27,6 @@ import java.awt.Component;
 import net.sourceforge.dscsim.controller.BusMessage;
 import net.sourceforge.dscsim.controller.screens.*;
 
-/**
- * @author katharina
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 public class MenuScreen extends ActionScreen implements
 		net.sourceforge.dscsim.controller.Constants {
 
@@ -54,13 +48,15 @@ public class MenuScreen extends ActionScreen implements
 
 	/**
 	 * method called before signal method takes control.
-	 *
+	 * 
 	 */
 	public void enter(Object msg) {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sourceforge.dscsim.controller.BusListener#signal(net.sourceforge.dscsim.controller.BusMessage)
 	 */
 	public ActionMapping notify(BusMessage oMessage) {
@@ -97,11 +93,12 @@ public class MenuScreen extends ActionScreen implements
 	public void paint(java.awt.Graphics g) {
 		super.paint(g);
 	}
+
 	@Override
-	public void remove(Component obj){
-		if(obj == this.menu)
+	public void remove(Component obj) {
+		if (obj == this.menu)
 			this.menu = null;
-		
+
 		super.remove(obj);
 	}
 

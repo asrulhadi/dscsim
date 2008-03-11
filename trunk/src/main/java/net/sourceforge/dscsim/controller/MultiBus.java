@@ -22,56 +22,47 @@ import java.util.ArrayList;
 
 import net.sourceforge.dscsim.controller.utils.AppLogger;
 
-
-
 public class MultiBus implements Constants {
-	
+
 	private ArrayList _oMembers = new ArrayList();
-	
+
 	/*
 	 * initial state is off
 	 */
 	private boolean _power_on = false;
-	
+
 	private MultiBus() {
-		 AppLogger.debug("MultiBus ctor" + this);
-		
+		AppLogger.debug("MultiBus ctor" + this);
+
 	}
-	
-	public static MultiBus getInstance()  {
-		
+
+	public static MultiBus getInstance() {
+
 		return new MultiBus();
 	}
-	
-	public void putOnline(BusListener oListener){
-		 //AppLogger.debug("Bus.putOnline - whom" + oListener);
+
+	public void putOnline(BusListener oListener) {
+		//AppLogger.debug("Bus.putOnline - whom" + oListener);
 
 		_oMembers.add(oListener);
-		
+
 		//AppLogger.debug("Bus.putOnline - size=" + _oMembers.size());
 
 	}
-	
-	public void takeOffline(BusListener oListener) {
-		
-	}
-	
-	public void publish(BusMessage oMessage){
-		
-		//AppLogger.debug("Bus.public - BusMessage type="+ oMessage.getId() + " to notify " + _oMembers.size() );
 
-/*		if(!_power_on && oMessage.getType().equals(BusMessage.MSGTYPE_POWER_ON) == true){
-		
-		}
-*/		
+	public void takeOffline(BusListener oListener) {
+
+	}
+
+	public void publish(BusMessage oMessage) {
+
 		BusListener oListener = null;
-		for(int i=0; i < _oMembers.size(); i++) {
-				oListener = (BusListener)_oMembers.get(i);
-				
-				if(oMessage.getFrom() != oListener){
-					oListener.signal(oMessage);
-				}
+		for (int i = 0; i < _oMembers.size(); i++) {
+			oListener = (BusListener) _oMembers.get(i);
+
+			if (oMessage.getFrom() != oListener) {
+				oListener.signal(oMessage);
+			}
 		}
 	}
 }
-

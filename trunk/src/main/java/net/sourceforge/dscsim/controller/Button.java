@@ -18,20 +18,12 @@
  */
 package net.sourceforge.dscsim.controller;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-
-import net.sourceforge.dscsim.controller.network.DscMessageAttribute;
-import net.sourceforge.dscsim.controller.utils.AppLogger;
-
-
 /**
  * Button class - each instance represents the keys on the dsc device.
  * @author William Pennoyer.
  */
 
-public class Button 
-	implements java.io.Serializable, DscMessageAttribute, Constants {
+public class Button implements java.io.Serializable, Constants {
 
 	/**
 	 * top x and y position of button. 
@@ -57,7 +49,7 @@ public class Button
 	 * 
 	 */
 	private boolean sticky = false;
-	
+
 	/**
 	 * Button Constructor.
 	 */
@@ -192,104 +184,11 @@ public class Button
 	}
 
 	/**
-	 * return button attributes as xml string.
-	 */
-	public String toXml() {
-		String strXml = "<button>";
-
-		Field oFields[] = getClass().getDeclaredFields();
-		Field oField = null;
-		for (int i = 0; i < oFields.length; i++) {
-
-			oField = (Field) oFields[i];
-
-			String strName = oField.getName();
-
-			String attr = Attr2Xml(oField);
-			if (attr != null) {
-				strXml += "<" + strName + ">" + attr + "</" + strName + ">";
-			}
-
-		}
-
-		strXml += "</button>";
-
-		return strXml;
-	}
-
-	/**
 	 * is button Master Power Switch.
 	 * @return boolean.
 	 */
 	public boolean isMasterSwitch() {
 		return DSC_POWERED_OFF.equals(_keyId) || DSC_POWERED_ON.equals(_keyId);
-	}
-
-	/**
-	 * Return attribute as xml string.
-	 * @return String.
-	 */
-	public String Attr2Xml(Field oField) {
-
-		Object oObj = null;
-		try {
-			oObj = oField.get(this);
-		} catch (Exception oEx) {
-			AppLogger.error(oEx);
-			return null;
-		}
-
-		if (oObj == null)
-			return null;
-
-		String retValue = null;
-
-		if (oObj instanceof DscMessageAttribute)
-			retValue = ((DscMessageAttribute) oObj).toXml();
-		else
-			retValue = oObj.toString();
-
-		return retValue;
-
-	}
-
-	/**
-	 * set button attributes from xml.
-	 */
-	public void fromXml(String inXml) throws Exception {
-
-		Field oFields[] = getClass().getDeclaredFields();
-		Field oField = null;
-		for (int i = 0; i < oFields.length; i++) {
-
-			oField = (Field) oFields[i];
-
-			String strName = oField.getName();
-
-			String attrXml = "NA";
-
-			try {
-
-				//AppLogger.debug2("class="+oField.getType().getName());
-				Constructor oCtr = oField.getType().getConstructor(
-						new Class[] {});
-
-				if (oField.getType().getName().equals(String.class.getName())) {
-					oField.set(this, attrXml);
-				} else {
-					Object newObject = oCtr.newInstance(new Object[] {});
-					((DscMessageAttribute) newObject).fromXml(attrXml);
-					oField.set(this, newObject);
-				}
-
-			} catch (NoSuchMethodException oEx) {
-				//only strings and int in this class. It must have been an int.
-				oField.setInt(this, Integer.parseInt(attrXml));
-			} catch (Exception oEx) {
-				AppLogger.error(oEx);
-			}
-
-		}
 	}
 
 	/**
