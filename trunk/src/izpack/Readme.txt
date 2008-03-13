@@ -1,7 +1,7 @@
-Readme for dscsim, Version 1.3.3-SNAPSHOT
+Readme for dscsim, Version 1.3.5-SNAPSHOT
 =========================================
 
-This is dscsim, Version 1.3.3-SNAPSHOT
+This is dscsim, Version 1.3.5-SNAPSHOT
 
 Please visit http://dscsim.sourceforge.net for latest
 information about dscsim.
@@ -10,7 +10,7 @@ For licensing information see file License.txt and the
 licenses of the bundled libraries in directory "legal".
 
 ==================================================
-New in dscsim 1.3.3-SNAPSHOT:
+New in dscsim 1.3.5-SNAPSHOT:
 
 New in dscsim 1.3.2:
 - Fixed [1667425] Teilweise falsche Zuordnung der Funktionstasten im Control.
