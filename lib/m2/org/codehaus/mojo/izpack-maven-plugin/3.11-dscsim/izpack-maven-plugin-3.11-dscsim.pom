@@ -1,0 +1,96 @@
+<project>
+	<parent>
+		<artifactId>mojo-sandbox</artifactId>
+		<groupId>org.codehaus.mojo</groupId>
+		<version>2</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>izpack-maven-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<name>IzPack Maven Plugin</name>
+	<version>3.11-dscsim</version>
+	<description>
+		Maven plugin which assembles files in an IzPack Installer. The
+		original source can be found at:
+		http://jira.codehaus.org/browse/MOJO-277. The source was
+		modified to set the IzPack home directory to the given base
+		directory. Note that this file is only put here for building the
+		dscsim application. This is not an official maven repository!
+		You should not take this file for any other purposes than
+		building dscsim.
+	</description>
+	<inceptionYear>2005</inceptionYear>
+	<url>http://mojo.codehaus.org/rpm-maven-plugin/</url>
+	<developers>
+		<developer>
+			<name>Miguel Griffa</name>
+			<email>miguel.griffa@gmail.com</email>
+		</developer>
+	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<target>1.4</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<destDir>
+						${project.build.directory}/site/javadoc
+					</destDir>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-archiver</artifactId>
+			<version>1.0-alpha-5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>plexus</groupId>
+			<artifactId>plexus-i18n</artifactId>
+			<version>1.0-beta-5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>izpack</groupId>
+			<artifactId>izpack-standalone-compiler</artifactId>
+			<version>3.11-dscsim</version>
+			<!-- 
+				<url>http://www.izforge.com/izpack/</url>
+			-->
+		</dependency>
+	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>Local</id>
+			<name>Local Repository</name>
+			<url>file://i:/dscsim_svn/lib/m2</url>
+		</repository>
+	</distributionManagement>
+</project>

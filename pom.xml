@@ -76,7 +76,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>izpack-maven-plugin</artifactId>
-        <version>0-dscsim</version>
+        <version>3.11-dscsim</version>
         <executions>
           <execution>
             <phase>verify</phase>
