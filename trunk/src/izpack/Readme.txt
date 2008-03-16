@@ -11,8 +11,8 @@ licenses of the bundled libraries in directory "legal".
 
 ==================================================
 New in dscsim 1.3.5-SNAPSHOT:
-
-New in dscsim 1.3.2:
+- Upgraded to Version 3.11 of the IzPack installer (due to [1915642])
+New in dscsim 1.3.4:
 - Fixed [1667425] Teilweise falsche Zuordnung der Funktionstasten im Control.
 - Fixed [1667418] Die CALL-Taste sollte immer zum Grundzustand zurückführen.
 - Fixed [1667433] Cursor sollte blinken, wenn Eingaben erwarten werden.
