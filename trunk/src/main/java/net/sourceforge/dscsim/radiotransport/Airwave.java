@@ -18,6 +18,7 @@
  */
 package net.sourceforge.dscsim.radiotransport;
 
+import net.sourceforge.dscsim.radiotransport.http.HttpAirwave;
 import net.sourceforge.dscsim.radiotransport.udp.UDPAirwave;
 
 /**
@@ -45,12 +46,26 @@ public abstract class Airwave {
 	public static Airwave getInstance() {
 		synchronized( Airwave.class ){
 			if( _theInstance == null ){
-				_theInstance = new UDPAirwave();
+				if( System.getProperty("parameter.dscsim.http_airwave") != null ) {
+					_theInstance = new HttpAirwave();
+				} else {
+					_theInstance = new UDPAirwave();
+				}
 			}
 		}
 		return _theInstance;
 	}
 
+
+	/**
+	 * Clears the Airwave instance (singleton).
+	 * This is only intended to be used in the context of unit testing
+	 */
+	protected static void clearInstance() {
+		synchronized( Airwave.class ){
+			_theInstance = null;
+		}
+	}
 	/**
 	 * Creates an Antenna object
 	 * @return an Antenna object in the context of this Airwave

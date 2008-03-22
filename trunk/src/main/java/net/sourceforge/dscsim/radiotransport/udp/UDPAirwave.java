@@ -40,17 +40,17 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.controller.utils.AppLogger;
-import net.sourceforge.dscsim.radiotransport.Airwave;
 import net.sourceforge.dscsim.radiotransport.AirwaveStatusInterface;
-import net.sourceforge.dscsim.radiotransport.AirwaveStatusListener;
 import net.sourceforge.dscsim.radiotransport.Antenna;
+import net.sourceforge.dscsim.radiotransport.impl.AbstractAirwave;
+import net.sourceforge.dscsim.radiotransport.impl.TransmissionPacket;
 import net.sourceforge.dscsim.util.ByteConverter;
 
 /**
  * @author oliver
  *
  */
-public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
+public class UDPAirwave extends AbstractAirwave implements AirwaveStatusInterface {
 	/**
 	 * The logger for this class
 	 */
@@ -154,11 +154,6 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	
 	
 	/**
-	 * The antennas which exist for this airwave
-	 */
-	private Set _antennas;
-	
-	/**
 	 * The set of remote SocketAdresses (senders/receivers of packets)
 	 */
 	private Map _remoteAirwaves;
@@ -173,11 +168,6 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	 * The UDP socket for sending and receiving packets
 	 */
 	private DatagramSocket _udpSocket;
-	
-	/**
-	 * The (hopefully) global unique ID of this UDPAirwave
-	 */
-	private int _uid;
 	
 	/**
 	 * Thread which processes the incomming UPD packets
@@ -200,16 +190,6 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	private long _lastWhitepagesSent;
 	
 	/**
-	 * The status of the network
-	 */
-	private int _networkStatus;
-	
-	/**
-	 * The set of listeners for the network status
-	 */
-	private Set _networkStatusListeners;
-
-	/**
 	 * A brief status string with 3 numbers:
 	 * <ul>
 	 *  <li>number of totally known airwaves</li>
@@ -218,11 +198,17 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	 * </ul> 
 	 */
 	private String _statusString;
-	
+
+	/**
+	 * The status of the network
+	 */
+	protected int _networkStatus;
+
 	/**
 	 * Flag which indicates if the Airwave is already shut down
 	 */
 	private boolean _shutDown;
+	
 	
 	/**
 	 * Thread for handling the incoming data packets
@@ -318,12 +304,8 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	 * Standard constructor
 	 */
 	public UDPAirwave() {
+		super();
 		readParameters();
-		while( _uid <= 0){
-			// do not allow the uid to be less or equal to 0
-			_uid = new Random().nextInt(); // lets assume this globally unique...
-		}
-		_antennas = new HashSet();
 		_remoteAirwaves = new HashMap();
 		_networkStatus = STATUS_RED;
 		_statusString = "(X/X/X)";
@@ -437,7 +419,7 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
     	byte packetType = data[TYPE_OFFSET];
     	switch(packetType){
     		case PACKET_TYPE_USER:
-    			UDPTransmissionPacket antennaSignal = UDPTransmissionPacket.fromByteArray(data, DATA_OFFSET);
+    			TransmissionPacket antennaSignal = TransmissionPacket.fromByteArray(data, DATA_OFFSET);
     			pushSignalToLocalAntennas(antennaSignal);
     			break;
     		case PACKET_TYPE_AIRWAVE_SET:
@@ -481,23 +463,11 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	}
 
 	/**
-     * Pushes a signal to all antennas of this airwave
-     * @param antennaSignal the signal to be pushed to the antennas
-     */
-    private void pushSignalToLocalAntennas(UDPTransmissionPacket antennaSignal) {
-    	synchronized(_antennas){
-        	for( Iterator i = _antennas.iterator(); i.hasNext(); ) {
-        		UDPAntenna a = (UDPAntenna)i.next();
-        		a.receiveSignal(antennaSignal);
-        	}
-    	}
-    }
-    
-    /**
      * Sends a given signal to all antennas (local and remote)
      * @param aPacket the signal packet to send
      */
-    void sendSignal(UDPTransmissionPacket antennaSignal) {
+    @Override
+    public void sendSignal(TransmissionPacket antennaSignal) {
     	pushSignalToLocalAntennas(antennaSignal);
     	byte[] data = antennaSignal.getByteArray();
     	byte[] packet = new byte[DATA_OFFSET+data.length];
@@ -616,7 +586,7 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
     		} else {
     			_logger.warn("UDP Send failed", e);
     		}
- 		}
+		}
     }
 
     /**
@@ -746,33 +716,6 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
     	}
     }
 
-	/* (non-Javadoc)
-	 * @see net.sourceforge.dscsim.radiotransport.AirwaveStatusInterface#getNetworkStatus()
-	 */
-	public int getNetworkStatus() {
-		return _networkStatus;
-	}
-
-	/* (non-Javadoc)
-	 * @see net.sourceforge.dscsim.radiotransport.AirwaveStatusInterface#registerStatusListener(net.sourceforge.dscsim.radiotransport.AirwaveStatusListener)
-	 */
-	public void registerStatusListener(AirwaveStatusListener listener) {
-		synchronized( _networkStatusListeners ) {
-			_networkStatusListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Notify all registered status listeners that status has changed
-	 */
-	private void notifyStatusListeners() {
-		synchronized(_networkStatusListeners) {
-			for( Iterator i = _networkStatusListeners.iterator(); i.hasNext(); ) {
-				((AirwaveStatusListener)i.next()).notifyNetworkStatus();
-			}
-		}
-	}
-
 	/**
 	 * Returns a brief status stringwith 3 numbers:
 	 * <ul>
@@ -784,6 +727,10 @@ public class UDPAirwave extends Airwave implements AirwaveStatusInterface {
 	 */
 	public String getStatusString() {
 		return _statusString;
+	}
+
+	public int getNetworkStatus() {
+		return _networkStatus;
 	}
 
 	@Override

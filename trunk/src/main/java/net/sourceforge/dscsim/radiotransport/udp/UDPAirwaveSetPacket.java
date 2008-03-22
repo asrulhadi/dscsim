@@ -99,7 +99,7 @@ public class UDPAirwaveSetPacket  {
 	}
 	
 	/**
-	 * Extracts an UDPTransmissionPacket object from the given byte array
+	 * Extracts an TransmissionPacket object from the given byte array
 	 * @param src the byte array which contains the objects data
 	 * @param offset the offset to start the extraction within byte array.
 	 */

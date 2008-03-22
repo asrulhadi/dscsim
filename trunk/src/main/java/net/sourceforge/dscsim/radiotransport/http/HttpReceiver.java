@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.sourceforge.dscsim.radiotransport.udp;
+package net.sourceforge.dscsim.radiotransport.http;
 
 import java.util.HashSet;
 
@@ -13,24 +13,24 @@ import net.sourceforge.dscsim.radiotransport.impl.AbstractReceiver;
  * @author oliver
  *
  */
-public class UDPReceiver extends AbstractReceiver implements Receiver {
+public class HttpReceiver extends AbstractReceiver implements Receiver {
 	
 	/**
 	 * The connected antenna
 	 */
-	UDPAntenna _antenna;
+	HttpAntenna _antenna;
 	
 	/**
 	 * Constructor which takes the antenna as argument
 	 * @param antenna the connected antenna
 	 */
-	UDPReceiver(UDPAntenna antenna) {
+	HttpReceiver(HttpAntenna antenna) {
 		super();
 		_antenna = antenna;
 	}
 
 	@Override
-	protected UDPAntenna getAntenna() {
+	protected HttpAntenna getAntenna() {
 		return _antenna;
 	}
 	

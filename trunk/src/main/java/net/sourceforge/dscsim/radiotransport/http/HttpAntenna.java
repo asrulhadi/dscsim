@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.sourceforge.dscsim.radiotransport.udp;
+package net.sourceforge.dscsim.radiotransport.http;
 
 import java.util.HashSet;
 
@@ -17,7 +17,7 @@ import net.sourceforge.dscsim.radiotransport.impl.AbstractAntenna;
  * @author oliver
  *
  */
-public class UDPAntenna extends AbstractAntenna implements Antenna {
+public class HttpAntenna extends AbstractAntenna implements Antenna {
 	
 	/**
 	 * The Airwave object to use
@@ -28,7 +28,7 @@ public class UDPAntenna extends AbstractAntenna implements Antenna {
 	 * Constructor which takes the Airwave as argument
 	 * @param _airwave the airwave to use
 	 */
-	UDPAntenna(AbstractAirwave airwave) {
+	HttpAntenna(AbstractAirwave airwave) {
 		super();
 		_airwave = airwave;
 		_master = false;
@@ -43,7 +43,7 @@ public class UDPAntenna extends AbstractAntenna implements Antenna {
 	 * @see net.sourceforge.dscsim.radiotransport.Antenna#createReceiver()
 	 */
 	public Receiver createReceiver() {
-		UDPReceiver receiver = new UDPReceiver(this);
+		HttpReceiver receiver = new HttpReceiver(this);
 		synchronized(_receivers) {
 			_receivers.add(receiver);
 		}
@@ -54,7 +54,7 @@ public class UDPAntenna extends AbstractAntenna implements Antenna {
 	 * @see net.sourceforge.dscsim.radiotransport.Antenna#createTransmitter()
 	 */
 	public Transmitter createTransmitter() {
-		UDPTransmitter transmitter = new UDPTransmitter(this);
+		HttpTransmitter transmitter = new HttpTransmitter(this);
 		synchronized(_transmitters) {
 			_transmitters.add(transmitter);
 		}
