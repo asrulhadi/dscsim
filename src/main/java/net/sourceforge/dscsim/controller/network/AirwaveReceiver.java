@@ -72,7 +72,7 @@ public class AirwaveReceiver implements Demodulator, DscsimReceiver {
 	          
 			}
          }catch(Exception oEx){
-             AppLogger.error(oEx.getMessage());
+             AppLogger.error(oEx);
          }
     }
     

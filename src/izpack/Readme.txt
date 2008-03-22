@@ -125,6 +125,9 @@ http://hsqldb.org
 JAXB framework (XML/Java processing)
 https://jaxb.dev.java.net/
 
+HttpClient (HTTP-Client for Java)
+http://hc.apache.org/httpclient-3.x/
+
 The build process of dscsim is performed by Maven
 http://maven.apache.org
 

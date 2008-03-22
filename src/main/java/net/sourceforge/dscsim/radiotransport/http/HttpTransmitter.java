@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.sourceforge.dscsim.radiotransport.udp;
+package net.sourceforge.dscsim.radiotransport.http;
 
 import net.sourceforge.dscsim.radiotransport.Transmitter;
 import net.sourceforge.dscsim.radiotransport.impl.AbstractAntenna;
@@ -12,7 +12,7 @@ import net.sourceforge.dscsim.radiotransport.impl.TransmissionPacket;
  * @author oliver
  *
  */
-public class UDPTransmitter extends AbstractTransmitter implements Transmitter {
+public class HttpTransmitter extends AbstractTransmitter implements Transmitter {
 
 	/**
 	 * The connected antenna
@@ -23,7 +23,7 @@ public class UDPTransmitter extends AbstractTransmitter implements Transmitter {
 	 * Constructor which takes the antenna as argument
 	 * @param antenna the connected antenna
 	 */
-	UDPTransmitter(AbstractAntenna antenna) {
+	HttpTransmitter(AbstractAntenna antenna) {
 		super();
 		_antenna = antenna;
 	}

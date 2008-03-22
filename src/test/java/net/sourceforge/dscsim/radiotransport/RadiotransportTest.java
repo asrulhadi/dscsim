@@ -118,9 +118,62 @@ public abstract class RadiotransportTest extends TestCase {
 				testData[i] = (byte) (i % 11);
 			}
 			transmitter.transmit(testData, new Hint());
+			Thread.sleep(1000);
 			assertEquals(demodulator.getCallCounter(), 1);
 			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
 					demodulator.getSignal()));
+		} finally {
+			receiveAirwave.shutdown();
+			Thread.sleep(1000);
+		}
+	}
+
+	/**
+	 * Tests the transmission of data packets of different size between two different
+	 * airwaves.
+	 */
+	public void testMultipleTransmissionDifferentAirwave() throws Exception {
+		Airwave receiveAirwave = createAirwave();
+		Thread.sleep(3000);
+		try {
+			Antenna transmitAntenna = testAirwave.createAntenna();
+			Antenna receiveAntenna = receiveAirwave.createAntenna();
+			Transmitter transmitter = transmitAntenna.createTransmitter();
+			Receiver receiver = receiveAntenna.createReceiver();
+			MockDemodulator demodulator = new MockDemodulator();
+			receiver.addDemodulator(demodulator);
+			byte[] testData;
+			testData = new byte[100];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = (byte) (i % 11);
+			}
+			transmitter.transmit(testData, new Hint());
+			Thread.sleep(1000);
+			assertEquals(demodulator.getCallCounter(), 1);
+			assertTrue("Transmitted data corrupted (1)", Arrays.equals(testData,
+					demodulator.getSignal()));
+
+			testData = new byte[200];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = (byte) (i % 12);
+			}
+			transmitter.transmit(testData, new Hint());
+			Thread.sleep(1000);
+			assertEquals(demodulator.getCallCounter(), 2);
+			assertTrue("Transmitted data corrupted (2)", Arrays.equals(testData,
+					demodulator.getSignal()));
+
+			testData = new byte[150];
+			for (int i = 0; i < testData.length; i++) {
+				testData[i] = (byte) (i % 13);
+			}
+			transmitter.transmit(testData, new Hint());
+			Thread.sleep(1000);
+			assertEquals(demodulator.getCallCounter(), 3);
+			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
+					demodulator.getSignal()));
+			
+			
 		} finally {
 			receiveAirwave.shutdown();
 			Thread.sleep(1000);
@@ -150,6 +203,7 @@ public abstract class RadiotransportTest extends TestCase {
 				testData[i] = (byte) (i % 11);
 			}
 			transmitter.transmit(testData, new Hint());
+			Thread.sleep(1000);
 			assertEquals(demodulator.getCallCounter(), 1);
 			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
 					demodulator.getSignal()));
