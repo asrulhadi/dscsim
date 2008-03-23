@@ -11,7 +11,10 @@ licenses of the bundled libraries in directory "legal".
 
 ==================================================
 New in dscsim 1.3.5-SNAPSHOT:
-- Upgraded to Version 3.11 of the IzPack installer (due to [1915642])
+- Solved [1915642] Installation under Windows Vista might fail. 
+  (Solution: Do not install into default application root directory. Hint is
+  now given by installer in case that installation is performed on Vista.)
+- Upgraded to Version 3.11 of the IzPack installer
 New in dscsim 1.3.4:
 - Fixed [1667425] Teilweise falsche Zuordnung der Funktionstasten im Control.
 - Fixed [1667418] Die CALL-Taste sollte immer zum Grundzustand zurückführen.

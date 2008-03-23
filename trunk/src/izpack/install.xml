@@ -30,6 +30,25 @@
 		The gui preferences indication.
 		Sets the installer window to 640x480. It will not be able to change the size.
 	-->
+
+	<conditions>
+   		<condition type="java" id="installonwindows">
+             <java>
+				<class>com.izforge.izpack.util.OsVersion</class>
+                <field>IS_WINDOWS</field>
+             </java>
+             <returnvalue type="boolean">true</returnvalue>
+       	</condition>
+   		<condition type="variable" id="os_version_6_0">
+      		<name>SYSTEM_os_version</name>
+      		<value>6.0</value>
+   		</condition>
+       	<condition type="and" id="windows_vista">
+        	<condition type="ref" refid="os_version_6_0"/>
+            <condition type="ref" refid="installonwindows" />
+       	</condition>
+	</conditions>
+
 	<guiprefs width="720" height="560" resizable="no">
 		<modifier key="paragraphYGap" value="20"/>
 	</guiprefs>
@@ -63,9 +82,10 @@
 		<panel classname="HelloPanel" />
 		<panel classname="InfoPanel" />
 		<panel classname="LicencePanel" />
+<!--  		<panel classname="UserInputPanel" condition="windows_vista"/>  don't know why this does not work -->
+		<panel classname="UserInputPanel" condition="installonwindows+os_version_6_0"/> <!--  Vista! -->
 		<panel classname="TargetPanel" />
 		<panel classname="PacksPanel" />
-<!-- 	<panel classname="UserInputPanel"/>  -->
 		<panel classname="SummaryPanel"/>
 		<panel classname="InstallPanel" />
 		<panel classname="ShortcutPanel" />
