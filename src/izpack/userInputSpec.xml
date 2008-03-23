@@ -1,15 +1,11 @@
 <userInput>
 	<panel order="0">
-		<field type="staticText" align="left"
-			txt="Bitte geben Sie den Setup-String ein:" id="input.comment" />
-		<field type="rule" variable="setup">
-			<spec txt="Setup-String:" layout="O:40:U"
-				resultFormat="plainString" />
-			<validator class="com.izforge.izpack.util.NotEmptyValidator"
-				txt="The setup string is mandatory" />
-			<!--processor class=""/-->
-		</field>
-
-
+		<field type="staticText" align="center"
+			txt="You are installing &apos;dscsim&apos; on Windows Vista. In the next panel you will
+be asked to specify the installation target directory. Due to incompatibilities between
+this installer and the Vista security system we strongly recommend to install &apos;dscsim&apos;
+not in &apos;$APPLICATIONS_DEFAULT_ROOT\$APP_NAME&apos;. Instead please choose a directory
+where no security restrictions apply, e.g. somewhere in your home directory (like
+&apos;$USER_HOME\$APP_NAME&apos;)."/>
 	</panel>
 </userInput>
