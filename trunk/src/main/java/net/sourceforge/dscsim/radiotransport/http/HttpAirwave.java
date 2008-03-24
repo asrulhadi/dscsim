@@ -136,7 +136,12 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 * </ul> 
 	 */
 	private String _statusString;
-
+	
+	/**
+	 * Sequence number for transmit requests (to avoid caching in any proxies)
+	 */
+	int _transmitSequence;
+	
 //	/**
 //	 * The status of the network
 //	 */
@@ -156,10 +161,14 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		 * Run method of the thread which receives incoming UDP packets
 		 */
 	    public void run() {
+	    	int receiveSequence = 0;
 	        while (_incomingThread != null) {
+	        	
 	    		GetMethod httpget = new GetMethod(_serverURL);
 	    		httpget.addRequestHeader("magicNumber", ""+_magicNumber);
 	    		httpget.addRequestHeader("airwaveUID", ""+_uid);
+	    		receiveSequence++;
+	    		httpget.addRequestHeader("seq", ""+receiveSequence);
 	        	byte[] inData = null;
 	    		try {
 	    		  _httpClient.executeMethod(httpget);
@@ -194,6 +203,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 //		_networkStatus = STATUS_RED;
 		_statusString = "(X/X/X)";
 		_shutDown = false;
+		_transmitSequence = 0;
 		_networkStatusListeners = new HashSet();
 		_asynchronousCommands = new LinkedList();
 
@@ -275,6 +285,8 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
     	PostMethod postMethod = new PostMethod(_serverURL);
 		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);
 		postMethod.addRequestHeader("airwaveUID", ""+_uid);
+		_transmitSequence++;
+		postMethod.addRequestHeader("seq", ""+_transmitSequence);
 		postMethod.setRequestEntity( new ByteArrayRequestEntity(data) );
 		try {
 		  _httpClient.executeMethod(postMethod);
