@@ -80,6 +80,11 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 * Default value of the URL which is used as airwave hub
 	 */
 	private static final String URL_DEFAULT = "http://localhost:80/DscsimHttpServer/AirwaveHubServlet";
+
+	/**
+	 * Default value of the HTTP proxy port to use
+	 */
+	private static final int PROXY_PORT_DEFAULT = 8080;
 	
 	/**
 	 * Version of the protocol
@@ -106,6 +111,15 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 */
 	private String _serverURL;
 	
+	/**
+	 * The hostname of the HTTP proxy to use (if any)
+	 */
+	private String _proxyHost;
+	
+	/**
+	 * The port of the HTTP proxy
+	 */
+	private int _proxyPort;
 	
 	/**
 	 * The HTTP client object which is used for sending data to the 
@@ -187,6 +201,9 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		MultiThreadedHttpConnectionManager connectionManager = 
       		new MultiThreadedHttpConnectionManager();
         _httpClient = new HttpClient(connectionManager);
+        if( _proxyHost != null ) {
+        	_httpClient.getHostConfiguration().setProxy(_proxyHost, _proxyPort);
+        }
 
         // prepare and start the receiver thread
         _incomingThread = new Thread(new IncomingThread());
@@ -208,6 +225,23 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 			_serverURL = URL_DEFAULT;
 		}
 		_logger.info("URL of the HTTP server is : "+_serverURL);
+
+		propValue = System.getProperty(PROPERTY_PREFIX+"proxy_host");
+		if( propValue != null ) {
+			_proxyHost = propValue;
+		} else {
+			_proxyHost = null;
+		}
+		propValue = System.getProperty(PROPERTY_PREFIX+"proxy_port");
+		if( propValue != null ) {
+			_proxyPort = Integer.parseInt(propValue);
+		} else {
+			_proxyPort = PROXY_PORT_DEFAULT;
+		}
+		if( _proxyHost != null ) {
+			_logger.info("HTTP-Proxy set to "+_proxyHost+":"+_proxyPort);
+		}
+
 		propValue = System.getProperty(PROPERTY_PREFIX+"magicnumber");
 		if( propValue != null ) {
 			_magicNumber = Integer.parseInt(propValue);
