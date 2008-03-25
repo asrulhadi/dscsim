@@ -36,7 +36,6 @@ public class HttpRadiotransportTest extends RadiotransportTest {
 	 */
 	@Override
 	public Airwave createAirwave() {
-		System.setProperty("parameter.dscsim.udp_airwave."+"peerhost", "localhost");
 		HttpAirwave aw = new HttpAirwave();
 		return aw;
 	}
