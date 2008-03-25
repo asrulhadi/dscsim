@@ -56,6 +56,95 @@ import net.sourceforge.dscsim.util.ByteConverter;
  *
  */
 public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterface {
+
+	private class StatusTracker {
+		
+		/**
+		 * Limit how many requests might fail before the status goes to red
+		 */
+		private static final int FAIL_LIMIT = 5;
+		
+		/**
+		 * Textual representation of the status
+		 */
+		private String _statusString;
+
+		/**
+		 * The status of the network
+		 */
+		private int _networkStatus;
+		
+		/**
+		 * Counter which count how often the HTTP request failed subsequently
+		 */
+		private int _failCounter;
+		
+		/** 
+		 * Constructor
+		 */
+		private StatusTracker() {
+			_statusString = "---";
+			_networkStatus = STATUS_RED;
+			_failCounter = FAIL_LIMIT;
+		}
+
+		/**
+		 * Sets the new values of _statusString and _networkStatus
+		 */
+		private void setMembers( String statusString, int networkStatus ) {
+			if( !statusString.equals(_statusString) ||
+				networkStatus != _networkStatus	) {
+				_statusString = statusString;
+				_networkStatus = networkStatus;
+				notifyStatusListeners();
+			}
+		}
+		
+		/**
+		 * @return the _statusString
+		 */
+		protected String getStatusString() {
+			return _statusString;
+		}
+
+		/**
+		 * @return the _networkStatus
+		 */
+		protected int getNetworkStatus() {
+			return _networkStatus;
+		}
+		
+		/**
+		 * Method to be called when HTTP request was successfull and fast
+		 */
+		protected synchronized void requestGood() {
+			setMembers( "Good", STATUS_GREEN);
+			_failCounter = 0;
+		}
+		
+		/**
+		 * Method to be called when HTTP request was successfull but slow
+		 */
+		protected synchronized void requestSlow() {
+			setMembers( "Slow", STATUS_YELLOW );
+			_failCounter = 0;
+		}
+
+		/**
+		 * Method to be called when HTTP request failed
+		 */
+		protected synchronized void requestFailed() {
+			_failCounter++;
+			if(_failCounter >= FAIL_LIMIT ) {
+				_failCounter = FAIL_LIMIT;
+				setMembers( "Bad", STATUS_RED );
+			} else {
+				setMembers( "Drops", STATUS_YELLOW );
+			}
+		}
+
+	}
+	
 	/**
 	 * The logger for this class
 	 */
@@ -79,8 +168,12 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	/**
 	 * Default value of the URL which is used as airwave hub
 	 */
-	private static final String URL_DEFAULT = "http://localhost:80/DscsimHttpServer/AirwaveHubServlet";
+	private static final String URL_DEFAULT = "http://localhost:80/DscsimHttpServer";
 
+	/**
+	 * The name of the servlet relative to the server_url
+	 */
+	private static final String SERVLET_NAME = "AirwaveHubServlet";
 	/**
 	 * Default value of the HTTP proxy port to use
 	 */
@@ -90,6 +183,11 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 * Version of the protocol
 	 */
 	private static final byte PROTOCOL_VERSION = 1;
+	
+	/**
+	 * Duration when a request is categorized as "slow" (Milliseconds)
+	 */
+	private static final int SLOW_REQUEST_LIMIT = 200;
 	
 	/**
 	 * Magic number which identifies all UDP packets used by this airwave
@@ -109,7 +207,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	/**
 	 * String representation of the URL of the HTTP server
 	 */
-	private String _serverURL;
+	private String _servletURL;
 	
 	/**
 	 * The hostname of the HTTP proxy to use (if any)
@@ -127,16 +225,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 */
 	private HttpClient _httpClient;
 
-	/**
-	 * A brief status string with 3 numbers:
-	 * <ul>
-	 *  <li>number of totally known airwaves</li>
-	 *  <li>number of airwaves from where packages are received</li>
-	 *  <li>number of established connections</li>
-	 * </ul> 
-	 */
-	private String _statusString;
-	
+
 	/**
 	 * Sequence number for transmit requests (to avoid caching in any proxies)
 	 */
@@ -147,6 +236,11 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 //	 */
 //	protected int _networkStatus;
 
+	/**
+	 * The object which tracks the status of this Airwave
+	 */
+	private StatusTracker _statusTracker;
+	
 	/**
 	 * Flag which indicates if the Airwave is already shut down
 	 */
@@ -164,17 +258,28 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    	int receiveSequence = 0;
 	        while (_incomingThread != null) {
 	        	
-	    		GetMethod httpget = new GetMethod(_serverURL);
+	    		GetMethod httpget = new GetMethod(_servletURL);
 	    		httpget.addRequestHeader("magicNumber", ""+_magicNumber);
 	    		httpget.addRequestHeader("airwaveUID", ""+_uid);
 	    		receiveSequence++;
 	    		httpget.addRequestHeader("seq", ""+receiveSequence);
 	        	byte[] inData = null;
 	    		try {
+	    		  long startTime = System.currentTimeMillis();
 	    		  _httpClient.executeMethod(httpget);
 	    		  inData = httpget.getResponseBody();
+	    		  long endTime = System.currentTimeMillis();
+	    		  long duration = endTime-startTime;
+	    		  _logger.debug( "Request duration for Receiver: "+duration+" ms" );
+	    		  if( duration > SLOW_REQUEST_LIMIT ) {
+	    			  _statusTracker.requestSlow();
+	    		  } else {
+	    			  _statusTracker.requestGood();
+	    		  }
 	    		} catch( Exception e ) {
 	    			_logger.error("Problem while receiving from HTTP-Server", e);
+	    			_statusTracker.requestFailed();
+	    			continue;
 	    		} finally {
 		 		   	httpget.releaseConnection();
 	    		}
@@ -200,8 +305,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	public HttpAirwave() {
 		super();
 		readParameters();
-//		_networkStatus = STATUS_RED;
-		_statusString = "(X/X/X)";
+		_statusTracker = new StatusTracker();
 		_shutDown = false;
 		_transmitSequence = 0;
 		_networkStatusListeners = new HashSet();
@@ -230,11 +334,12 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	private void readParameters() {
 		String propValue = System.getProperty(PROPERTY_PREFIX+"server_url");
 		if( propValue != null ) {
-			_serverURL = propValue;
+			_servletURL = propValue;
 		} else {
-			_serverURL = URL_DEFAULT;
+			_servletURL = URL_DEFAULT;
 		}
-		_logger.info("URL of the HTTP server is : "+_serverURL);
+		_servletURL = _servletURL + "/" + SERVLET_NAME;
+		_logger.info("URL of the HTTP servlet is : "+_servletURL);
 
 		propValue = System.getProperty(PROPERTY_PREFIX+"proxy_host");
 		if( propValue != null ) {
@@ -282,16 +387,25 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
     	pushSignalToLocalAntennas(antennaSignal);
     	byte[] data = antennaSignal.getByteArray();
 
-    	PostMethod postMethod = new PostMethod(_serverURL);
+    	PostMethod postMethod = new PostMethod(_servletURL);
 		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);
 		postMethod.addRequestHeader("airwaveUID", ""+_uid);
 		_transmitSequence++;
 		postMethod.addRequestHeader("seq", ""+_transmitSequence);
 		postMethod.setRequestEntity( new ByteArrayRequestEntity(data) );
 		try {
+		  long startTime = System.currentTimeMillis();
 		  _httpClient.executeMethod(postMethod);
+		  long endTime = System.currentTimeMillis();
+		  long duration = endTime-startTime;
+		  _logger.debug( "Request duration for Sender: "+duration+" ms" );
+		  if( duration > SLOW_REQUEST_LIMIT ) {
+			  _statusTracker.requestSlow();
+		  } else {
+			  _statusTracker.requestGood();
+		  }
 		} catch( Exception e ) {
-			_logger.error("Problem while receiving from HTTP-Server", e);
+			_logger.error("Problem while sending to HTTP-Server", e);
 		} finally {
 			postMethod.releaseConnection();
 		}
@@ -316,11 +430,11 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 * @see net.sourceforge.dscsim.radiotransport.AirwaveStatusInterface#getStatusString()
 	 */
 	public String getStatusString() {
-		return _statusString;
+		return _statusTracker.getStatusString();
 	}
 
 	public int getNetworkStatus() {
-		return 0;
+		return _statusTracker.getNetworkStatus();
 	}
 
 	@Override
