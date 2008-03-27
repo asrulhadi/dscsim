@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sourceforge.dscsim</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>dscsim-parent</artifactId>
   <version>1.3.5-SNAPSHOT</version>
   <packaging>pom</packaging>
   <description>The DSCSIM GMDSS simulator</description>
