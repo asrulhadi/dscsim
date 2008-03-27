@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>net.sourceforge.dscsim</groupId>
   <artifactId>dscsim</artifactId>
-  <version>1.3.5-SNAPSHOT</version>
-  <description>The DSCSIM GMDSS simulator</description>
-  <scm>
-    <connection>https://dscsim.svn.sourceforge.net/svnroot/dscsim</connection>
-    <developerConnection>https://dscsim.svn.sourceforge.net/svnroot/dscsim</developerConnection>
-    <url>https://dscsim.svn.sourceforge.net/svnroot/dscsim</url>
-  </scm>
+  <packaging>jar</packaging>
+  <parent>
+	<groupId>net.sourceforge.dscsim</groupId>
+  	<artifactId>parent</artifactId>
+      <version>1.3.5-SNAPSHOT</version>
+  </parent>
   <build>
     <plugins>
       <plugin>
@@ -173,97 +171,6 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <releases>
-        <updatePolicy>interval:5</updatePolicy>
-        <checksumPolicy>ignore</checksumPolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>interval:5</updatePolicy>
-        <checksumPolicy>ignore</checksumPolicy>
-      </snapshots>
-      <id>local</id>
-      <name>Local repository with jars not found in remote maven
-				repositories</name>
-      <url>file://${basedir}/lib/m2</url>
-    </repository>
-    <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Maven 2 Repository</name>
-      <url>http://download.java.net/maven/2</url>
-    </repository>
-    <repository>
-      <id>maven-repository.dev.java.net</id>
-      <name>Java.net Maven 1 Repository (legacy)</name>
-      <url>http://download.java.net/maven/1</url>
-      <layout>legacy</layout>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <releases>
-        <updatePolicy>interval:5</updatePolicy>
-        <checksumPolicy>ignore</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>interval:5</updatePolicy>
-        <checksumPolicy>ignore</checksumPolicy>
-      </snapshots>
-      <id>local</id>
-      <name>Local repository with plugins not found in remote maven
-				repositories</name>
-      <url>file://${basedir}/lib/m2</url>
-    </pluginRepository>
-    <pluginRepository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots />
-      <id>Codehaus Snapshots</id>
-      <url>http://snapshots.repository.codehaus.org/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>ignore</checksumPolicy>
-      </snapshots>
-      <id>codehaus</id>
-      <name>Codehaus repository</name>
-      <url>http://repository.codehaus.org</url>
-    </pluginRepository>
-    <pluginRepository>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>ignore</checksumPolicy>
-      </snapshots>
-      <id>agilejava</id>
-      <name>Agilejava.com</name>
-      <url>http://agilejava.com/maven/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Maven 2 Repository</name>
-      <url>http://download.java.net/maven/2</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>maven-repository.dev.java.net</id>
-      <name>Java.net Maven 1 Repository (legacy)</name>
-      <url>http://download.java.net/maven/1</url>
-      <layout>legacy</layout>
-    </pluginRepository>
-  </pluginRepositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
