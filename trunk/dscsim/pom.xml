@@ -4,7 +4,7 @@
   <packaging>jar</packaging>
   <parent>
 	<groupId>net.sourceforge.dscsim</groupId>
-  	<artifactId>parent</artifactId>
+  	<artifactId>dscsim-parent</artifactId>
       <version>1.3.5-SNAPSHOT</version>
   </parent>
   <build>
