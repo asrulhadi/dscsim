@@ -2,6 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dscsim</artifactId>
   <packaging>jar</packaging>
+  <name>DSCSIM Client Programm including Installer</name>
   <parent>
 	<groupId>net.sourceforge.dscsim</groupId>
   	<artifactId>dscsim-parent</artifactId>
@@ -9,13 +10,13 @@
   </parent>
   <build>
     <plugins>
-      <plugin>
+<!--      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
-      </plugin>
+      </plugin>  -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -234,6 +235,7 @@
       <version>3.1</version>
   	</dependency>
   </dependencies>
+<!-- 
   <reporting>
     <plugins>
       <plugin>
@@ -307,4 +309,5 @@
       </plugin>
     </plugins>
   </reporting>
+ -->
 </project>
