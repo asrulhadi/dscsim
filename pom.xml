@@ -13,6 +13,7 @@
   </scm>
   <modules>
 	<module>dscsim</module>
+	<module>dscsim-httphub-servlet</module>
 	<module>dscsim-httphub-webapp</module>
   </modules>
   <repositories>
