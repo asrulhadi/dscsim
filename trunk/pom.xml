@@ -12,10 +12,32 @@
     <url>https://dscsim.svn.sourceforge.net/svnroot/dscsim</url>
   </scm>
   <modules>
-	<module>dscsim</module>
 	<module>dscsim-httphub-servlet</module>
 	<module>dscsim-httphub-webapp</module>
+	<module>dscsim</module>
+<!--	<module>dscsim</module> doing it this way round will probably make it fail on first build. Bug in Maven? http://jira.codehaus.org/browse/MNG-2507)
+	<module>dscsim-httphub-servlet</module>
+	<module>dscsim-httphub-webapp</module> -->
   </modules>
+  <dependencyManagement>
+    <dependencies>
+     <dependency>
+        <groupId>net.sourceforge.dscsim</groupId>
+        <artifactId>dscsim</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+     <dependency>
+        <groupId>net.sourceforge.dscsim</groupId>
+        <artifactId>dscsim-httphub-servlet</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+     <dependency>
+        <groupId>net.sourceforge.dscsim</groupId>
+        <artifactId>dscsim-httphub-webapp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+	</dependencies>
+  </dependencyManagement>  
   <repositories>
     <repository>
       <releases>
