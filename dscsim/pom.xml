@@ -35,11 +35,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/HttpRadiotransportTest.java</exclude> <!--  needs server to work! -->
-          </excludes>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-report-plugin</artifactId>
@@ -173,6 +168,11 @@
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.dscsim</groupId>
+      <artifactId>dscsim-httphub-servlet</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

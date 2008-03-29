@@ -18,6 +18,7 @@
  */
 package net.sourceforge.dscsim.radiotransport.http;
 
+import net.sourceforge.dscsim.httpserver.server.DscsimServer;
 import net.sourceforge.dscsim.radiotransport.Airwave;
 import net.sourceforge.dscsim.radiotransport.RadiotransportTest;
 
@@ -27,8 +28,27 @@ import net.sourceforge.dscsim.radiotransport.RadiotransportTest;
  */
 public class HttpRadiotransportTest extends RadiotransportTest {
 
+	private DscsimServer server;
+
 	public HttpRadiotransportTest(String name) {
 		super(name);
+	}
+
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	protected void setUp() throws Exception {
+		super.setUp();
+		server = new DscsimServer();
+		server.startServer();
+	}
+
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		server.stopServer();
 	}
 
 	/* (non-Javadoc)
@@ -36,6 +56,7 @@ public class HttpRadiotransportTest extends RadiotransportTest {
 	 */
 	@Override
 	public Airwave createAirwave() {
+		System.setProperty("parameter.dscsim.http_airwave.server_url", "http://localhost:8080/");
 		HttpAirwave aw = new HttpAirwave();
 		return aw;
 	}
