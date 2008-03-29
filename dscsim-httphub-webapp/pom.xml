@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
   <parent>
     <artifactId>dscsim-parent</artifactId>
     <groupId>net.sourceforge.dscsim</groupId>
@@ -21,6 +22,11 @@
     <finalName>httpserver</finalName>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.dscsim</groupId>
+      <artifactId>dscsim-httphub-servlet</artifactId>
+<!--      <version>${project.version}</version>  --> 
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
