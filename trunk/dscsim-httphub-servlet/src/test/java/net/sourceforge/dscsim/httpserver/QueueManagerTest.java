@@ -20,7 +20,8 @@ public class QueueManagerTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		testQueueManager = new QueueManager(MAGIC_NUMBER);
+		testQueueManager = new QueueManager(MAGIC_NUMBER, 500);
+		testQueueManager.setQueueTimeoutParameters(1000, 0);
 	}
 
 	/* (non-Javadoc)
@@ -67,4 +68,46 @@ public class QueueManagerTest extends TestCase {
 		assertNull(testQueueManager.getQueue(789).poll());
 	}
 
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.httpserver.QueueManager#houseKeepingAndTestForDelete()}.
+	 */
+	public void testHouseKeepingAndTestForDelete() throws Exception {
+		assertNull(testQueueManager.getQueue(123).poll());
+		assertNull(testQueueManager.getQueue(456).poll());
+		assertNull(testQueueManager.getQueue(789).poll());
+
+		Thread.sleep(950);
+		assertFalse( testQueueManager.houseKeepingAndTestForDelete() );
+		assertEquals( 3, testQueueManager.getSize() );
+
+		testQueueManager.getQueue(123).poll();
+		Thread.sleep(100);
+		assertFalse( testQueueManager.houseKeepingAndTestForDelete() );
+		assertEquals( 1, testQueueManager.getSize() );
+		
+		Thread.sleep(850);
+		assertFalse( testQueueManager.houseKeepingAndTestForDelete() );
+		assertEquals( 1, testQueueManager.getSize() );
+
+		Thread.sleep(100);
+		assertFalse( testQueueManager.houseKeepingAndTestForDelete() );
+		assertEquals( 0, testQueueManager.getSize() );
+
+		Thread.sleep(450);
+		assertFalse( testQueueManager.houseKeepingAndTestForDelete() );
+		
+		Thread.sleep(100);
+		assertTrue( testQueueManager.houseKeepingAndTestForDelete() );
+	}
+
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.httpserver.QueueManager#getSize()}.
+	 */
+	public void testGetSize() {
+		assertEquals(0, testQueueManager.getSize());
+		PacketQueue pQ123 = testQueueManager.getQueue(123);
+		PacketQueue pQ456 = testQueueManager.getQueue(456);
+		assertEquals(2, testQueueManager.getSize());
+	}
+	
 }
