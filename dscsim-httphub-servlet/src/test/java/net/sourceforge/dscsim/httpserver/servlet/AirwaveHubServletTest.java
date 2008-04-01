@@ -22,7 +22,41 @@ import junit.framework.TestCase;
  *
  */
 public class AirwaveHubServletTest extends TestCase {
+	
+	private static final Logger LOGGER = Logger.getLogger(AirwaveHubServletTest.class); 
+	
+	private abstract class TestThread extends Thread {
+		public Throwable failure = null;
+		public void run() {
+			try {
+				doTest();
+			} catch( Throwable t) {
+				failure = t;
+			}
+		}
+		public void evaluate() throws Throwable {
+			if( failure != null ) {
+				throw failure;
+			}
+		}
+		public abstract void doTest();
+	}
 
+	private static void doTests(TestThread[] tta) throws Throwable {
+		LOGGER.info("Starting parallel tests");
+		for( int i=0; i<tta.length; i++ ) {
+			tta[i].start();
+		}
+		LOGGER.info("Waiting for parallel tests to finish");
+		for( int i=0; i<tta.length; i++ ) {
+			tta[i].join();
+		}
+		LOGGER.info("Evaluating parallel test results");
+		for( int i=0; i<tta.length; i++ ) {
+			tta[i].evaluate();
+		}
+	}
+	
 	private static final String URL = "http://localhost:8080/";
 	
 	private DscsimServer server;
@@ -80,37 +114,94 @@ public class AirwaveHubServletTest extends TestCase {
 	 * Test method for {@link net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
 	 * and {@link net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
 	 */
-	public void testSimpleScenario() {
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+	public void testSimpleScenario() throws Throwable {
+		TestThread[] tta = new TestThread[] {
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
+				}
+			},
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
+				}
+			},
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
+				}
+			},
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+				}
+			}
+		};
+		doTests(tta);
 
 		doPostRequest(1,1,array1);
 		doPostRequest(1,1,array2);
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
-		assertTrue( Arrays.equals(array1,     doGetRequest(1, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
-		assertTrue( Arrays.equals(array2,     doGetRequest(1, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+		tta = new TestThread[] {
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
+				}
+			},
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(array1,     doGetRequest(1, 2) ) );
+					assertTrue( Arrays.equals(array2,     doGetRequest(1, 2) ) );
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
+				}
+			},
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
+				}
+			},
+			new TestThread() {
+				public void doTest() {
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+				}
+			}
+		};
+		doTests(tta);
 		
 		doPostRequest(2,1,array1);
 		doPostRequest(2,2,array2);
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
-		assertTrue( Arrays.equals(array2,     doGetRequest(2, 1) ) );
-		assertTrue( Arrays.equals(array1,     doGetRequest(2, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
-		assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+		tta = new TestThread[] {
+				new TestThread() {
+					public void doTest() {
+						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
+						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
+					}
+				},
+				new TestThread() {
+					public void doTest() {
+						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
+						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
+					}
+				},
+				new TestThread() {
+					public void doTest() {
+						assertTrue( Arrays.equals(array2,     doGetRequest(2, 1) ) );
+						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
+					}
+				},
+				new TestThread() {
+					public void doTest() {
+						assertTrue( Arrays.equals(array1,     doGetRequest(2, 2) ) );
+						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
+					}
+				}
+			};
+			doTests(tta);
 		
 	}
 	
