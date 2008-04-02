@@ -26,12 +26,14 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -49,6 +51,7 @@ import net.sourceforge.dscsim.radiotransport.AirwaveStatusInterface;
 import net.sourceforge.dscsim.radiotransport.Antenna;
 import net.sourceforge.dscsim.radiotransport.impl.AbstractAirwave;
 import net.sourceforge.dscsim.radiotransport.impl.TransmissionPacket;
+import net.sourceforge.dscsim.util.ByteArrayUtil;
 import net.sourceforge.dscsim.util.ByteConverter;
 
 /**
@@ -198,6 +201,16 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 * Thread which processes the incoming data
 	 */
 	private Thread _incomingThread;
+	
+	/**
+	 * Thread which processes the outgoing data
+	 */
+	private Thread _outgoingThread;
+	
+	/**
+	 * Queue of data to be send
+	 */
+	private Queue<byte[]> _outQueue;
 
 	/**
 	 * List of runnables which should be processed asynchronously
@@ -285,19 +298,76 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    		}
 	        	
 	        	if( inData.length == 0 ) {
-	        		try {
-						Thread.sleep(100);  // nothing on the server: sleep some time
-					} catch (InterruptedException e) {
-						_logger.warn("incomingThread was interrupted");
-					}
+//	        		try {
+//						Thread.sleep(100);  // nothing on the server: sleep some time
+//					} catch (InterruptedException e) {
+//						_logger.warn("incomingThread was interrupted");
+//					}
 	        	} else {
-		        	TransmissionPacket antennaSignal = TransmissionPacket.fromByteArray(inData, 0);
-	    			pushSignalToLocalAntennas(antennaSignal);
+	        		List<byte[]> bAList = ByteArrayUtil.decode(inData);
+	        		for( byte[] packet : bAList ) {
+			        	TransmissionPacket antennaSignal = TransmissionPacket.fromByteArray(packet, 0);
+		    			pushSignalToLocalAntennas(antennaSignal);
+	        		}
 	        	}
 	        }
 	    }
 	}
 	
+	/**
+	 * Thread for handling the incoming data packets
+	 */
+	private class OutgoingThread implements Runnable {
+		/**
+		 * Run method of the thread send packets via HTTP
+		 */
+	    public void run() {
+    		List<byte[]> bAList = new ArrayList<byte[]>(10); 
+	        while (_outgoingThread != null) {
+	        	synchronized(_outQueue) {
+	        		while(_outQueue.peek()==null) {
+	        			try {
+							_outQueue.wait();
+						} catch (InterruptedException e) {
+							// nothing to to here
+						}
+	        		}
+	        		bAList.clear();
+	        		while(true) {
+	        			byte[] packet = _outQueue.poll();
+	        			if( packet == null ) {
+	        				break;
+	        			}
+	        			bAList.add(packet);
+	        		}
+	        	}
+	        	byte[] data = ByteArrayUtil.encode(bAList);
+
+	        	PostMethod postMethod = new PostMethod(_servletURL);
+	    		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);
+	    		postMethod.addRequestHeader("airwaveUID", ""+_uid);
+	    		_transmitSequence++;
+	    		postMethod.addRequestHeader("seq", ""+_transmitSequence);
+	    		postMethod.setRequestEntity( new ByteArrayRequestEntity(data) );
+	    		try {
+	    		  long startTime = System.currentTimeMillis();
+	    		  _httpClient.executeMethod(postMethod);
+	    		  long endTime = System.currentTimeMillis();
+	    		  long duration = endTime-startTime;
+	    		  _logger.debug( "Request duration for Sender: "+duration+" ms" );
+	    		  if( duration > SLOW_REQUEST_LIMIT ) {
+	    			  _statusTracker.requestSlow();
+	    		  } else {
+	    			  _statusTracker.requestGood();
+	    		  }
+	    		} catch( Exception e ) {
+	    			_logger.error("Problem while sending to HTTP-Server", e);
+	    		} finally {
+	    			postMethod.releaseConnection();
+	    		}
+	        }
+	    }
+	}
 
 	/**
 	 * Standard constructor
@@ -310,6 +380,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		_transmitSequence = 0;
 		_networkStatusListeners = new HashSet();
 		_asynchronousCommands = new LinkedList();
+		_outQueue = new LinkedList<byte[]>();
 
         // prepare the HttpClient object
 		MultiThreadedHttpConnectionManager connectionManager = 
@@ -324,6 +395,10 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
         _incomingThread.setName("HTTPIncomingDataThread");
         _incomingThread.start();
 
+        // prepare and start the sender thread
+        _outgoingThread = new Thread(new OutgoingThread());
+        _outgoingThread.setName("HTTPOutgoingDataThread");
+        _outgoingThread.start();
 		
 	}
 
@@ -386,29 +461,34 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
     public synchronized void sendSignal(TransmissionPacket antennaSignal) {
     	pushSignalToLocalAntennas(antennaSignal);
     	byte[] data = antennaSignal.getByteArray();
+    	synchronized(_outQueue) {
+    		_outQueue.add(data);
+    		_outQueue.notifyAll();
+    	}
 
-    	PostMethod postMethod = new PostMethod(_servletURL);
-		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);
-		postMethod.addRequestHeader("airwaveUID", ""+_uid);
-		_transmitSequence++;
-		postMethod.addRequestHeader("seq", ""+_transmitSequence);
-		postMethod.setRequestEntity( new ByteArrayRequestEntity(data) );
-		try {
-		  long startTime = System.currentTimeMillis();
-		  _httpClient.executeMethod(postMethod);
-		  long endTime = System.currentTimeMillis();
-		  long duration = endTime-startTime;
-		  _logger.debug( "Request duration for Sender: "+duration+" ms" );
-		  if( duration > SLOW_REQUEST_LIMIT ) {
-			  _statusTracker.requestSlow();
-		  } else {
-			  _statusTracker.requestGood();
-		  }
-		} catch( Exception e ) {
-			_logger.error("Problem while sending to HTTP-Server", e);
-		} finally {
-			postMethod.releaseConnection();
-		}
+//
+//    	PostMethod postMethod = new PostMethod(_servletURL);
+//		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);
+//		postMethod.addRequestHeader("airwaveUID", ""+_uid);
+//		_transmitSequence++;
+//		postMethod.addRequestHeader("seq", ""+_transmitSequence);
+//		postMethod.setRequestEntity( new ByteArrayRequestEntity(data) );
+//		try {
+//		  long startTime = System.currentTimeMillis();
+//		  _httpClient.executeMethod(postMethod);
+//		  long endTime = System.currentTimeMillis();
+//		  long duration = endTime-startTime;
+//		  _logger.debug( "Request duration for Sender: "+duration+" ms" );
+//		  if( duration > SLOW_REQUEST_LIMIT ) {
+//			  _statusTracker.requestSlow();
+//		  } else {
+//			  _statusTracker.requestGood();
+//		  }
+//		} catch( Exception e ) {
+//			_logger.error("Problem while sending to HTTP-Server", e);
+//		} finally {
+//			postMethod.releaseConnection();
+//		}
     }
     
     /**
@@ -440,7 +520,13 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	@Override
 	public void shutdown() {
 		_shutDown = true;
+		Thread t;
+		t = _incomingThread;
 		_incomingThread = null;
+		t.interrupt();
+		t = _outgoingThread;
+		_outgoingThread = null;
+		t.interrupt();
 		_logger.info("HTTP Airwave shut down");
 		
 	}
