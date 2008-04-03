@@ -234,6 +234,10 @@
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
   	</dependency>
+    <dependency>
+      <groupId>net.sourceforge.dscsim</groupId>
+      <artifactId>dscsim-utils</artifactId>
+  	</dependency>
   </dependencies>
 <!-- 
   <reporting>

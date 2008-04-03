@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <parent>
+    <artifactId>dscsim-parent</artifactId>
+    <groupId>net.sourceforge.dscsim</groupId>
+    <version>1.3.5-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>dscsim-utils</artifactId>
+  <packaging>jar</packaging>
+  <name>DSCSIM Utility Classes</name>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
