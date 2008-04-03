@@ -12,6 +12,7 @@
     <url>https://dscsim.svn.sourceforge.net/svnroot/dscsim</url>
   </scm>
   <modules>
+	<module>dscsim-utils</module>
 	<module>dscsim-httphub-servlet</module>
 	<module>dscsim-httphub-webapp</module>
 	<module>dscsim</module>
@@ -24,6 +25,11 @@
      <dependency>
         <groupId>net.sourceforge.dscsim</groupId>
         <artifactId>dscsim</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+     <dependency>
+        <groupId>net.sourceforge.dscsim</groupId>
+        <artifactId>dscsim-utils</artifactId>
         <version>${project.version}</version>
       </dependency>
      <dependency>
