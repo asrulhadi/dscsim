@@ -4,16 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import net.sourceforge.dscsim.httpserver.GroupManager;
 import net.sourceforge.dscsim.httpserver.PacketQueue;
 import net.sourceforge.dscsim.httpserver.QueueManager;
+import net.sourceforge.dscsim.util.ByteArrayUtil;
+
+import org.apache.log4j.Logger;
 
 /**
  * Servlet implementation class for Servlet: AirwaveHubServlet
@@ -37,6 +40,10 @@ import net.sourceforge.dscsim.httpserver.QueueManager;
     */
    private static final String AIRWAVE_UID_HEADER_NAME = "airwaveUID";
    
+   /**
+    * The maximum number of packets to send to the client in one response
+    */
+   private static final int MAX_PACKETS_PER_RESONSE = 100;
    
     /* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
@@ -63,6 +70,15 @@ import net.sourceforge.dscsim.httpserver.QueueManager;
 		byte[] dataPacket = packetQueue.poll();
 		if( dataPacket == null ) {
 			dataPacket = new byte[0];
+		} else {
+			List<byte[]> bAList = new ArrayList<byte[]>(10);
+			bAList.add(dataPacket);
+			int packets = 1;
+			while((packetQueue.getSize()>0) && (packets<MAX_PACKETS_PER_RESONSE)) {
+				bAList.add(packetQueue.poll());
+				packets++;
+			}
+			dataPacket = ByteArrayUtil.encode(bAList);
 		}
 		response.addHeader("Cache-Control", "no-cache");
 		response.addHeader("Cache-Control", "no-store");
@@ -90,10 +106,13 @@ import net.sourceforge.dscsim.httpserver.QueueManager;
 		InputStream is = request.getInputStream();
 		byte[] dataPacket = new byte[request.getContentLength()];
 		is.read(dataPacket);
+		List<byte[]> bAList = ByteArrayUtil.decode(dataPacket);
 		
 		GroupManager groupManager = GroupManager.getInstance();
 		QueueManager queueManager = groupManager.getQueueManager(magicNumber);
-		queueManager.pushToQueues(airwaveUid, dataPacket);
+		for( byte[] data : bAList ) {
+			queueManager.pushToQueues(airwaveUid, data);
+		}
 	}   	
 	
 	/**

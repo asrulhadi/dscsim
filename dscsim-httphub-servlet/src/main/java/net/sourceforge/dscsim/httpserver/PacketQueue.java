@@ -176,7 +176,7 @@ public class PacketQueue {
 	 * Get the number of packets in the queue
 	 * @return the number of packets in the queue
 	 */
-	public int getSize() {
+	public synchronized int getSize() {
 		return queue.size();
 	}
 

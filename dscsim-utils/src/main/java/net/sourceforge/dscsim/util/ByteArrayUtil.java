@@ -13,6 +13,7 @@ import java.util.List;
  * @author oliver
  */
 public class ByteArrayUtil {
+	
 
 	/**
 	 * Encodes the given List of byte arrays into a single byte array.
@@ -61,9 +62,18 @@ public class ByteArrayUtil {
 	public static List<byte[]> decode(byte[] byteArray) {
 		List<byte[]> result = null;
 		try {
+			// TODO: prevent OutOfMemory if sizes are too high
 			int position = 0;
 			int listLength = ByteConverter.byteArrayToInt(byteArray, position);
 			position += 4;
+			
+			//check for plausibilty
+			int maxPossibleListLength = (byteArray.length-4) / 4;
+			if(listLength > maxPossibleListLength) {
+				throw new IllegalArgumentException( "List length info corrupted ("+listLength+")" );
+			}
+			int maxPossibleSingleArraySize = byteArray.length-4*(1+listLength);
+			
 			result = new ArrayList<byte[]>(listLength);
 			for(int i=0; i<listLength; i++) {
 				int oneByteArraySize = ByteConverter.byteArrayToInt(byteArray, position);
@@ -72,6 +82,9 @@ public class ByteArrayUtil {
 				if( oneByteArraySize == -1 ){
 					oneByteArray = null;
 				} else {
+					if(oneByteArraySize > maxPossibleSingleArraySize) {
+						throw new IllegalArgumentException( "Array size info corrupted ("+listLength+")" );
+					}
 					oneByteArray = new byte[oneByteArraySize];
 					System.arraycopy(byteArray, position, oneByteArray, 0, oneByteArraySize);
 					position += oneByteArraySize;
