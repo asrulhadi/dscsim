@@ -5,7 +5,10 @@ package net.sourceforge.dscsim.httpserver.servlet;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
@@ -15,6 +18,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.httpserver.server.DscsimServer;
+import net.sourceforge.dscsim.util.ByteArrayUtil;
 import junit.framework.TestCase;
 
 /**
@@ -63,6 +67,11 @@ public class AirwaveHubServletTest extends TestCase {
 	
 	private byte[] array1 = new byte[] { (byte)1, (byte)2, (byte)3 };
 	private byte[] array2 = new byte[] { (byte)4, (byte)5, (byte)6, (byte)7 };
+	
+	private List<byte[]> a1List;
+	private List<byte[]> a2List;
+	private List<byte[]> a1a2List;
+	
 	private byte[] arrayEmpty = new byte[0];
 	
 	/* (non-Javadoc)
@@ -72,6 +81,13 @@ public class AirwaveHubServletTest extends TestCase {
 		super.setUp();
 		server = new DscsimServer();
 		server.startServer();
+		a1List = new ArrayList<byte[]>();
+		a1List.add(array1);
+		a2List = new ArrayList<byte[]>();
+		a2List.add(array2);
+		a1a2List = new ArrayList<byte[]>();
+		a1a2List.add(array1);
+		a1a2List.add(array2);
 	}
 
 	/* (non-Javadoc)
@@ -138,10 +154,18 @@ public class AirwaveHubServletTest extends TestCase {
 			}
 		};
 		doTests(tta);
+		
+	}
+	
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+	 * and {@link net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
+	 */
+	public void testSimpleScenario2() throws Throwable {
 
-		doPostRequest(1,1,array1);
-		doPostRequest(1,1,array2);
-		tta = new TestThread[] {
+		doPostRequest(1,1,ByteArrayUtil.encode(a1List));
+		doPostRequest(1,1,ByteArrayUtil.encode(a2List));
+		TestThread[] tta = new TestThread[] {
 			new TestThread() {
 				public void doTest() {
 					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
@@ -151,8 +175,10 @@ public class AirwaveHubServletTest extends TestCase {
 			},
 			new TestThread() {
 				public void doTest() {
-					assertTrue( Arrays.equals(array1,     doGetRequest(1, 2) ) );
-					assertTrue( Arrays.equals(array2,     doGetRequest(1, 2) ) );
+
+					assertTrue( arrayListEquals(a1a2List, ByteArrayUtil.decode(doGetRequest(1, 2))));
+//					assertTrue( Arrays.equals(array1,     doGetRequest(1, 2) ) );
+//					assertTrue( Arrays.equals(array2,     doGetRequest(1, 2) ) );
 					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
 				}
 			},
@@ -173,9 +199,16 @@ public class AirwaveHubServletTest extends TestCase {
 		};
 		doTests(tta);
 		
-		doPostRequest(2,1,array1);
-		doPostRequest(2,2,array2);
-		tta = new TestThread[] {
+	}
+
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+	 * and {@link net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
+	 */
+	public void testSimpleScenario3() throws Throwable {
+		doPostRequest(2,1,ByteArrayUtil.encode(a1List));
+		doPostRequest(2,2,ByteArrayUtil.encode(a2List));
+		TestThread[] tta = new TestThread[] {
 				new TestThread() {
 					public void doTest() {
 						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 1) ) );
@@ -190,13 +223,15 @@ public class AirwaveHubServletTest extends TestCase {
 				},
 				new TestThread() {
 					public void doTest() {
-						assertTrue( Arrays.equals(array2,     doGetRequest(2, 1) ) );
+						assertTrue( arrayListEquals(a2List, ByteArrayUtil.decode(doGetRequest(2, 1))));
+//						assertTrue( Arrays.equals(array2,     doGetRequest(2, 1) ) );
 						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
 					}
 				},
 				new TestThread() {
 					public void doTest() {
-						assertTrue( Arrays.equals(array1,     doGetRequest(2, 2) ) );
+						assertTrue( arrayListEquals(a1List, ByteArrayUtil.decode(doGetRequest(2, 2))));
+//						assertTrue( Arrays.equals(array1,     doGetRequest(2, 2) ) );
 						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
 					}
 				}
@@ -204,7 +239,7 @@ public class AirwaveHubServletTest extends TestCase {
 			doTests(tta);
 		
 	}
-	
+
 	/**
 	 * Do a get request on the server without any parameters.
 	 * @return the response body as string
@@ -290,4 +325,22 @@ public class AirwaveHubServletTest extends TestCase {
 		}
 		return retValue;
 	}
+
+	/**
+	 * Helper method to check if two lists of byte arrays are equal
+	 */
+	private static boolean arrayListEquals( List<byte[]> list1, List<byte[]> list2) {
+		if( list1.size() != list2.size() ) {
+			return false;
+		}
+		Iterator<byte[]> i = list1.iterator();
+		Iterator<byte[]> j = list2.iterator();
+		while( i.hasNext() ) {
+			if( !Arrays.equals(i.next(), j.next() ) ){
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

@@ -18,6 +18,8 @@ public class ByteArrayUtilTest extends TestCase {
 	
 	List<byte[]> testList1;
 	List<byte[]> testList2;
+	List<byte[]> testList3;
+	List<byte[]> testList4;
 
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -33,7 +35,17 @@ public class ByteArrayUtilTest extends TestCase {
 		testList2.add( null );
 		testList2.add( new byte[]{ (byte)1, (byte)10, (byte)100, (byte)12 } );
 
-	
+		testList3 = new LinkedList<byte[]>();
+		testList3.add(null);
+		testList3.add(null);
+		testList3.add(null);
+		testList3.add(null);
+
+		testList4 = new LinkedList<byte[]>();
+		testList4.add(new byte[]{ (byte)1, (byte)1, (byte)1, (byte)1 });
+		testList4.add(null);
+		testList4.add(null);
+		testList4.add(null);
 	}
 
 	/* (non-Javadoc)
@@ -74,6 +86,24 @@ public class ByteArrayUtilTest extends TestCase {
 		byte[] encoded = ByteArrayUtil.encode(testList2);
 		List<byte[]>result = ByteArrayUtil.decode(encoded);
 		assertTrue( arrayListEquals( testList2, result ) );
+	}
+
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 */
+	public void testDecodeNullElements() {
+		byte[] encoded = ByteArrayUtil.encode(testList3);
+		List<byte[]>result = ByteArrayUtil.decode(encoded);
+		assertTrue( arrayListEquals( testList3, result ) );
+	}
+	
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 */
+	public void testDecodeMaxAllowedSingleArraySize() {
+		byte[] encoded = ByteArrayUtil.encode(testList4);
+		List<byte[]>result = ByteArrayUtil.decode(encoded);
+		assertTrue( arrayListEquals( testList4, result ) );
 	}
 
 	/**
@@ -120,6 +150,49 @@ public class ByteArrayUtilTest extends TestCase {
 			caught = true;
 		}
 		assertTrue(caught);
+
+	}
+
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 */
+	public void testDecodeNullElementsCorrupted() {
+		byte[] encoded = ByteArrayUtil.encode(testList3);
+		int length = ByteConverter.byteArrayToInt(encoded, 0);
+		length++;
+		ByteConverter.intToByteArray(length, encoded, 0 );
+		boolean caught = false;
+		try {
+			List<byte[]>result = ByteArrayUtil.decode(encoded);
+		} catch( IllegalArgumentException e ) {
+			Throwable innerE = e.getCause();
+			String text = innerE.getMessage();
+			if( text.contains("List length info corrupted") ) {
+				caught = true;
+			}
+		}
+		assertTrue( caught );
+	}
+	
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 */
+	public void testDecodeMaxAllowedSingleArraySizeCorrupted() {
+		byte[] encoded = ByteArrayUtil.encode(testList4);
+		int length = ByteConverter.byteArrayToInt(encoded, 4);
+		length++;
+		ByteConverter.intToByteArray(length, encoded, 4 );
+		boolean caught = false;
+		try {
+			List<byte[]>result = ByteArrayUtil.decode(encoded);
+		} catch( IllegalArgumentException e ) {
+			Throwable innerE = e.getCause();
+			String text = innerE.getMessage();
+			if( text.contains("Array size info corrupted") ) {
+				caught = true;
+			}
+		}
+		assertTrue( caught );
 	}
 	
 	/**

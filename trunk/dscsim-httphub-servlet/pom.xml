@@ -42,5 +42,9 @@
       <artifactId>jetty</artifactId>
       <version>6.1.8</version>
     </dependency>
+    <dependency>
+      <groupId>net.sourceforge.dscsim</groupId>
+      <artifactId>dscsim-utils</artifactId>
+  	</dependency>
   </dependencies>
 </project>
