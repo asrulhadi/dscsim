@@ -242,7 +242,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	/**
 	 * Sequence number for transmit requests (to avoid caching in any proxies)
 	 */
-	int _transmitSequence;
+//	int _transmitSequence;
 	
 //	/**
 //	 * The status of the network
@@ -268,14 +268,14 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		 * Run method of the thread which receives incoming UDP packets
 		 */
 	    public void run() {
-	    	int receiveSequence = 0;
+//	    	int receiveSequence = 0;
 	        while (_incomingThread != null) {
 	        	
 	    		GetMethod httpget = new GetMethod(_servletURL);
 	    		httpget.addRequestHeader("magicNumber", ""+_magicNumber);
 	    		httpget.addRequestHeader("airwaveUID", ""+_uid);
-	    		receiveSequence++;
-	    		httpget.addRequestHeader("seq", ""+receiveSequence);
+//	    		receiveSequence++;
+	    		httpget.addRequestHeader("seq", ""+System.currentTimeMillis());
 	        	byte[] inData = null;
 	    		try {
 	    		  long startTime = System.currentTimeMillis();
@@ -346,8 +346,8 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	        	PostMethod postMethod = new PostMethod(_servletURL);
 	    		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);
 	    		postMethod.addRequestHeader("airwaveUID", ""+_uid);
-	    		_transmitSequence++;
-	    		postMethod.addRequestHeader("seq", ""+_transmitSequence);
+//	    		_transmitSequence++;
+	    		postMethod.addRequestHeader("seq", ""+System.currentTimeMillis());
 	    		postMethod.setRequestEntity( new ByteArrayRequestEntity(data) );
 	    		try {
 	    		  long startTime = System.currentTimeMillis();
@@ -377,7 +377,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		readParameters();
 		_statusTracker = new StatusTracker();
 		_shutDown = false;
-		_transmitSequence = 0;
+//		_transmitSequence = 0;
 		_networkStatusListeners = new HashSet();
 		_asynchronousCommands = new LinkedList();
 		_outQueue = new LinkedList<byte[]>();
