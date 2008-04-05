@@ -56,7 +56,7 @@ public class HttpRadiotransportTest extends RadiotransportTest {
 	 */
 	@Override
 	public Airwave createAirwave() {
-		System.setProperty("parameter.dscsim.http_airwave.server_url", "http://localhost:8080/");
+		System.setProperty("parameter.dscsim.airwave.http.server_url", "http://localhost:8080/");
 		HttpAirwave aw = new HttpAirwave();
 		return aw;
 	}

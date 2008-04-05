@@ -47,6 +47,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.controller.utils.AppLogger;
+import net.sourceforge.dscsim.radiotransport.Airwave;
 import net.sourceforge.dscsim.radiotransport.AirwaveStatusInterface;
 import net.sourceforge.dscsim.radiotransport.Antenna;
 import net.sourceforge.dscsim.radiotransport.impl.AbstractAirwave;
@@ -156,7 +157,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	/**
 	 * Prefix of systems properties to be used by to configure this object
 	 */
-	private static final String PROPERTY_PREFIX = "parameter.dscsim.http_airwave.";
+	private static final String PROPERTY_PREFIX = Airwave.PROPERTY_NAME+".http.";
 		
 	/**
 	 * The maximum allowed length of the UPD packets (buffer size)
