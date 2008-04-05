@@ -18,6 +18,8 @@
  */
 package net.sourceforge.dscsim.radiotransport;
 
+import org.apache.log4j.Logger;
+
 import net.sourceforge.dscsim.radiotransport.http.HttpAirwave;
 import net.sourceforge.dscsim.radiotransport.udp.UDPAirwave;
 
@@ -27,7 +29,17 @@ import net.sourceforge.dscsim.radiotransport.udp.UDPAirwave;
  *
  */
 public abstract class Airwave {
-	
+
+	/**
+	 * Prefix of systems properties to be used by to configure this object
+	 */
+	protected static final String PROPERTY_NAME = "parameter.dscsim.airwave";
+
+	/**
+	 * The logger object
+	 */
+	private static final Logger LOGGER = Logger.getLogger(Airwave.class);
+
 	/**
 	 * The single instance
 	 */
@@ -46,11 +58,24 @@ public abstract class Airwave {
 	public static Airwave getInstance() {
 		synchronized( Airwave.class ){
 			if( _theInstance == null ){
-				if( System.getProperty("parameter.dscsim.http_airwave") != null ) {
-					_theInstance = new HttpAirwave();
+				String airwaveType = System.getProperty(PROPERTY_NAME);
+				if( airwaveType != null ) {
+					String airwaveClassName = "net.sourceforge.dscsim.radiotransport.";
+					airwaveClassName += airwaveType.toLowerCase() + ".";
+					airwaveClassName += airwaveType+"Airwave";
+					try {
+						_theInstance = (Airwave)Class.forName(airwaveClassName).newInstance();
+						LOGGER.info("Airwave of type "+airwaveClassName+" instantiated.");
+					} catch (Exception e) {
+						LOGGER.error("Instantiation of Airwave of type "+airwaveClassName+" failed.", e);
+					}
 				} else {
-					_theInstance = new UDPAirwave();
+					LOGGER.info("No airwave type defined");
 				}
+			}
+			if( _theInstance == null ) {
+				LOGGER.info("Instantiating UDPAirwave as default Airwave implementation");
+				_theInstance = new UDPAirwave();
 			}
 		}
 		return _theInstance;
