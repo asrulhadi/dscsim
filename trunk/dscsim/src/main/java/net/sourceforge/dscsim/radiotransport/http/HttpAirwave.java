@@ -433,7 +433,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 			_logger.info("HTTP-Proxy set to "+_proxyHost+":"+_proxyPort);
 		}
 
-		propValue = System.getProperty(PROPERTY_PREFIX+"magicnumber");
+		propValue = System.getProperty(Airwave.PROPERTY_NAME+".magicnumber");
 		if( propValue != null ) {
 			_magicNumber = Integer.parseInt(propValue);
 		} else {

@@ -60,36 +60,6 @@
 				</thead>
 				<tbody>
 				<row>
-				  <entry>dscsim.udp_airwave.peerhost</entry>
-				  <entry>-</entry>
-				  <entry>Hostname oder IP-Adresse des Rechners, der initial kontaktiert
-				  wird, um Kontakt zum Netzwerk der dscsim-Simulatoren zur erhalten. Es
-				  k&ouml;nnen hier auch mehrere Eintr&auml;ge angegeben werden.</entry>
-				</row>
-				<row>
-				  <entry>dscsim.udp_airwave.startport</entry>
-				  <entry>37534</entry>
-				  <entry>UDP-Port, der f&uuml;r die Kommunikation benutzt wird. Sollte der
-				  	Port bereits belegt sein, so wird ggf. auf h&ouml;here Portnummern
-				  	ausgewichen.</entry>
-				</row>
-				<row>
-				  <entry>dscsim.udp_airwave.portcount</entry>
-				  <entry>10</entry>
-				  <entry>Ist der UDP-Port, der f&uuml;r die Kommunikation benutzt werden soll,
-				    bereits belegt, so werden die die gegebene Anzahl von Ports oberhalb des
-				    Startports probiert.</entry>
-				</row>
-				<row>
-				  <entry>dscsim.udp_airwave.magicnumber</entry>
-				  <entry>369876138</entry>
-				  <entry>Schl&uuml;sselwert innerhalb der von dscsim versendeten Pakete.
-				  	Pakete, deren Schl&uuml;sselwert von dem konfigurierten Wert abweicht,
-				  	werden ignoriert. Durch Vergabe eines vom Default abweichenden Wertes
-				  	kann (in beschr&auml;nktem Ma&szlig;e) verhindert werden,
-				  	dass nicht autorisierte Stationen am Netzverkehr teilnehmen.</entry>
-				</row>
-				<row>
 				  <entry>individual.mmsi</entry>
 				  <entry>211000000</entry>
 				  <entry>MMSI der Funkstelle</entry>
@@ -108,6 +78,67 @@
 				  <entry>dscsim.station_name</entry>
 				  <entry>-</entry>
 				  <entry>Name der Funkstelle</entry>
+				</row>
+				<row>
+				  <entry>dscsim.airwave.magicnumber</entry>
+				  <entry>369876138</entry>
+				  <entry>Schl&uuml;sselwert innerhalb der von dscsim versendeten Pakete.
+				  	Pakete, deren Schl&uuml;sselwert von dem konfigurierten Wert abweicht,
+				  	werden ignoriert. Durch Vergabe eines vom Default abweichenden Wertes
+				  	kann (in beschr&auml;nktem Ma&szlig;e) verhindert werden,
+				  	dass nicht autorisierte Stationen am Netzverkehr teilnehmen.</entry>
+				</row>
+				<row>
+				  <entry>dscsim.airwave</entry>
+				  <entry>UDP</entry>
+				  <entry>Art des zu verwendenden Netzwerkprotokolls. Zulässige Werte sind
+				  <command>UDP</command>> und <command>Http</command>.</entry>
+				</row>
+				<row>
+				  <entry>dscsim.udp_airwave.peerhost</entry>
+				  <entry>-</entry>
+				  <entry>Hostname oder IP-Adresse des Rechners, der initial kontaktiert
+				  wird, um Kontakt zum Netzwerk der dscsim-Simulatoren zur erhalten. Es
+				  k&ouml;nnen hier auch mehrere Eintr&auml;ge angegeben werden. (Dieser
+				  Eintrag wird nur f&uuml;r das UDP-basierte Netzwerkprotokoll verwendet.)</entry>
+				</row>
+				<row>
+				  <entry>dscsim.udp_airwave.startport</entry>
+				  <entry>37534</entry>
+				  <entry>UDP-Port, der f&uuml;r die Kommunikation benutzt wird. Sollte der
+				  	Port bereits belegt sein, so wird ggf. auf h&ouml;here Portnummern
+				  	ausgewichen. (Dieser Eintrag wird nur f&uuml;r das UDP-basierte
+				  	Netzwerkprotokoll verwendet.)</entry>
+				</row>
+				<row>
+				  <entry>dscsim.udp_airwave.portcount</entry>
+				  <entry>10</entry>
+				  <entry>Ist der UDP-Port, der f&uuml;r die Kommunikation benutzt werden soll,
+				    bereits belegt, so werden die die gegebene Anzahl von Ports oberhalb des
+				    Startports probiert. (Dieser Eintrag wird nur f&uuml;r das UDP-basierte
+				    Netzwerkprotokoll verwendet.)</entry>
+				</row>
+				<row>
+				  <entry>dscsim.airwave.http.server_url</entry>
+				  <entry>http://localhost:80/DscsimHttpServer</entry>
+				  <entry>Die URL des Servers, über den die Http-basierte Kommunikation
+				    abl&auml;uft. (Dieser Eintrag wird nur f&uuml;r das Http-basierte
+				    Netzwerkprotokoll verwendet.)</entry>
+				</row>
+				<row>
+				  <entry>dscsim.airwave.http.proxy_host</entry>
+				  <entry>-</entry>
+				  <entry>Hostname des Servers, der als Proxy für die Http-Kommunikation
+				    verwendet wird. Ist dieser Parameter nicht gesetzt, so erfolgt eine
+				    direkte Kommunikation ohne Verwendung eines Proxies. (Dieser Eintrag
+				    wird nur f&uuml;r das Http-basierte Netzwerkprotokoll verwendet.)</entry>
+				</row>
+				<row>
+				  <entry>dscsim.airwave.http.proxy_port</entry>
+				  <entry>8080</entry>
+				  <entry>TCP-Port unter dem die Kommunikation mit dem Http-Proxy erfolgt.
+				    Der Wert wird ignoriert, wenn kein Proxy-Host gesetzt ist. (Dieser Eintrag
+				    wird nur f&uuml;r das Http-basierte Netzwerkprotokoll verwendet.)</entry>
 				</row>
 			</tbody>
 		</tgroup>

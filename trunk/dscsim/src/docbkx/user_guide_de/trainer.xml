@@ -18,6 +18,10 @@
 	('Kondensationskern' des P2P-Netzwerkes) und die Gruppen-MMSI Parameter
 	angegeben werden. Bei nicht eingegebenen Werten werden die Default-Werte
 	verwendet.</para>
+	<para>Neben dem UDP-basierten P2P-Netzwerk-Protokoll kann dscsim auch mit einem
+	Http-basierten serverzentrierten Netzwerkprotokoll betrieben werden. Dieses kann
+	&uuml;ber die Auswahlbox "Protokoll" aktiviert werden. In diesem Fall l&auml;sst sich in der
+	Dialogbox die URL des zu verwendenden Servers eintragen.</para>
 	<para>Mittels des Buttons '<guibutton>change Dir</guibutton>' kann das Verzeichnis
 	ausgew&auml;hlt werden, in dem die HTML-Dateien generiert werden. &Uuml;ber
 	den Button '<guibutton>create Files</guibutton>' werden die HTML-Dateien, sowie

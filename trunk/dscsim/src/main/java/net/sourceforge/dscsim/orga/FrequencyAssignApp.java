@@ -24,6 +24,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,6 +33,7 @@ import java.io.StringWriter;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +41,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import static net.sourceforge.dscsim.orga.FrequencyAssign.PROTOCOL_UDP;
+import static net.sourceforge.dscsim.orga.FrequencyAssign.PROTOCOL_HTTP;
 
 
 /**
@@ -67,9 +73,21 @@ public class FrequencyAssignApp extends JFrame {
 
 	private JTextField nucleusIpTextField = null;
 
+	private JCheckBox UrlCheckBox = null;
+
+	private JTextField urlTextField = null;
+
 	private JCheckBox groupMmsiCheckBox = null;
 
 	private JTextField groupMmsiTextField = null;
+	
+	private JComboBox protocolTypeComboBox = null;
+	
+	private JLabel protocolTypeLabel = null;
+	
+	private String selectedProtocol = PROTOCOL_UDP;
+	
+	private int lastSelectedProtocol = 0;
 
 	private JButton ceateButton = null;
 
@@ -88,6 +106,35 @@ public class FrequencyAssignApp extends JFrame {
 	 */
 	private JPanel getMainPanel() {
 		if (mainPanel == null) {
+			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+			gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints11.gridx = 1;
+			gridBagConstraints11.gridy = 5;
+			gridBagConstraints11.ipadx = 137;
+			gridBagConstraints11.ipady = 4;
+			gridBagConstraints11.weightx = 0.0D;
+			gridBagConstraints11.gridwidth = 2;
+			gridBagConstraints11.insets = new Insets(5, 5, 5, 5);
+			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+			gridBagConstraints10.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints10.gridy = 5;
+			gridBagConstraints10.anchor = GridBagConstraints.WEST;
+			gridBagConstraints10.gridx = 0;
+
+			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+			gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints9.gridx = 1;
+			gridBagConstraints9.gridy = 4;
+			gridBagConstraints9.ipadx = 137;
+			gridBagConstraints9.ipady = 4;
+			gridBagConstraints9.weightx = 0.0D;
+			gridBagConstraints9.gridwidth = 2;
+			gridBagConstraints9.insets = new Insets(5, 5, 5, 5);
+			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+			gridBagConstraints8.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints8.gridy = 4;
+			gridBagConstraints8.anchor = GridBagConstraints.WEST;
+			gridBagConstraints8.gridx = 0;
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
 			gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints7.gridx = 1;
@@ -146,16 +193,68 @@ public class FrequencyAssignApp extends JFrame {
 			gridBagConstraints.gridx = 0;
 			mainPanel = new JPanel();
 			mainPanel.setLayout(new GridBagLayout());
-			mainPanel.add(getPortCheckBox(), gridBagConstraints);
-			mainPanel.add(getPortTextField(), gridBagConstraints1);
+			mainPanel.add(getGroupMmsiCheckBox(), gridBagConstraints);
+			mainPanel.add(getGroupMmsiTextField(), gridBagConstraints1);
 			mainPanel.add(getMagicNumberCheckBox(), gridBagConstraints2);
 			mainPanel.add(getMagicNumberTextField(), gridBagConstraints3);
-			mainPanel.add(getNucleusIpCheckBox(), gridBagConstraints4);
-			mainPanel.add(getNucleusIpTextField(), gridBagConstraints5);
-			mainPanel.add(getGroupMmsiCheckBox(), gridBagConstraints6);
-			mainPanel.add(getGroupMmsiTextField(), gridBagConstraints7);
+			mainPanel.add(getProtocolTypeLabel(), gridBagConstraints4);
+			mainPanel.add(getProtocolTypeComboBox(), gridBagConstraints5);
+			mainPanel.add(getPortCheckBox(), gridBagConstraints6);
+			mainPanel.add(getPortTextField(), gridBagConstraints7);
+			mainPanel.add(getNucleusIpCheckBox(), gridBagConstraints8);
+			mainPanel.add(getNucleusIpTextField(), gridBagConstraints9);
+			mainPanel.add(getUrlCheckBox(), gridBagConstraints10);
+			mainPanel.add(getUrlTextField(), gridBagConstraints11);
+			enableDisableProtocolFields();
 		}
 		return mainPanel;
+	}
+
+	/**
+	 * This method initializes protocolTypeComboBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JComboBox getProtocolTypeComboBox() {
+		if (protocolTypeComboBox == null) {
+			String[] labels = new String[]{ PROTOCOL_UDP, PROTOCOL_HTTP };
+			protocolTypeComboBox = new JComboBox(labels);
+			protocolTypeComboBox.setSelectedItem(selectedProtocol);
+			protocolTypeComboBox.addActionListener( new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String currentSelectedProtocol = (String)protocolTypeComboBox.getSelectedItem();
+					if( currentSelectedProtocol.equals(selectedProtocol) ) {
+						return;
+					}
+					selectedProtocol = currentSelectedProtocol;
+					enableDisableProtocolFields();
+				}
+			});
+//			protocolTypeComboBox.setText("UDP Port");
+//			protocolTypeComboBox.addChangeListener(new javax.swing.event.ChangeListener() {
+//				public void stateChanged(javax.swing.event.ChangeEvent e) {
+//					if( portCheckBox.getModel().isSelected() ) {
+//						portTextField.setEnabled(true);
+//					} else {
+//						portTextField.setEnabled(false);
+//						portTextField.setText("");
+//					}
+//				}
+//			});
+		}
+		return protocolTypeComboBox;
+	}
+
+	/**
+	 * This method initializes Label for protocolTypeComboBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JLabel getProtocolTypeLabel() {
+		if (protocolTypeLabel == null) {
+			protocolTypeLabel = new JLabel("Protokoll: ");
+		}
+		return protocolTypeLabel;
 	}
 
 	/**
@@ -169,12 +268,10 @@ public class FrequencyAssignApp extends JFrame {
 			portCheckBox.setText("UDP Port");
 			portCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
 				public void stateChanged(javax.swing.event.ChangeEvent e) {
-					if( portCheckBox.getModel().isSelected() ) {
-						portTextField.setEnabled(true);
-					} else {
-						portTextField.setEnabled(false);
+					if( !portCheckBox.getModel().isSelected() ) {
 						portTextField.setText("");
 					}
+					enableDisableProtocolFields();
 				}
 			});
 		}
@@ -242,12 +339,10 @@ public class FrequencyAssignApp extends JFrame {
 			nucleusIpCheckBox.setText("Nucleus-IP");
 			nucleusIpCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
 				public void stateChanged(javax.swing.event.ChangeEvent e) {
-					if( nucleusIpCheckBox.getModel().isSelected() ) {
-						nucleusIpTextField.setEnabled(true);
-					} else {
-						nucleusIpTextField.setEnabled(false);
+					if( !nucleusIpCheckBox.getModel().isSelected() ) {
 						nucleusIpTextField.setText("");
 					}
+					enableDisableProtocolFields();
 				}
 			});
 		}
@@ -265,6 +360,40 @@ public class FrequencyAssignApp extends JFrame {
 			nucleusIpTextField.setEnabled(false);
 		}
 		return nucleusIpTextField;
+	}
+
+	/**
+	 * This method initializes UrlCheckBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getUrlCheckBox() {
+		if (UrlCheckBox == null) {
+			UrlCheckBox = new JCheckBox();
+			UrlCheckBox.setText("Http-URL");
+			UrlCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					if( !UrlCheckBox.getModel().isSelected() ) {
+						urlTextField.setText("");
+					}
+					enableDisableProtocolFields();
+				}
+			});
+		}
+		return UrlCheckBox;
+	}
+
+	/**
+	 * This method initializes urlTextField	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getUrlTextField() {
+		if (urlTextField == null) {
+			urlTextField = new JTextField();
+			urlTextField.setEnabled(false);
+		}
+		return urlTextField;
 	}
 
 	/**
@@ -335,6 +464,12 @@ public class FrequencyAssignApp extends JFrame {
 						if( tmpText != null && !tmpText.equals("") ) {
 							regTpInstance.setGroupMmsi(tmpText);
 						}
+						regTpInstance.setProtocol(selectedProtocol);
+						tmpText = urlTextField.getText();
+						if( tmpText != null && !tmpText.equals("") ) {
+							regTpInstance.setUrl(tmpText);
+						}
+						
 						regTpInstance.makeFiles();
 						JOptionPane.showMessageDialog(FrequencyAssignApp.this,
 							    "Frequenzzuteilungsurkunden erzeugt");
@@ -472,4 +607,41 @@ public class FrequencyAssignApp extends JFrame {
 		return jContentPane;
 	}
 
+	/**
+	 * Enable or disable the text fields depending on the otjer fields
+	 */
+	private void enableDisableProtocolFields() {
+		if( selectedProtocol.equals(PROTOCOL_UDP)) {
+			nucleusIpCheckBox.setEnabled(true);
+			if( nucleusIpCheckBox.getModel().isSelected() ) {
+				nucleusIpTextField.setEnabled(true);
+			} else {
+				nucleusIpTextField.setEnabled(false);
+			}
+			portCheckBox.setEnabled(true);
+			if( portCheckBox.getModel().isSelected() ) {
+				portTextField.setEnabled(true);
+			} else {
+				portTextField.setEnabled(false);
+			}
+			UrlCheckBox.setEnabled(false);
+			urlTextField.setEnabled(false);
+		} else if ( selectedProtocol.equals(PROTOCOL_HTTP) ) {
+			nucleusIpCheckBox.setEnabled(false);
+			nucleusIpTextField.setEnabled(false);
+			portCheckBox.setEnabled(false);
+			portTextField.setEnabled(false);
+			UrlCheckBox.setEnabled(true);
+			if( UrlCheckBox.getModel().isSelected() ) {
+				urlTextField.setEnabled(true);
+			} else {
+				urlTextField.setEnabled(false);
+			}
+			
+		}
+
+	
+	
+	}
+	
 }
