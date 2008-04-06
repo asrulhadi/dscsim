@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.controller.utils.AppLogger;
+import net.sourceforge.dscsim.radiotransport.Airwave;
 import net.sourceforge.dscsim.radiotransport.AirwaveStatusInterface;
 import net.sourceforge.dscsim.radiotransport.Antenna;
 import net.sourceforge.dscsim.radiotransport.impl.AbstractAirwave;
@@ -387,7 +388,7 @@ public class UDPAirwave extends AbstractAirwave implements AirwaveStatusInterfac
 		}
 		_logger.info("Highest port is: "+_highestPort);
 
-		propValue = System.getProperty(PROPERTY_PREFIX+"magicnumber");
+		propValue = System.getProperty(Airwave.PROPERTY_NAME+".magicnumber");
 		if( propValue != null ) {
 			_magicNumber = Integer.parseInt(propValue);
 		} else {

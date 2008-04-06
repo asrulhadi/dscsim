@@ -33,6 +33,17 @@ import java.util.Set;
  */
 public class FrequencyAssign {
 
+	/**
+	 * String constant for the UDP based protocol
+	 */
+	public static final String PROTOCOL_UDP = "UDP";
+
+	/**
+	 * String constant for the HTTP based protocol
+	 */
+	public static final String PROTOCOL_HTTP = "Http (experimental)";
+	
+
 	private static String[] stationNames = { "Bremen_Rescue", "Aurelia", "Halligalli","Hera", "Eva", "Klausi", "Sunny", "Andrea",
 			  "Baracuda", "Up_and_Away", "Eierkopf", "Mon_Amour", "Schatzi", "Knochenbrecher",
 			  "Eva2", "Carmen", "Sehnsucht", "Rubin", "Diamant", "Flash", "Speedy_Gonzales",
@@ -49,6 +60,9 @@ public class FrequencyAssign {
 	private boolean isGroupMmsiSet;
 	private String nucleusIP;
 	private boolean isNucleusIPSet;
+	private String url;
+	private boolean isUrlSet;
+	private String protocol;
 	private File workingDir; 
 
 	public FrequencyAssign() {
@@ -58,6 +72,8 @@ public class FrequencyAssign {
 		magicNumber = 98367987;
 		groupMmsi = "021101600";
 		nucleusIP = "localhost";
+		protocol = PROTOCOL_UDP;
+		url = "http://localhost:8080";
 	}
 
 	public void makeFiles() throws IOException {
@@ -128,13 +144,21 @@ public class FrequencyAssign {
 			setup += " group.mmsi=" + groupMmsi;
 		}
 		if( isMagicNumberSet ) {
-			setup += " dscsim.udp_airwave.magicnumber="+ this.magicNumber;
+			setup += " dscsim.airwave.magicnumber="+ this.magicNumber;
 		}
-		if( isNucleusIPSet ) {
-			setup += " dscsim.udp_airwave.peerhost=" + this.nucleusIP;
-		}
-		if( isPortSet ) {
-			setup += " dscsim.udp_airwave.startport=" + this.port;
+		if( protocol.equals(PROTOCOL_UDP) ) {
+			setup += " dscsim.airwave=UDP";
+			if( isNucleusIPSet ) {
+				setup += " dscsim.udp_airwave.peerhost=" + this.nucleusIP;
+			}
+			if( isPortSet ) {
+				setup += " dscsim.udp_airwave.startport=" + this.port;
+			}
+		} else if( protocol.equals(PROTOCOL_HTTP) ) {
+			setup += " dscsim.airwave=Http";
+			if( isUrlSet ) {
+				setup += " dscsim.airwave.http.server_url=" + this.url;
+			}
 		}
 		return setup;
 	}
@@ -182,6 +206,21 @@ public class FrequencyAssign {
 
 	public void setDir(File workingDir) {
 		this.workingDir = workingDir;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+		this.isUrlSet = true;
+	}
+
+	/**
+	 * @param protocol the protocol to set
+	 */
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 
 }
