@@ -22,12 +22,12 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>tomcat-maven-plugin</artifactId>
         <configuration>
-        	<server>mytomcat</server>
-	        <url>http://localhost:8081/manager</url>
+        	<server>${webserver.id}</server>
+	        <url>${webserver.url}</url>
         </configuration>
 	</plugin>    
     </plugins>
-    <finalName>httpserver</finalName>
+    <finalName>dscsim</finalName>
   </build>
   <dependencies>
     <dependency>
