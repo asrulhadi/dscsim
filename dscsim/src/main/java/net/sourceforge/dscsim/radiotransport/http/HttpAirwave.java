@@ -305,7 +305,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 //						_logger.warn("incomingThread was interrupted");
 //					}
 	        	} else {
-	        		List<byte[]> bAList = ByteArrayUtil.decode(inData);
+	        		List<byte[]> bAList = ByteArrayUtil.decode(inData, 0);
 	        		for( byte[] packet : bAList ) {
 			        	TransmissionPacket antennaSignal = TransmissionPacket.fromByteArray(packet, 0);
 		    			pushSignalToLocalAntennas(antennaSignal);
@@ -342,7 +342,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	        			bAList.add(packet);
 	        		}
 	        	}
-	        	byte[] data = ByteArrayUtil.encode(bAList);
+	        	byte[] data = ByteArrayUtil.encode(bAList, 0);
 
 	        	PostMethod postMethod = new PostMethod(_servletURL);
 	    		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);

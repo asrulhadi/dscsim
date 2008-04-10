@@ -18,11 +18,14 @@ public class ByteArrayUtil {
 	/**
 	 * Encodes the given List of byte arrays into a single byte array.
 	 * @param byteArrayList the list of byte array to be encoded.
+	 * @param prefixLength length of the prefix (in bytes) which will
+	 * be prepended to the encoded array data. This area may be used to
+	 * encode any other data in the resulting byte array.
 	 * @return the byte array which contains the encode data
 	 */
-	public static byte[] encode(List<byte[]> byteArrayList) {
+	public static byte[] encode(List<byte[]> byteArrayList, int prefixLength) {
 		int listLength = byteArrayList.size();
-		int totalLength = 4;
+		int totalLength = 4 + prefixLength;
 		for(byte[] ba : byteArrayList) {
 			if( ba != null ) {
 				totalLength += 4 + ba.length;
@@ -32,7 +35,7 @@ public class ByteArrayUtil {
 		}
 		
 		byte[] result = new byte[totalLength];
-		int position = 0;
+		int position = prefixLength;
 		ByteConverter.intToByteArray(listLength, result, position);
 		position += 4;
 
@@ -56,23 +59,24 @@ public class ByteArrayUtil {
 	 * array does not contain valid data an IllegalArgumentException is
 	 * thrown.
 	 * @param byteArray byte array which contains the encoded data
+	 * @param prefixLength length of the prefix (in bytes) which is prepended to
+	 * the encoded array data. Decoding will skip this area.
 	 * @return the List of byte array which is extracted
 	 * @throws IllegalArgumentException if the byte array does not contain valid encoded data
 	 */
-	public static List<byte[]> decode(byte[] byteArray) {
+	public static List<byte[]> decode(byte[] byteArray, int prefixLength) {
 		List<byte[]> result = null;
 		try {
-			// TODO: prevent OutOfMemory if sizes are too high
-			int position = 0;
+			int position = prefixLength;
 			int listLength = ByteConverter.byteArrayToInt(byteArray, position);
 			position += 4;
 			
 			//check for plausibilty
-			int maxPossibleListLength = (byteArray.length-4) / 4;
+			int maxPossibleListLength = (byteArray.length-prefixLength-4) / 4;
 			if(listLength > maxPossibleListLength) {
 				throw new IllegalArgumentException( "List length info corrupted ("+listLength+")" );
 			}
-			int maxPossibleSingleArraySize = byteArray.length-4*(1+listLength);
+			int maxPossibleSingleArraySize = byteArray.length-prefixLength-4*(1+listLength);
 			
 			result = new ArrayList<byte[]>(listLength);
 			for(int i=0; i<listLength; i++) {
