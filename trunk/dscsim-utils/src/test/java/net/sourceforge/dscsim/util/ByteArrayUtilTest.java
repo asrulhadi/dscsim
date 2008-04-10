@@ -20,6 +20,8 @@ public class ByteArrayUtilTest extends TestCase {
 	List<byte[]> testList2;
 	List<byte[]> testList3;
 	List<byte[]> testList4;
+	
+	int pfL;
 
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -46,8 +48,17 @@ public class ByteArrayUtilTest extends TestCase {
 		testList4.add(null);
 		testList4.add(null);
 		testList4.add(null);
+		
+		pfL = getPrefixLength();
 	}
 
+	/**
+	 * Determine the value for the prefixLength used throughout the test
+	 * @return the prefixLength
+	 */
+	protected int getPrefixLength() {
+		return 0;
+	}
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#tearDown()
 	 */
@@ -56,65 +67,65 @@ public class ByteArrayUtilTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#encode(java.util.List)}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#encode(java.util.List, int)}.
 	 */
 	public void testEncode() {
-		byte[] result = ByteArrayUtil.encode(testList1);
-		assertEquals(9, result.length);
-		assertEquals(1, ByteConverter.byteArrayToInt(result, 0));
-		assertEquals(1, ByteConverter.byteArrayToInt(result, 4));
-		assertEquals(1, result[8]);
+		byte[] result = ByteArrayUtil.encode(testList1, pfL);
+		assertEquals(9+pfL, result.length);
+		assertEquals(1, ByteConverter.byteArrayToInt(result, 0+pfL));
+		assertEquals(1, ByteConverter.byteArrayToInt(result, 4+pfL));
+		assertEquals(1, result[8+pfL]);
 	}
 
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeSimple1() {
-		byte[] encoded = ByteArrayUtil.encode(testList1);
-		List<byte[]> result = ByteArrayUtil.decode(encoded);
+		byte[] encoded = ByteArrayUtil.encode(testList1, pfL);
+		List<byte[]> result = ByteArrayUtil.decode(encoded, pfL);
 		assertTrue( arrayListEquals( testList1, result ) );
 
-		encoded = ByteArrayUtil.encode(testList2);
-		result = ByteArrayUtil.decode(encoded);
+		encoded = ByteArrayUtil.encode(testList2, pfL);
+		result = ByteArrayUtil.decode(encoded, pfL);
 		assertTrue( arrayListEquals( testList2, result ) );
 	}
 	
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeSimple2() {
-		byte[] encoded = ByteArrayUtil.encode(testList2);
-		List<byte[]>result = ByteArrayUtil.decode(encoded);
+		byte[] encoded = ByteArrayUtil.encode(testList2, pfL);
+		List<byte[]>result = ByteArrayUtil.decode(encoded, pfL);
 		assertTrue( arrayListEquals( testList2, result ) );
 	}
 
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeNullElements() {
-		byte[] encoded = ByteArrayUtil.encode(testList3);
-		List<byte[]>result = ByteArrayUtil.decode(encoded);
+		byte[] encoded = ByteArrayUtil.encode(testList3, pfL);
+		List<byte[]>result = ByteArrayUtil.decode(encoded, pfL);
 		assertTrue( arrayListEquals( testList3, result ) );
 	}
 	
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeMaxAllowedSingleArraySize() {
-		byte[] encoded = ByteArrayUtil.encode(testList4);
-		List<byte[]>result = ByteArrayUtil.decode(encoded);
+		byte[] encoded = ByteArrayUtil.encode(testList4, pfL);
+		List<byte[]>result = ByteArrayUtil.decode(encoded, pfL);
 		assertTrue( arrayListEquals( testList4, result ) );
 	}
 
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeCorrupted1() {
-		byte[] encoded = ByteArrayUtil.encode(testList2);
-		encoded[2] = 1;	// corrupt the counter for number of arrays contained
+		byte[] encoded = ByteArrayUtil.encode(testList2, pfL);
+		encoded[2+pfL] = 1;	// corrupt the counter for number of arrays contained
 		boolean caught = false;
 		try {
-			ByteArrayUtil.decode(encoded);
+			ByteArrayUtil.decode(encoded, pfL);
 		} catch( IllegalArgumentException e ) {
 			caught = true;
 		}
@@ -122,14 +133,14 @@ public class ByteArrayUtilTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeCorrupted2() {
-		byte[] encoded = ByteArrayUtil.encode(testList2);
-		encoded[1] = 1;	// corrupt the length info of the first byte array
+		byte[] encoded = ByteArrayUtil.encode(testList2, pfL);
+		encoded[4+pfL] = 2;	// corrupt the length info of the first byte array
 		boolean caught = false;
 		try {
-			ByteArrayUtil.decode(encoded);
+			ByteArrayUtil.decode(encoded, pfL);
 		} catch( IllegalArgumentException e ) {
 			caught = true;
 		}
@@ -137,15 +148,15 @@ public class ByteArrayUtilTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeCorrupted3() {
-		byte[] encoded = ByteArrayUtil.encode(testList2);
+		byte[] encoded = ByteArrayUtil.encode(testList2, pfL);
 		byte[] encodedManipulated = new byte[encoded.length+1];
 		System.arraycopy(encoded, 0, encodedManipulated, 0, encoded.length );
 		boolean caught = false;
 		try {
-			ByteArrayUtil.decode(encodedManipulated);
+			ByteArrayUtil.decode(encodedManipulated, pfL);
 		} catch( IllegalArgumentException e ) {
 			caught = true;
 		}
@@ -154,16 +165,16 @@ public class ByteArrayUtilTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeNullElementsCorrupted() {
-		byte[] encoded = ByteArrayUtil.encode(testList3);
-		int length = ByteConverter.byteArrayToInt(encoded, 0);
+		byte[] encoded = ByteArrayUtil.encode(testList3, pfL);
+		int length = ByteConverter.byteArrayToInt(encoded, 0+pfL);
 		length++;
-		ByteConverter.intToByteArray(length, encoded, 0 );
+		ByteConverter.intToByteArray(length, encoded, 0+pfL );
 		boolean caught = false;
 		try {
-			List<byte[]>result = ByteArrayUtil.decode(encoded);
+			List<byte[]>result = ByteArrayUtil.decode(encoded, 0+pfL);
 		} catch( IllegalArgumentException e ) {
 			Throwable innerE = e.getCause();
 			String text = innerE.getMessage();
@@ -175,16 +186,16 @@ public class ByteArrayUtilTest extends TestCase {
 	}
 	
 	/**
-	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[])}.
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */
 	public void testDecodeMaxAllowedSingleArraySizeCorrupted() {
-		byte[] encoded = ByteArrayUtil.encode(testList4);
-		int length = ByteConverter.byteArrayToInt(encoded, 4);
+		byte[] encoded = ByteArrayUtil.encode(testList4, pfL);
+		int length = ByteConverter.byteArrayToInt(encoded, 4+pfL);
 		length++;
-		ByteConverter.intToByteArray(length, encoded, 4 );
+		ByteConverter.intToByteArray(length, encoded, 4+pfL );
 		boolean caught = false;
 		try {
-			List<byte[]>result = ByteArrayUtil.decode(encoded);
+			List<byte[]>result = ByteArrayUtil.decode(encoded, pfL);
 		} catch( IllegalArgumentException e ) {
 			Throwable innerE = e.getCause();
 			String text = innerE.getMessage();
@@ -198,7 +209,7 @@ public class ByteArrayUtilTest extends TestCase {
 	/**
 	 * Helper method to check if two lists of byte arrays are equal
 	 */
-	private static boolean arrayListEquals( List<byte[]> list1, List<byte[]> list2) {
+	protected static boolean arrayListEquals( List<byte[]> list1, List<byte[]> list2) {
 		if( list1.size() != list2.size() ) {
 			return false;
 		}

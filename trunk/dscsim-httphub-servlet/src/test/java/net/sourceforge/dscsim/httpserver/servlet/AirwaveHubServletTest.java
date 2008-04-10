@@ -163,8 +163,8 @@ public class AirwaveHubServletTest extends TestCase {
 	 */
 	public void testSimpleScenario2() throws Throwable {
 
-		doPostRequest(1,1,ByteArrayUtil.encode(a1List));
-		doPostRequest(1,1,ByteArrayUtil.encode(a2List));
+		doPostRequest(1,1,ByteArrayUtil.encode(a1List, 0));
+		doPostRequest(1,1,ByteArrayUtil.encode(a2List, 0));
 		TestThread[] tta = new TestThread[] {
 			new TestThread() {
 				public void doTest() {
@@ -176,7 +176,7 @@ public class AirwaveHubServletTest extends TestCase {
 			new TestThread() {
 				public void doTest() {
 
-					assertTrue( arrayListEquals(a1a2List, ByteArrayUtil.decode(doGetRequest(1, 2))));
+					assertTrue( arrayListEquals(a1a2List, ByteArrayUtil.decode(doGetRequest(1, 2), 0)));
 //					assertTrue( Arrays.equals(array1,     doGetRequest(1, 2) ) );
 //					assertTrue( Arrays.equals(array2,     doGetRequest(1, 2) ) );
 					assertTrue( Arrays.equals(arrayEmpty, doGetRequest(1, 2) ) );
@@ -206,8 +206,8 @@ public class AirwaveHubServletTest extends TestCase {
 	 * and {@link net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
 	 */
 	public void testSimpleScenario3() throws Throwable {
-		doPostRequest(2,1,ByteArrayUtil.encode(a1List));
-		doPostRequest(2,2,ByteArrayUtil.encode(a2List));
+		doPostRequest(2,1,ByteArrayUtil.encode(a1List, 0));
+		doPostRequest(2,2,ByteArrayUtil.encode(a2List, 0));
 		TestThread[] tta = new TestThread[] {
 				new TestThread() {
 					public void doTest() {
@@ -223,14 +223,14 @@ public class AirwaveHubServletTest extends TestCase {
 				},
 				new TestThread() {
 					public void doTest() {
-						assertTrue( arrayListEquals(a2List, ByteArrayUtil.decode(doGetRequest(2, 1))));
+						assertTrue( arrayListEquals(a2List, ByteArrayUtil.decode(doGetRequest(2, 1), 0)));
 //						assertTrue( Arrays.equals(array2,     doGetRequest(2, 1) ) );
 						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 1) ) );
 					}
 				},
 				new TestThread() {
 					public void doTest() {
-						assertTrue( arrayListEquals(a1List, ByteArrayUtil.decode(doGetRequest(2, 2))));
+						assertTrue( arrayListEquals(a1List, ByteArrayUtil.decode(doGetRequest(2, 2), 0)));
 //						assertTrue( Arrays.equals(array1,     doGetRequest(2, 2) ) );
 						assertTrue( Arrays.equals(arrayEmpty, doGetRequest(2, 2) ) );
 					}

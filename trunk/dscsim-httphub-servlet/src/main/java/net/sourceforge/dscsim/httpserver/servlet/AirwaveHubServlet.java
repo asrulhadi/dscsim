@@ -78,7 +78,7 @@ import org.apache.log4j.Logger;
 				bAList.add(packetQueue.poll());
 				packets++;
 			}
-			dataPacket = ByteArrayUtil.encode(bAList);
+			dataPacket = ByteArrayUtil.encode(bAList, 0);
 		}
 		response.addHeader("Cache-Control", "no-cache");
 		response.addHeader("Cache-Control", "no-store");
@@ -106,7 +106,7 @@ import org.apache.log4j.Logger;
 		InputStream is = request.getInputStream();
 		byte[] dataPacket = new byte[request.getContentLength()];
 		is.read(dataPacket);
-		List<byte[]> bAList = ByteArrayUtil.decode(dataPacket);
+		List<byte[]> bAList = ByteArrayUtil.decode(dataPacket, 0);
 		
 		GroupManager groupManager = GroupManager.getInstance();
 		QueueManager queueManager = groupManager.getQueueManager(magicNumber);
