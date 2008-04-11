@@ -3,6 +3,7 @@
  */
 package net.sourceforge.dscsim.httpserver.server;
 
+import net.sourceforge.dscsim.httpserver.GroupManager;
 import net.sourceforge.dscsim.httpserver.servlet.AirwaveHubServlet;
 
 import org.apache.log4j.Logger;
@@ -42,6 +43,7 @@ public class DscsimServer {
 	}
 	
 	public void startServer() {
+		GroupManager.reInitialize();
 		if( server != null ) {
 			throw new IllegalStateException( "Server already started" );
 		} else {

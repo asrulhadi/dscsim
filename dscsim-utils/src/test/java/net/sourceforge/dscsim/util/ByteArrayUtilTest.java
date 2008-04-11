@@ -20,6 +20,7 @@ public class ByteArrayUtilTest extends TestCase {
 	List<byte[]> testList2;
 	List<byte[]> testList3;
 	List<byte[]> testList4;
+	List<byte[]> testList5;
 	
 	int pfL;
 
@@ -48,6 +49,8 @@ public class ByteArrayUtilTest extends TestCase {
 		testList4.add(null);
 		testList4.add(null);
 		testList4.add(null);
+
+		testList5 = new LinkedList<byte[]>();
 		
 		pfL = getPrefixLength();
 	}
@@ -108,6 +111,15 @@ public class ByteArrayUtilTest extends TestCase {
 		assertTrue( arrayListEquals( testList3, result ) );
 	}
 	
+	/**
+	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
+	 */
+	public void testDecodeEmptyList() {
+		byte[] encoded = ByteArrayUtil.encode(testList5, pfL);
+		List<byte[]>result = ByteArrayUtil.decode(encoded, pfL);
+		assertTrue( arrayListEquals( testList5, result ) );
+	}
+
 	/**
 	 * Test method for {@link net.sourceforge.dscsim.util.ByteArrayUtil#decode(byte[], int)}.
 	 */

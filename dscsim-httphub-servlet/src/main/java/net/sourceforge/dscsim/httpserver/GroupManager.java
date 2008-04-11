@@ -112,9 +112,8 @@ public class GroupManager {
 	
 	/**
 	 * Reinitializes the singleton. This should only be used for testing.
-	 * (Package visibility)
 	 */
-	static void reInitialize() {
+	public static void reInitialize() {
 		Thread houseKeeperTemp = theInstance.houseKeeper;
 		theInstance.houseKeeper = null;		// shuts down the housekeeper thread
 		houseKeeperTemp.interrupt();

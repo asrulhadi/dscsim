@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Helper metods to convert lists of byte arrays into a single
+ * Helper methods to convert lists of byte arrays into a single
  * byte array and vice versa
  * 
  * @author oliver

@@ -188,5 +188,27 @@ public class PacketQueueTest extends TestCase {
 		assertTrue(testPacketQueue.houseKeepingAndTestForDelete());
 	}
 
+	/**
+	 * Test method for
+	 * {@link net.sourceforge.dscsim.httpserver.PacketQueue#getSendSequenceByte()}
+	 */
+	public void testGetSendSequenceByte() throws Exception {
+		assertEquals(0, testPacketQueue.getSendSequenceByte() );
+		assertEquals(1, testPacketQueue.getSendSequenceByte() );
+		while( testPacketQueue.getSendSequenceByte() < 127 ) {}
+		assertEquals(-128, testPacketQueue.getSendSequenceByte() );  // test wrapping
+		
+		
+	}
 
+	/**
+	 * Test method for
+	 * {@link net.sourceforge.dscsim.httpserver.PacketQueue#getSendSequenceByte()}
+	 */
+	public void testGetSetReceiveSequenceByte() throws Exception {
+		assertEquals(0, testPacketQueue.getSetReceiveSequenceByte((byte)34) );
+		assertEquals(35, testPacketQueue.getSetReceiveSequenceByte((byte)127) );
+		assertEquals(-128, testPacketQueue.getSetReceiveSequenceByte((byte)0) );
+	}
+	
 }

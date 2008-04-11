@@ -77,7 +77,7 @@ public abstract class RadiotransportTest extends TestCase {
 			testData[i] = (byte) (i % 11);
 		}
 		transmitter.transmit(testData, new Hint() );
-		assertEquals(demodulator.getCallCounter(), 1);
+		assertEquals(1, demodulator.getCallCounter());
 		assertTrue("Transmitted data corrupted", Arrays.equals(testData, demodulator.getSignal()) );
 	}
 
@@ -96,7 +96,7 @@ public abstract class RadiotransportTest extends TestCase {
 			testData[i] = (byte) (i % 11);
 		}
 		transmitter.transmit(testData, new Hint() );
-		assertEquals(demodulator.getCallCounter(), 1);
+		assertEquals(1, demodulator.getCallCounter());
 		assertTrue("Transmitted data corrupted", Arrays.equals(testData, demodulator.getSignal()) );
 	}
 
@@ -119,7 +119,7 @@ public abstract class RadiotransportTest extends TestCase {
 			}
 			transmitter.transmit(testData, new Hint());
 			Thread.sleep(1000);
-			assertEquals(demodulator.getCallCounter(), 1);
+			assertEquals(1, demodulator.getCallCounter());
 			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
 					demodulator.getSignal()));
 		} finally {
@@ -149,7 +149,7 @@ public abstract class RadiotransportTest extends TestCase {
 			}
 			transmitter.transmit(testData, new Hint());
 			Thread.sleep(1000);
-			assertEquals(demodulator.getCallCounter(), 1);
+			assertEquals(1, demodulator.getCallCounter() );
 			assertTrue("Transmitted data corrupted (1)", Arrays.equals(testData,
 					demodulator.getSignal()));
 
@@ -159,7 +159,8 @@ public abstract class RadiotransportTest extends TestCase {
 			}
 			transmitter.transmit(testData, new Hint());
 			Thread.sleep(1000);
-			assertEquals(demodulator.getCallCounter(), 2);
+			// TODO: warum kommt im folgenden manchmal 3 raus???
+			assertEquals(2, demodulator.getCallCounter());
 			assertTrue("Transmitted data corrupted (2)", Arrays.equals(testData,
 					demodulator.getSignal()));
 
@@ -169,7 +170,7 @@ public abstract class RadiotransportTest extends TestCase {
 			}
 			transmitter.transmit(testData, new Hint());
 			Thread.sleep(1000);
-			assertEquals(demodulator.getCallCounter(), 3);
+			assertEquals(3, demodulator.getCallCounter() );
 			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
 					demodulator.getSignal()));
 			
@@ -204,10 +205,10 @@ public abstract class RadiotransportTest extends TestCase {
 			}
 			transmitter.transmit(testData, new Hint());
 			Thread.sleep(1000);
-			assertEquals(demodulator.getCallCounter(), 1);
+			assertEquals(1, demodulator.getCallCounter());
 			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
 					demodulator.getSignal()));
-			assertEquals(demodulator2.getCallCounter(), 1);
+			assertEquals(1, demodulator2.getCallCounter());
 			assertTrue("Transmitted data corrupted", Arrays.equals(testData,
 					demodulator2.getSignal()));
 		} finally {
