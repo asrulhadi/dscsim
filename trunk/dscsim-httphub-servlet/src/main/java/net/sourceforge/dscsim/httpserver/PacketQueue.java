@@ -67,6 +67,16 @@ public class PacketQueue {
 	private Lock pollActivityLock;
 	
 	/**
+	 * The last value of the send sequence counter for the connected Airwave
+	 */
+	private byte sendSequenceByte;
+	
+	/**
+	 * The last value of the receive sequence counter for the connected Airwave
+	 */
+	private byte receiveSequenceByte;
+	
+	/**
 	 * Constructor
 	 * @param airwaveUid the unique id of the airwave associated to this queue
 	 * @param packetQueueDeletionTimeout the time in milliseconds until an empty packet
@@ -82,6 +92,8 @@ public class PacketQueue {
 		this.queue = new LinkedList<byte[]>();
 		this.lastPollActivity = System.currentTimeMillis();
 		this.pollActivityLock = new ReentrantLock();
+		this.sendSequenceByte = 0;
+		this.receiveSequenceByte = -1;
 	}
 
 	/**
@@ -178,6 +190,27 @@ public class PacketQueue {
 	 */
 	public synchronized int getSize() {
 		return queue.size();
+	}
+
+	/**
+	 * Returns the current value of the send sequence counter. Increments
+	 * the counter afterwards.
+	 * @return the sendSequenceByte
+	 */
+	public byte getSendSequenceByte() {
+		return sendSequenceByte++;
+	}
+
+	/**
+	 * Gets the old value of the receiveSequenceByte incremented by one
+	 * and sets the latest value
+	 * @param newReceiveSequenceByte the new receiveSequenceByte to set
+	 * @return the last value incremente by one
+	 */
+	public byte getSetReceiveSequenceByte(byte newReceiveSequenceByte) {
+		byte oldValue = ++receiveSequenceByte;
+		receiveSequenceByte = newReceiveSequenceByte;
+		return oldValue;
 	}
 
 }
