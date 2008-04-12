@@ -86,7 +86,7 @@ public abstract class Airwave {
 	 * Clears the Airwave instance (singleton).
 	 * This is only intended to be used in the context of unit testing
 	 */
-	protected static void clearInstance() {
+	public static void clearInstance() {
 		synchronized( Airwave.class ){
 			_theInstance = null;
 		}
