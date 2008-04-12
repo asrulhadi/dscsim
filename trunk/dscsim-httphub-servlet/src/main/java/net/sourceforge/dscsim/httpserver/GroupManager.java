@@ -36,7 +36,7 @@ public class GroupManager {
 		public void run() {
 			while(houseKeeper!=null) {
 				try{
-					LOGGER.debug("Performing housekeeping for "+this.toString());
+					LOGGER.debug("Performing housekeeping for "+GroupManager.this.toString());
 					performHouseKeeping();
 					sleep(housekeepingSleep);
 				} catch( InterruptedException e ) {
