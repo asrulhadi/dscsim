@@ -88,7 +88,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		 */
 		private StatusTracker() {
 			_statusString = "---";
-			_networkStatus = STATUS_RED;
+			_networkStatus = STATUS_YELLOW;
 			_failCounter = FAIL_LIMIT;
 		}
 
@@ -155,6 +155,11 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	private static Logger _logger = Logger.getLogger(HttpAirwave.class);
 	
 	/**
+	 * The logger for performance statistics
+	 */
+	private static Logger _statisticsLogger = Logger.getLogger("statistics." + HttpAirwave.class.getName());
+
+	/**
 	 * Prefix of systems properties to be used by to configure this object
 	 */
 	private static final String PROPERTY_PREFIX = Airwave.PROPERTY_NAME+".http.";
@@ -207,7 +212,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	/**
 	 * Retry delay for requests in case of bad network status in milliseconds (to avoid high speed retries)
 	 */
-	private static final int RED_STATUS_RETRY_DELAY = 0; //10000;
+	private static final int RED_STATUS_RETRY_DELAY = 10000;
 	
 	/**
 	 * Magic number which identifies all UDP packets used by this airwave
@@ -286,6 +291,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		 */
 	    public void run() {
 	    	byte contentSequence = -1;
+	    	int sequenceMismatchCount = 0;
 	        while (_incomingThread != null) {
 	        	if( _statusTracker.getNetworkStatus() == STATUS_RED ) {
 	        		try {
@@ -313,6 +319,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 
 	  			  contentSequence++;
 	  			  if( inData[1] != contentSequence ) {
+	  				sequenceMismatchCount++;  
 					_logger.info("Mismatch in downlink sequence byte - Expected: "+contentSequence+" but was: "+inData[1] );
 	  			  }
 	  			  contentSequence = inData[1];
@@ -330,6 +337,19 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    		  for( byte[] packet : bAList ) {
 	    			  TransmissionPacket antennaSignal = TransmissionPacket.fromByteArray(packet, 0);
 	    			  pushSignalToLocalAntennas(antennaSignal);
+	    		  }
+	    		  if( _statisticsLogger.isDebugEnabled() ) {
+	    			  StringBuilder message = new StringBuilder();
+	    			  message.append(System.currentTimeMillis()).append(',');   // system time in milliseconds
+	    			  message.append(_uid).append(',');							// uid of the airwave
+	    			  message.append("downlink").append(',');					// this is "downlink" data
+	    			  message.append(contentSequence).append(',');				// sequence byte as delivered by server
+	    			  message.append(sequenceMismatchCount).append(',');		// count how often sequence mismatch occured
+	    			  message.append(duration).append(',');						// net duration of request (excluding server blocking)
+	    			  message.append(serverBlockDelay).append(',');				// server blocking time due to missing avaliable data
+	    			  message.append(inData.length).append(',');				// size of the transmitted byte array
+	    			  message.append(bAList.size());							// number of packets which were encoded in the byte array
+		    		  _statisticsLogger.debug(message);
 	    		  }
 	    		} catch( Exception e ) {
 	    			_logger.error("Problem while receiving from HTTP-Server", e);
@@ -398,6 +418,20 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    			  _statusTracker.requestSlow();
 	    		  } else {
 	    			  _statusTracker.requestGood();
+	    		  }
+	    		  
+	    		  if( _statisticsLogger.isDebugEnabled() ) {
+	    			  StringBuilder message = new StringBuilder();
+	    			  message.append(System.currentTimeMillis()).append(',');   // system time in milliseconds
+	    			  message.append(_uid).append(',');							// uid of the airwave
+	    			  message.append("uplink").append(',');						// this is "uplink" data
+	    			  message.append(contentSequence).append(',');				// sequence byte as delivered by server
+	    			  message.append(',');										// -empty- 
+	    			  message.append(duration).append(',');						// duration of request
+	    			  message.append(data.length).append(',');					// size of the transmitted byte array
+	    			  message.append(',');										// -empty-
+	    			  message.append(bAList.size());							// number of packets which were encoded in the byte array
+		    		  _statisticsLogger.debug(message);
 	    		  }
 	    		} catch( Exception e ) {
 	    			_logger.error("Problem while sending to HTTP-Server", e);
