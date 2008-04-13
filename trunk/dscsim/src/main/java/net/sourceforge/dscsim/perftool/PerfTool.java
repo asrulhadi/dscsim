@@ -20,6 +20,11 @@ package net.sourceforge.dscsim.perftool;
 
 import java.util.Properties;
 
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import org.apache.log4j.Logger;
 
 import net.sourceforge.dscsim.common.SplashScreen;
@@ -40,8 +45,9 @@ public class PerfTool {
 	 * The logger to be used
 	 */
 	private static Logger logger = Logger.getLogger(PerfTool.class);
-	
-	/**
+
+
+    /**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -57,20 +63,26 @@ public class PerfTool {
 			}
 	    }
 	    
-	    int numberOfAirwaves = 2;
-	    int packetSize = 100;
-	    int delayBetweenPackets = 50;
-	    int testDuration = 60000;
+	    int numberOfAirwaves = 5;
+	    int packetSize = 388;   // This is equals to a standard voice packet
+	    int delayBetweenPackets = 200;	// 5 packets per second
+	    int testIntervall = 10000;
+
+	    
 	    ClientThread[] cT = new ClientThread[numberOfAirwaves];
 	    for( int i = 0; i < numberOfAirwaves; i++ ){
+//	    	cT[i] = new ClientThread(packetSize, delayBetweenPackets);
+	    }
+	    for( int i = 0; i < numberOfAirwaves; i++ ){
+	    	logger.info( "Starting Airwave number "+(i+1));
 	    	cT[i] = new ClientThread(packetSize, delayBetweenPackets);
 	    	cT[i].start();
+		    try {
+				Thread.sleep(testIntervall);
+			} catch (InterruptedException e1) {
+				logger.warn("PerfTool was interrupted");
+			}
 	    }
-	    try {
-			Thread.sleep(testDuration);
-		} catch (InterruptedException e1) {
-			logger.warn("PerfTool was interrupted");
-		}
 	    for( int i = 0; i < numberOfAirwaves; i++ ){
 	    	cT[i].shutDown();
 	    }
