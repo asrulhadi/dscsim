@@ -134,6 +134,8 @@
 			<file src="log4j.nucleus.properties" targetdir="$INSTALL_PATH" />
 			<file src="runNucleus.bat" targetdir="$INSTALL_PATH" />
 			<file src="runNucleus.sh" targetdir="$INSTALL_PATH" />
+			<file src="runPerfTool.bat" targetdir="$INSTALL_PATH" />
+			<file src="runPerfTool.sh" targetdir="$INSTALL_PATH" />
 			<file src="orga.bat" targetdir="$INSTALL_PATH" />
 			<file src="orga.sh" targetdir="$INSTALL_PATH" />
         	<parsable targetfile="$INSTALL_PATH/runapp_debug.bat"/>

@@ -56,16 +56,16 @@ public class DscsimStarter {
 		if( args.length == 0 ) {
 			startRadioAndController(args);
 		} else {
+			String[] newArgs = new String[args.length-1];
+			for( int i=0; i<newArgs.length; i++) {
+				newArgs[i] = args[i+1];
+			}
 			if( "nucleus".equals(args[0]) ) {
-				String[] newArgs = new String[args.length-1];
-				for( int i=0; i<newArgs.length; i++) {
-					newArgs[i] = args[i+1];
-				}
 				startAirwaveNucleus(newArgs);
 			} else if( "orga".equals(args[0]) ) {
 				startOrga(args);
 			} else if( "perftool".equals(args[0]) ) {
-				startPerfTool(args);
+				startPerfTool(newArgs);
 			} else {
 				startRadioAndController(args);
 			}

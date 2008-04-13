@@ -12,6 +12,8 @@ licenses of the bundled libraries in directory "legal".
 ==================================================
 New in dscsim 1.3.5-SNAPSHOT:
 - Http-based communication protocol implemented (alpha version)
+- Helkper Application for measuring the network performance of the
+  Http-based communication protocol
 - Solved [1915642] Installation under Windows Vista might fail. 
   (Solution: Do not install into default application root directory. Hint is
   now given by installer in case that installation is performed on Vista.)
