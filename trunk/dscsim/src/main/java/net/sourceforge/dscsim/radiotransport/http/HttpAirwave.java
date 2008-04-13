@@ -301,6 +301,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    public void run() {
 	    	byte contentSequence = -1;
 	    	int sequenceMismatchCount = 0;
+	    	int duration = 0;
 	        while (_incomingThread != null) {
 	        	if( _statusTracker.getNetworkStatus() == STATUS_RED ) {
 	        		try {
@@ -314,6 +315,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    		_httpGet.addRequestHeader("magicNumber", ""+_magicNumber);
 	    		_httpGet.addRequestHeader("airwaveUID", ""+_uid);
 	    		_httpGet.addRequestHeader("seq", ""+System.currentTimeMillis());
+	    		_httpGet.addRequestHeader("turnaround", ""+duration);
 	        	byte[] inData = null;
 	    		try {
 	    		  long startTime = System.currentTimeMillis();
@@ -335,7 +337,7 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    		  
 	    		  long endTime = System.currentTimeMillis();
 	    		  int serverBlockDelay = ByteConverter.byteArrayToInt(inData, 2);
-	    		  long duration = endTime-startTime-serverBlockDelay;
+	    		  duration = (int)(endTime-startTime-serverBlockDelay);
 	    		  _logger.debug( "Request roundtrip for Receiver: "+duration+" ms (plus "+serverBlockDelay+" ms server blocking delay)" );
 	    		  if( duration > SLOW_REQUEST_LIMIT ) {
 	    			  _statusTracker.requestSlow();
