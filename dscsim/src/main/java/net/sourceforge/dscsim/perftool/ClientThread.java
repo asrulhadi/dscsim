@@ -42,7 +42,12 @@ public class ClientThread extends Thread {
 
 	public void shutDown() {
 		shutdown = true;
-		airwave.shutdown();
+		Thread sdThread = new Thread(){
+			public void run() {
+				airwave.shutdown();
+			}
+		};
+		sdThread.run();
 	}
 
 	/* (non-Javadoc)

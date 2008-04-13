@@ -260,7 +260,16 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	 */
 	private HttpClient _httpClient;
 
-
+	/**
+	 * The PostMethod used for the uplink data transmission
+	 */
+    private PostMethod _httpPost;
+	
+	/**
+	 * The PostMethod used for the uplink data transmission
+	 */
+    private GetMethod _httpGet;
+    
 	/**
 	 * Sequence number for transmit requests (to avoid caching in any proxies)
 	 */
@@ -301,15 +310,15 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 					}
 	        	}
 
-	        	GetMethod httpget = new GetMethod(_servletURL);
-	    		httpget.addRequestHeader("magicNumber", ""+_magicNumber);
-	    		httpget.addRequestHeader("airwaveUID", ""+_uid);
-	    		httpget.addRequestHeader("seq", ""+System.currentTimeMillis());
+	        	_httpGet = new GetMethod(_servletURL);
+	    		_httpGet.addRequestHeader("magicNumber", ""+_magicNumber);
+	    		_httpGet.addRequestHeader("airwaveUID", ""+_uid);
+	    		_httpGet.addRequestHeader("seq", ""+System.currentTimeMillis());
 	        	byte[] inData = null;
 	    		try {
 	    		  long startTime = System.currentTimeMillis();
-	    		  _httpClient.executeMethod(httpget);
-	    		  inData = httpget.getResponseBody();
+	    		  _httpClient.executeMethod(_httpGet);
+	    		  inData = _httpGet.getResponseBody();
 	    
 	    		  if( inData[0] != PROTOCOL_VERSION ) {
 	    			  _logger.warn("Wrong protocol version found in downlink data "+inData[0]);
@@ -340,23 +349,25 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    		  }
 	    		  if( _statisticsLogger.isDebugEnabled() ) {
 	    			  StringBuilder message = new StringBuilder();
-	    			  message.append(System.currentTimeMillis()).append(',');   // system time in milliseconds
-	    			  message.append(_uid).append(',');							// uid of the airwave
-	    			  message.append("downlink").append(',');					// this is "downlink" data
-	    			  message.append(contentSequence).append(',');				// sequence byte as delivered by server
-	    			  message.append(sequenceMismatchCount).append(',');		// count how often sequence mismatch occured
-	    			  message.append(duration).append(',');						// net duration of request (excluding server blocking)
-	    			  message.append(serverBlockDelay).append(',');				// server blocking time due to missing avaliable data
-	    			  message.append(inData.length).append(',');				// size of the transmitted byte array
+	    			  message.append(System.currentTimeMillis()).append(';');   // system time in milliseconds
+	    			  message.append(_uid).append(';');							// uid of the airwave
+	    			  message.append("downlink").append(';');					// this is "downlink" data
+	    			  message.append(contentSequence).append(';');				// sequence byte as delivered by server
+	    			  message.append(sequenceMismatchCount).append(';');		// count how often sequence mismatch occured
+	    			  message.append(duration).append(';');						// net duration of request (excluding server blocking)
+	    			  message.append(serverBlockDelay).append(';');				// server blocking time due to missing avaliable data
+	    			  message.append(inData.length).append(';');				// size of the transmitted byte array
 	    			  message.append(bAList.size());							// number of packets which were encoded in the byte array
 		    		  _statisticsLogger.debug(message);
 	    		  }
 	    		} catch( Exception e ) {
-	    			_logger.error("Problem while receiving from HTTP-Server", e);
-	    			_statusTracker.requestFailed();
-	    			continue;
+	    			if( !_shutDown ) {
+	    				_logger.error("Problem while receiving from HTTP-Server", e);
+	    				_statusTracker.requestFailed();
+	    			}
+    				continue;
 	    		} finally {
-		 		   	httpget.releaseConnection();
+		 		   	_httpGet.releaseConnection();
 	    		}
 	        }
 	    }
@@ -402,15 +413,15 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	        	data[0] = PROTOCOL_VERSION;
 	        	data[1] = contentSequence++;
 
-	        	PostMethod postMethod = new PostMethod(_servletURL);
-	    		postMethod.addRequestHeader("magicNumber", ""+_magicNumber);
-	    		postMethod.addRequestHeader("airwaveUID", ""+_uid);
+	        	_httpPost = new PostMethod(_servletURL);
+	        	_httpPost.addRequestHeader("magicNumber", ""+_magicNumber);
+	        	_httpPost.addRequestHeader("airwaveUID", ""+_uid);
 //	    		_transmitSequence++;
-	    		postMethod.addRequestHeader("seq", ""+System.currentTimeMillis());
-	    		postMethod.setRequestEntity( new ByteArrayRequestEntity(data) );
+	        	_httpPost.addRequestHeader("seq", ""+System.currentTimeMillis());
+	        	_httpPost.setRequestEntity( new ByteArrayRequestEntity(data) );
 	    		try {
 	    		  long startTime = System.currentTimeMillis();
-	    		  _httpClient.executeMethod(postMethod);
+	    		  _httpClient.executeMethod(_httpPost);
 	    		  long endTime = System.currentTimeMillis();
 	    		  long duration = endTime-startTime;
 	    		  _logger.debug( "Request roundtrip for Sender: "+duration+" ms" );
@@ -422,22 +433,25 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 	    		  
 	    		  if( _statisticsLogger.isDebugEnabled() ) {
 	    			  StringBuilder message = new StringBuilder();
-	    			  message.append(System.currentTimeMillis()).append(',');   // system time in milliseconds
-	    			  message.append(_uid).append(',');							// uid of the airwave
-	    			  message.append("uplink").append(',');						// this is "uplink" data
-	    			  message.append(contentSequence).append(',');				// sequence byte as delivered by server
-	    			  message.append(',');										// -empty- 
-	    			  message.append(duration).append(',');						// duration of request
-	    			  message.append(data.length).append(',');					// size of the transmitted byte array
-	    			  message.append(',');										// -empty-
+	    			  message.append(System.currentTimeMillis()).append(';');   // system time in milliseconds
+	    			  message.append(_uid).append(';');							// uid of the airwave
+	    			  message.append("uplink").append(';');						// this is "uplink" data
+	    			  message.append(contentSequence).append(';');				// sequence byte as delivered by server
+	    			  message.append(';');										// -empty- 
+	    			  message.append(duration).append(';');						// duration of request
+	    			  message.append(';');										// -empty-
+	    			  message.append(data.length).append(';');					// size of the transmitted byte array
 	    			  message.append(bAList.size());							// number of packets which were encoded in the byte array
 		    		  _statisticsLogger.debug(message);
 	    		  }
 	    		} catch( Exception e ) {
-	    			_logger.error("Problem while sending to HTTP-Server", e);
-	    			_statusTracker.requestFailed();
+	    			if( !_shutDown ) {
+	    				_logger.error("Problem while sending to HTTP-Server", e);
+	    				_statusTracker.requestFailed();
+	    			}
+	    			continue;
 	    		} finally {
-	    			postMethod.releaseConnection();
+	    			_httpPost.releaseConnection();
 	    		}
 	        }
 	    }
@@ -597,10 +611,16 @@ public class HttpAirwave extends AbstractAirwave implements AirwaveStatusInterfa
 		Thread t1;
 		t1 = _incomingThread;
 		_incomingThread = null;
+		if( _httpGet != null ) {
+			_httpGet.abort();
+		}
 		t1.interrupt();
 		Thread t2;
 		t2 = _outgoingThread;
 		_outgoingThread = null;
+		if( _httpPost != null ) {
+			_httpPost.abort();
+		}
 		t2.interrupt();
 		try {
 			t1.join();
