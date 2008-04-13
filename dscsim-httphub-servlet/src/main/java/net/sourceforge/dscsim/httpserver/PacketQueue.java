@@ -77,6 +77,11 @@ public class PacketQueue {
 	private byte receiveSequenceByte;
 	
 	/**
+	 * The last value of the turnaround time measured on client side 
+	 */
+	private int turnaroundTime;
+	
+	/**
 	 * Constructor
 	 * @param airwaveUid the unique id of the airwave associated to this queue
 	 * @param packetQueueDeletionTimeout the time in milliseconds until an empty packet
@@ -94,6 +99,7 @@ public class PacketQueue {
 		this.pollActivityLock = new ReentrantLock();
 		this.sendSequenceByte = 0;
 		this.receiveSequenceByte = -1;
+		this.turnaroundTime = 0;
 	}
 
 	/**
@@ -211,6 +217,25 @@ public class PacketQueue {
 		byte oldValue = ++receiveSequenceByte;
 		receiveSequenceByte = newReceiveSequenceByte;
 		return oldValue;
+	}
+
+	/**
+	 * Gets the turnaround time
+	 * @return the turnaroundTime
+	 */
+	public int getTurnaroundTime() {
+		return turnaroundTime;
+	}
+
+	/**
+	 * Sets the turnaround time
+	 * @param turnaroundTime the turnaroundTime to set
+	 */
+	public void setTurnaroundTime(int turnaroundTime) {
+		if( LOGGER.isDebugEnabled() && (turnaroundTime>0) ) {
+			LOGGER.debug("Turnaround time for downlink request for airwave "+airwaveUid+" was "+turnaroundTime+" ms");
+		}
+		this.turnaroundTime = turnaroundTime;
 	}
 
 }

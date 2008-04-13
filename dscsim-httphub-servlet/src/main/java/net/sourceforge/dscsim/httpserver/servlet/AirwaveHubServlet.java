@@ -42,6 +42,12 @@ import org.apache.log4j.Logger;
    private static final String AIRWAVE_UID_HEADER_NAME = "airwaveUID";
    
    /**
+    * Name of the HTTP header parameter containing the last turnaround time
+    * which was measured at the client side
+    */
+   private static final String TURNAROUND_TIME_HEADER_NAME = "turnaround";
+
+   /**
     * The maximum number of packets to send to the client in one response
     */
    private static final int MAX_PACKETS_PER_RESONSE = 100;
@@ -80,10 +86,13 @@ import org.apache.log4j.Logger;
 		}
 		int magicNumber = request.getIntHeader(MAGIC_NUMBER_HEADER_NAME);
 		int airwaveUid = request.getIntHeader(AIRWAVE_UID_HEADER_NAME);
+		int clientSideTurnaround = request.getIntHeader(TURNAROUND_TIME_HEADER_NAME);
 		
 		GroupManager groupManager = GroupManager.getInstance();
 		QueueManager queueManager = groupManager.getQueueManager(magicNumber);
 		PacketQueue packetQueue = queueManager.getQueue(airwaveUid);
+
+		packetQueue.setTurnaroundTime(clientSideTurnaround);
 		long startPollTimeStamp = System.currentTimeMillis();
 		byte[] dataPacket = packetQueue.poll();
 		long endPollTimeStamp = System.currentTimeMillis();
