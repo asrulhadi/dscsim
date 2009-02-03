@@ -55,9 +55,8 @@
         <checksumPolicy>ignore</checksumPolicy>
       </snapshots>
       <id>local</id>
-      <name>Local repository with jars not found in remote maven
-				repositories</name>
-      <url>file://${basedir}/lib/m2</url>
+      <name>Local repository with jars not found in remote maven repositories</name>
+      <url>file:///${basedir}/../lib/m2</url>
     </repository>
     <repository>
       <id>maven2-repository.dev.java.net</id>
@@ -83,9 +82,8 @@
         <checksumPolicy>ignore</checksumPolicy>
       </snapshots>
       <id>local</id>
-      <name>Local repository with plugins not found in remote maven
-				repositories</name>
-      <url>file://${basedir}/lib/m2</url>
+      <name>Local repository with plugins not found in remote maven repositories</name>
+      <url>file:///${basedir}/../lib/m2</url>
     </pluginRepository>
     <pluginRepository>
       <releases>
